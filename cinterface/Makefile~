@@ -1,0 +1,29 @@
+FC = mpif90 
+FC = gfortran
+CC = mpicc
+CC = gcc
+CXX = CC 
+FFLAGS +=  -w -O3
+CFLAGS +=  -I. -O3 -std=c99 -Wall -Wextra -Werror
+CXXFLAGS +=  -I. -O3
+ 
+LINKLIB = ld -shared  
+LINKLIB = gfortran -shared
+LIBDIR = ..
+NESTED_lib = ..
+NESTED_inc = ..
+LIBS =  -L$(LIBDIR) -lnest3 -llapack -lpthread
+MCLIBS = -lstdc++
+ 
+OBJFILES = cnest.o
+
+all: cnest.so 
+
+%.o: %.cc
+	$(CC) $(CFLAGS) -c $*.cc
+ 
+cnest.so: $(OBJFILES)
+	$(LINKLIB) $(FFLAGS) -o ../libcnest.so $(OBJFILES) $(MCLIBS) $(LIBS)
+
+clean:
+	rm -f *.o *.mod ../eggbox

@@ -1,0 +1,8 @@
+*.o
+*.mod
+*.a
+*~
+eggbox
+gauss_shell
+obj_detect
+libnest3.so
