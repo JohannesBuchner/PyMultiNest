@@ -15,9 +15,47 @@ def myloglike(cube, ndim, nparams):
 	#print "returning", math.pow(2. + chi, 5)
 	return math.pow(2. + chi, 5)
 
-multinest.run(myloglike, myprior, 2, resume = False, verbose = True)
+n_params = 2
+progress = pymultinest.ProgressWatcher(n_params = n_params)
+progress.start()
 
+pymultinest.run(myloglike, myprior, n_params, resume = True, verbose = True, sampling_efficiency = 0.3)
 
+progress.running = False
+a = pymultinest.Analyzer(n_params = n_params)
+s = a.get_stats()
+
+import json
+json.dump(s, file('%s.json' % a.outputfiles_basename, 'w'), indent=2)
+print
+print "Global Evidence:\n\t%.15e +- %.15e" % ( s['global evidence'], s['global evidence error'] )
+
+import matplotlib.pyplot as plt
+plt.clf()
+
+p = pymultinest.PlotMarginal(a)
+for i in range(n_params):
+	outfile = '%s-marginal-%d.pdf' % (a.outputfiles_basename,i)
+	p.plot_conditional(i, None, with_ellipses = True, with_points = False)
+	plt.savefig(outfile, format='pdf', bbox_inches='tight')
+	plt.close()
+	
+	outfile = '%s-mode-marginal-%d.pdf' % (a.outputfiles_basename,i)
+	p.plot_modes_marginal(i, with_ellipses = True, with_points = False)
+	plt.savefig(outfile, format='pdf', bbox_inches='tight')
+	plt.close()
+	
+	outfile = '%s-mode-marginal-cumulative-%d.pdf' % (a.outputfiles_basename,i)
+	p.plot_modes_marginal(i, cumulative = True, with_ellipses = True, with_points = False)
+	plt.savefig(outfile, format='pdf', bbox_inches='tight')
+	plt.close()
+	
+	for j in range(i):
+		p.plot_conditional(i, j, with_ellipses = True, with_points = False)
+		outfile = '%s-conditional-%d-%d.pdf' % (a.outputfiles_basename,i,j)
+		plt.savefig(outfile, format='pdf', bbox_inches='tight')
+		plt.close()
+	
 
 
 
