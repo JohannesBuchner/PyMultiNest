@@ -1,5 +1,7 @@
 import pymultinest
 import math
+import os
+if not os.path.exists("chains"): os.mkdir("chains")
 
 # our probability functions
 # Taken from the eggbox problem.
@@ -66,8 +68,8 @@ for i in range(n_params):
 		outfile = '%s-conditional-%d-%d.pdf' % (a.outputfiles_basename,i,j)
 		plt.savefig(outfile, format='pdf', bbox_inches='tight')
 		plt.close()
-	
+print "take a look at the pdf files in chains/" 
 
 
 
-
+ 
