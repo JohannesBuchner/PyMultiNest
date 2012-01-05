@@ -31,6 +31,9 @@ class ProgressWatcher(threading.Thread):
 		"""		
 		self.rejected = "%s%s" % (self.outputfiles_basename , "ev.dat")
 		self.running = True
+	
+	def stop(self):
+		self.running = False
 
 	def run(self):
 		import time

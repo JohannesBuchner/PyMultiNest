@@ -1,6 +1,6 @@
 
 from ctypes import cdll
-lib = cdll.LoadLibrary('./libcnest.so')
+lib = cdll.LoadLibrary('libcnest.so')
 
 from ctypes import *
 
