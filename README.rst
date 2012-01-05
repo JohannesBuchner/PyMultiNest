@@ -40,7 +40,7 @@ Code contributions are welcome! Contact me (buchner.johannes [ät] gmx.at).
 
 How can I use MultiNest with Python?
 --------------------------------------------
-Look at the documentation available at http://johannesbuchner.github.com/PyMultiNest/doc/
+Look at the documentation available at http://johannesbuchner.github.com/PyMultiNest/doc/html/index.html
 
 What is PyAPEMoST?
 --------------------------------------------
