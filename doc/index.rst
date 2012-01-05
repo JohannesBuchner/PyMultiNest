@@ -10,17 +10,25 @@ This documents two python modules for Bayesian analysis,
 parameter estimation and model selection:
 pymultinest and pyapemost.
 
-`<pyapemost>`_
-PyAPEMoST accesses APEMoST, a Markov Chain Monte Carlo Sampler.
-PyMultiNest accesses MultiNest, a Nested Monte Carlo Sampler.
+:doc:`PyAPEMoST <pyapemost>` accesses APEMoST, a Markov Chain Monte Carlo Sampler.
+:doc:`PyMultiNest <pymultinest>` accesses MultiNest, a Nested Monte Carlo Sampler.
+
+Get PyMultiNest
+-------------------------------
+ #. Download the `latest code <https://github.com/JohannesBuchner/PyMultiNest>`_ using git or as a archive. 
+ #. Follow the instructions in the INSTALL.rst file.
+
+Documentation:
+-------------------------------
 
 .. toctree::
    pymultinest
    pyapemost
    :maxdepth: -1
 
+
 Indices and tables
-==================
+-------------------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
