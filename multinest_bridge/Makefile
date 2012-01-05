@@ -14,9 +14,12 @@ libcnest.so: $(OBJFILES)
 	# is compiled, you will receive see this error later:
 	#     OSError: libcnest.so: undefined symbol: __nested_MOD_nestrun
 	#
+	# Checking if libnest3.so is in $MULTINEST
+	test -e ${MULTINEST}/libnest3.so
+	# Found.
 	#
 	$(LINKLIB) $(LIBS) $(CFLAGS) -fPIC -std=c99 -shared cnest.c -o libcnest.so
 	# all done.
 
 clean:
-	rm *.so
+	rm -f *.so

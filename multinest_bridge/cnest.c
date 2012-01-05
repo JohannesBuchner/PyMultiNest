@@ -1,4 +1,5 @@
 #include<stdlib.h>
+#include<stdio.h>
 #include<string.h>
 
 extern void __nested_MOD_nestrun(
@@ -11,7 +12,7 @@ extern void __nested_MOD_nestrun(
 struct problem {
 	void (*Prior)(double *Cube, int n_dim, int n_par);
 	double (*LogLike)(double *Cube, int n_dim, int n_par);
-} p;
+} p = {NULL, NULL};
 
 void _LogLike(double *Cube, int *ndim, int *npars, double *lnew)
 {
@@ -37,7 +38,12 @@ void run(
 	/* filling root with spaces, because fortran likes that */
 	strcpy(root, rootstr);
 	memset(root + strlen(root), ' ', 100 - strlen(root));
-
+	
+	if (p.Prior == NULL || p.LogLike == NULL) {
+		fprintf(stderr, "Need to call set_function(prior, loglike) first, to define callback functions!\n");
+		return;
+	}
+	
 	/* running MultiNest */
 	__nested_MOD_nestrun(&mmodal, &ceff, &nlive, &tol, &efr, &ndims, 
 		&nPar, &nClsPar, &maxModes, &updInt, &Ztol,
