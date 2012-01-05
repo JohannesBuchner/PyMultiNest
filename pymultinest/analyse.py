@@ -178,9 +178,9 @@ class PlotMarginal(object):
 		minvalue = values.min()
 		maxvalue = values.max()
 		for i in range(len(values)):
-			a = int((dim1_column[i] - min1) * n / max1)
+			a = int((dim1_column[i] - min1) * (n - 1) / (max1 - min1))
 			if dim2 is not None:
-				b = int((dim2_column[i] - min2) * m / max2)
+				b = int((dim2_column[i] - min2) * (m - 1) / (max2 - min1))
 			else:
 				b = 0
 			grid_z1[a,b] += values[i]
