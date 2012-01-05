@@ -38,6 +38,14 @@ What does PyMultiNest do?
 
 Code contributions are welcome! Contact me (buchner.johannes [ät] gmx.at).
 
+How can I use MultiNest with Python?
+--------------------------------------------
+Look at the documentation available at http://johannesbuchner.github.com/PyMultiNest/doc/
+
+What is PyAPEMoST?
+--------------------------------------------
+Similarly to PyMultiNest, it is an access module for a Bayesian inference engine.
+However, APEMoST is a Markov Chain Monte Carlo engine. See the `documentation <http://johannesbuchner.github.com/PyMultiNest/doc/html/pyapemost/>`.
 
 Q: Python callback functions are too slow!
 -------------------------------------------
