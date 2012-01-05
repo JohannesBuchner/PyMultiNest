@@ -51,38 +51,3 @@ MultiNest runs.
 
 
 
-
-
-
-
-Q: libcnest.so doesn't load
------------------------------------------------------
-
-Make sure it exists. Tell the program where it is by including the current 
-directory into the LD_LIBRARY_PATH.
-
-   export LD_LIBRARY_PATH=/usr/lib:/lib:.
-
-
-If you receive the error that libnest3.so couldn't be loaded, 
-make sure that the libnest3.so you created from MultiNest is there, and it 
-really is a shared library.
-
-$ ldd ../libnest3.so 
-	linux-gate.so.1 =>  (0x0095b000)
-	liblapack.so.3 => /usr/lib/atlas/liblapack.so.3 (0x00110000)
-	libpthread.so.0 => /lib/libpthread.so.0 (0x006a5000)
-	libgfortran.so.3 => /usr/lib/libgfortran.so.3 (0x00b63000)
-	libm.so.6 => /lib/libm.so.6 (0x006bf000)
-	libgcc_s.so.1 => /lib/libgcc_s.so.1 (0x006e9000)
-	libquadmath.so.0 => /usr/lib/libquadmath.so.0 (0x00e70000)
-	libc.so.6 => /lib/libc.so.6 (0x0095c000)
-	libf77blas.so.3 => /usr/lib/atlas/libf77blas.so.3 (0x00e2a000)
-	libcblas.so.3 => /usr/lib/atlas/libcblas.so.3 (0x00706000)
-	/lib/ld-linux.so.2 (0x42d79000)
-	libatlas.so.3 => /usr/lib/atlas/libatlas.so.3 (0x00ee3000)
-
-
-This can be done, for instance, by running
-
-gfortran -shared -llapack -lpthread -o  libnest3.so utils.o utils1.o priors.o kmeans_clstr.o xmeans_clstr.o posterior.o nested.o 
