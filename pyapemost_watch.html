@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to pymultinest’s documentation! &mdash; pymultinest v0.1 documentation</title>
+    <title>Watching the progress of APEMoST &mdash; pymultinest v0.1 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -21,8 +21,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pymultinest v0.1 documentation" href="#" />
-    <link rel="next" title="PyMultiNest" href="pymultinest.html" /> 
+    <link rel="top" title="pymultinest v0.1 documentation" href="index.html" />
+    <link rel="up" title="PyAPEMoST" href="pyapemost.html" />
+    <link rel="prev" title="Analysing the output" href="pyapemost_analyse.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,9 +36,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pymultinest.html" title="PyMultiNest"
-             accesskey="N">next</a> |</li>
-        <li><a href="#">pymultinest v0.1 documentation</a> &raquo;</li> 
+          <a href="pyapemost_analyse.html" title="Analysing the output"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+          <li><a href="pyapemost.html" accesskey="U">PyAPEMoST</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -46,36 +48,16 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="welcome-to-pymultinest-s-documentation">
-<h1>Welcome to pymultinest&#8217;s documentation!<a class="headerlink" href="#welcome-to-pymultinest-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>This documents two python modules for Bayesian analysis,
-parameter estimation and model selection:
-pymultinest and pyapemost.</p>
-<p><a class="reference external" href="pyapemost">pyapemost</a>
-PyAPEMoST accesses APEMoST, a Markov Chain Monte Carlo Sampler.
-PyMultiNest accesses MultiNest, a Nested Monte Carlo Sampler.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="pymultinest.html">PyMultiNest</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pymultinest_analyse.html">Analysing the output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pymultinest_watch.html">Watching the progress of MultiNest</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="pyapemost.html">PyAPEMoST</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pyapemost_analyse.html">Analysing the output</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pyapemost_watch.html">Watching the progress of APEMoST</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
-<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
-</ul>
+  <div class="section" id="module-pyapemost.watch">
+<span id="watching-the-progress-of-apemost"></span><h1>Watching the progress of APEMoST<a class="headerlink" href="#module-pyapemost.watch" title="Permalink to this headline">¶</a></h1>
+<p>Module for watching the progress of APEMoST</p>
+<dl class="class">
+<dt id="pyapemost.watch.ProgressWatcher">
+<em class="property">class </em><tt class="descclassname">pyapemost.watch.</tt><tt class="descname">ProgressWatcher</tt><big>(</big><em>n_params</em>, <em>interval_ms=200</em>, <em>outputfiles_basename='.'</em><big>)</big><a class="reference internal" href="_modules/pyapemost/watch.html#ProgressWatcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyapemost.watch.ProgressWatcher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Watches the progress of APEMost.</p>
+<p>Not implemented yet.</p>
+</dd></dl>
+
 </div>
 
 
@@ -84,20 +66,12 @@ PyMultiNest accesses MultiNest, a Nested Monte Carlo Sampler.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Welcome to pymultinest&#8217;s documentation!</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
-</ul>
-
-  <h4>Next topic</h4>
-  <p class="topless"><a href="pymultinest.html"
-                        title="next chapter">PyMultiNest</a></p>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pyapemost_analyse.html"
+                        title="previous chapter">Analysing the output</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/index.txt"
+    <li><a href="_sources/pyapemost_watch.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -127,9 +101,10 @@ PyMultiNest accesses MultiNest, a Nested Monte Carlo Sampler.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pymultinest.html" title="PyMultiNest"
-             >next</a> |</li>
-        <li><a href="#">pymultinest v0.1 documentation</a> &raquo;</li> 
+          <a href="pyapemost_analyse.html" title="Analysing the output"
+             >previous</a> |</li>
+        <li><a href="index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+          <li><a href="pyapemost.html" >PyAPEMoST</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

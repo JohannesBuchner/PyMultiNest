@@ -1,0 +1,186 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyapemost.analyse &mdash; pymultinest v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pymultinest v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="pyapemost" href="../pyapemost.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../pyapemost.html" accesskey="U">pyapemost</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyapemost.analyse</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="k">def</span> <span class="nf">create_histogram</span><span class="p">(</span><span class="n">parameter_name</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">writeFile</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="create_histogram"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.create_histogram">[docs]</a>	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Returns a histogram and some statistics about this parameter.</span>
+<span class="sd">		</span>
+<span class="sd">	@param writeFile: if true, write the histogram to paramname.histogram</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">f</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">-chain-0.prob.dump&quot;</span> <span class="o">%</span> <span class="n">parameter_name</span>
+	<span class="n">values</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">recfromtxt</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+	<span class="n">statistics</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="s">&#39;min&#39;</span><span class="p">:</span>   <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span>
+		<span class="s">&#39;max&#39;</span><span class="p">:</span>   <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
+		<span class="s">&#39;stdev&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">std</span><span class="p">()),</span>
+		<span class="s">&#39;mean&#39;</span><span class="p">:</span>  <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+		<span class="s">&#39;median&#39;</span><span class="p">:</span><span class="nb">float</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+	<span class="p">}</span>
+
+	<span class="n">hist</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+	<span class="n">histwithborders</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dstack</span><span class="p">([</span><span class="n">hist</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="n">nbins</span><span class="p">],</span> <span class="n">hist</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">hist</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+	<span class="k">if</span> <span class="n">writeFile</span><span class="p">:</span>
+		<span class="n">scipy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">.histogram&#39;</span> <span class="o">%</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">histwithborders</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">histwithborders</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">statistics</span>
+
+<span class="k">def</span> <span class="nf">create_histograms</span><span class="p">(</span><span class="n">nbins</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">writeFile</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span></div>
+<div class="viewcode-block" id="create_histograms"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.create_histograms">[docs]</a>	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Runs create_histogram for all parameters and returns</span>
+<span class="sd">	a dictionary of the results</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">paramnames</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;params&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;S&#39;</span><span class="p">)[:,</span><span class="mi">3</span><span class="p">]</span>
+	<span class="k">return</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">p</span><span class="p">,</span> <span class="n">create_histogram</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span> <span class="n">writeFile</span><span class="o">=</span><span class="n">writeFile</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paramnames</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">print_model_probability</span><span class="p">(</span><span class="n">logprob</span><span class="p">):</span></div>
+<div class="viewcode-block" id="print_model_probability"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.print_model_probability">[docs]</a>	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Gives a nice overview of the model probability, allowing</span>
+<span class="sd">	the practitioner to compare this model&#39;s probability to others</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">prob</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">logprob</span><span class="p">)</span>
+
+	<span class="n">limits</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="s">&#39;eq&#39;</span>         <span class="p">:</span><span class="n">logprob</span><span class="p">,</span> 
+		<span class="s">&#39;barely&#39;</span>     <span class="p">:</span><span class="n">logprob</span> <span class="o">-</span> <span class="n">scipy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
+		<span class="s">&#39;substantial&#39;</span><span class="p">:</span><span class="n">logprob</span> <span class="o">-</span> <span class="n">scipy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+		<span class="s">&#39;strong&#39;</span>     <span class="p">:</span><span class="n">logprob</span> <span class="o">-</span> <span class="n">scipy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
+		<span class="s">&#39;very strong&#39;</span><span class="p">:</span><span class="n">logprob</span> <span class="o">-</span> <span class="n">scipy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">limits</span><span class="p">:</span>
+		<span class="n">limits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%5.1f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">limits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+		<span class="n">limits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot; &quot;</span> <span class="o">*</span> <span class="p">(</span><span class="mi">7</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">limits</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">+</span> <span class="n">limits</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+	
+	<span class="k">print</span> <span class="s">&quot;Model probability ln(p(D|M, I)): [about 10^</span><span class="si">%.0f</span><span class="s">] </span><span class="si">%.5f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">logprob</span> <span class="o">/</span> <span class="n">scipy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">logprob</span><span class="p">)</span>
+	<span class="k">print</span> <span class="p">(</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">	Table to compare support against other models (Jeffrey):</span>
+
+<span class="s">	   other model     |</span>
+<span class="s">	   ln(p(D|M,I))    | supporting evidence for this model</span>
+<span class="s">	 ------------------+-------------------------------------</span>
+<span class="s">		  &gt;</span><span class="si">%%</span><span class="s">(eq)</span><span class="si">%s</span><span class="s">   Negative (supports other model)</span>
+<span class="s">	 </span><span class="si">%%</span><span class="s">(eq)</span><span class="si">%s</span><span class="s"> ..</span><span class="si">%%</span><span class="s">(barely)</span><span class="si">%s</span><span class="s">   Barely worth mentioning</span>
+<span class="s">	 </span><span class="si">%%</span><span class="s">(barely)</span><span class="si">%s</span><span class="s"> ..</span><span class="si">%%</span><span class="s">(substantial)</span><span class="si">%s</span><span class="s">   Substantial</span>
+<span class="s">	 </span><span class="si">%%</span><span class="s">(substantial)</span><span class="si">%s</span><span class="s"> ..</span><span class="si">%%</span><span class="s">(strong)</span><span class="si">%s</span><span class="s">   Strong</span>
+<span class="s">	 </span><span class="si">%%</span><span class="s">(strong)</span><span class="si">%s</span><span class="s"> ..</span><span class="si">%%</span><span class="s">(very strong)</span><span class="si">%s</span><span class="s">   Very strong</span>
+<span class="s">		  &lt;</span><span class="si">%%</span><span class="s">(very strong)</span><span class="si">%s</span><span class="s">   Decisive</span>
+
+<span class="s">	be careful.</span>
+<span class="s">	&quot;&quot;&quot;</span> <span class="o">%</span> <span class="nb">tuple</span><span class="p">([</span><span class="s">&#39;s&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">10</span><span class="p">))</span> <span class="o">%</span> <span class="n">limits</span>
+
+<span class="k">def</span> <span class="nf">model_probability</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span></div>
+<div class="viewcode-block" id="model_probability"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.model_probability">[docs]</a>	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Calculate the model probability.</span>
+<span class="sd">	</span>
+<span class="sd">	@param show: If true, print_model_probability is called</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">calibration</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;calibration_results&#39;</span><span class="p">)</span>
+	<span class="n">nchains</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">calibration</span><span class="p">)</span>
+	<span class="n">beta</span> <span class="o">=</span> <span class="n">calibration</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span>
+
+	<span class="n">previous_beta</span> <span class="o">=</span> <span class="mf">0.</span>
+	<span class="n">logprob</span> <span class="o">=</span> <span class="mf">0.</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nchains</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+		<span class="n">f</span> <span class="o">=</span> <span class="s">&#39;prob-chain</span><span class="si">%d</span><span class="s">.dump&#39;</span> <span class="o">%</span> <span class="n">i</span>
+		<span class="n">progress</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+		<span class="n">value</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">/</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+		<span class="n">logprob</span> <span class="o">=</span> <span class="n">logprob</span> <span class="o">+</span> <span class="n">value</span> <span class="o">*</span> <span class="p">(</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">previous_beta</span><span class="p">)</span>
+		<span class="n">previous_beta</span> <span class="o">=</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+	
+	<span class="k">if</span> <span class="n">show</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+		<span class="n">print_model_probability</span><span class="p">(</span><span class="n">logprob</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">logprob</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../pyapemost.html" >pyapemost</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Johannes Buchner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
