@@ -77,6 +77,7 @@ def set_function(LogLikelihood, Prior):
 	@param Prior: Log of the Prior function
 	"""
 	lib.set_function(callback_type(LogLikelihood), callback_type(Prior))
+	
 
 calibrate_first_chain = lib.calibrate_first
 """
