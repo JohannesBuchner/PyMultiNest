@@ -22,7 +22,7 @@
     <script type="text/javascript" src="../../static/underscore.js"></script>
     <script type="text/javascript" src="../../static/doctools.js"></script>
     <link rel="top" title="pymultinest v0.1 documentation" href="../../index.html" />
-    <link rel="up" title="pyapemost" href="../pyapemost.html" /> 
+    <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -35,8 +35,7 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../pyapemost.html" accesskey="U">pyapemost</a> &raquo;</li> 
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -46,14 +45,20 @@
           <div class="body">
             
   <h1>Source code for pyapemost.analyse</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Module for analysing the output of APEMoST</span>
+
+<span class="sd">The output files are in an easy-to-process format, so</span>
+<span class="sd">there is no requirement to use a specific set of tools.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">scipy</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="k">def</span> <span class="nf">create_histogram</span><span class="p">(</span><span class="n">parameter_name</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">writeFile</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-<div class="viewcode-block" id="create_histogram"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.create_histogram">[docs]</a>	<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="create_histogram"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.create_histogram">[docs]</a><span class="k">def</span> <span class="nf">create_histogram</span><span class="p">(</span><span class="n">parameter_name</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">writeFile</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Returns a histogram and some statistics about this parameter.</span>
 <span class="sd">		</span>
 <span class="sd">	@param writeFile: if true, write the histogram to paramname.histogram</span>
@@ -74,17 +79,17 @@
 	<span class="k">if</span> <span class="n">writeFile</span><span class="p">:</span>
 		<span class="n">scipy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">.histogram&#39;</span> <span class="o">%</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">histwithborders</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
 	<span class="k">return</span> <span class="n">histwithborders</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">statistics</span>
-
-<span class="k">def</span> <span class="nf">create_histograms</span><span class="p">(</span><span class="n">nbins</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">writeFile</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span></div>
-<div class="viewcode-block" id="create_histograms"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.create_histograms">[docs]</a>	<span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="create_histograms"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.create_histograms">[docs]</a><span class="k">def</span> <span class="nf">create_histograms</span><span class="p">(</span><span class="n">nbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">writeFile</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Runs create_histogram for all parameters and returns</span>
 <span class="sd">	a dictionary of the results</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="n">paramnames</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;params&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;S&#39;</span><span class="p">)[:,</span><span class="mi">3</span><span class="p">]</span>
 	<span class="k">return</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">p</span><span class="p">,</span> <span class="n">create_histogram</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span> <span class="n">writeFile</span><span class="o">=</span><span class="n">writeFile</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paramnames</span><span class="p">])</span>
-
-<span class="k">def</span> <span class="nf">print_model_probability</span><span class="p">(</span><span class="n">logprob</span><span class="p">):</span></div>
-<div class="viewcode-block" id="print_model_probability"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.print_model_probability">[docs]</a>	<span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="print_model_probability"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.print_model_probability">[docs]</a><span class="k">def</span> <span class="nf">print_model_probability</span><span class="p">(</span><span class="n">logprob</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Gives a nice overview of the model probability, allowing</span>
 <span class="sd">	the practitioner to compare this model&#39;s probability to others</span>
 <span class="sd">	&quot;&quot;&quot;</span>
@@ -117,9 +122,9 @@
 
 <span class="s">	be careful.</span>
 <span class="s">	&quot;&quot;&quot;</span> <span class="o">%</span> <span class="nb">tuple</span><span class="p">([</span><span class="s">&#39;s&#39;</span><span class="p">]</span><span class="o">*</span><span class="mi">10</span><span class="p">))</span> <span class="o">%</span> <span class="n">limits</span>
-
-<span class="k">def</span> <span class="nf">model_probability</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span></div>
-<div class="viewcode-block" id="model_probability"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.model_probability">[docs]</a>	<span class="sd">&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="model_probability"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.model_probability">[docs]</a><span class="k">def</span> <span class="nf">model_probability</span><span class="p">(</span><span class="n">show</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Calculate the model probability.</span>
 <span class="sd">	</span>
 <span class="sd">	@param show: If true, print_model_probability is called</span>
@@ -132,7 +137,6 @@
 	<span class="n">logprob</span> <span class="o">=</span> <span class="mf">0.</span>
 	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nchains</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
 		<span class="n">f</span> <span class="o">=</span> <span class="s">&#39;prob-chain</span><span class="si">%d</span><span class="s">.dump&#39;</span> <span class="o">%</span> <span class="n">i</span>
-		<span class="n">progress</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 		<span class="n">value</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">/</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 		<span class="n">logprob</span> <span class="o">=</span> <span class="n">logprob</span> <span class="o">+</span> <span class="n">value</span> <span class="o">*</span> <span class="p">(</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">previous_beta</span><span class="p">)</span>
 		<span class="n">previous_beta</span> <span class="o">=</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -174,8 +178,7 @@
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../pyapemost.html" >pyapemost</a> &raquo;</li> 
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
