@@ -1,0 +1,173 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pymultinest.watch &mdash; pymultinest v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pymultinest v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="pymultinest" href="../pymultinest.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../pymultinest.html" accesskey="U">pymultinest</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pymultinest.watch</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">threading</span>
+
+<div class="viewcode-block" id="ProgressWatcher"><a class="viewcode-back" href="../../pymultinest_watch.html#pymultinest.watch.ProgressWatcher">[docs]</a><span class="k">class</span> <span class="nc">ProgressWatcher</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Abstract class for watching the progress of MultiNest.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_params</span><span class="p">,</span> <span class="n">interval_ms</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s">&quot;chains/1-&quot;</span><span class="p">):</span>
+		<span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">n_params</span> <span class="o">=</span> <span class="n">n_params</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="n">outputfiles_basename</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">interval_ms</span> <span class="o">=</span> <span class="n">interval_ms</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		This file contains the current set of live points. It has nPar+2 </span>
+<span class="sd">		columns. The first nPar columns are the ndim</span>
+<span class="sd">		parameter values along with the (nPar-ndim)  additional </span>
+<span class="sd">		parameters that are being passed by the likelihood</span>
+<span class="sd">		routine for MultiNest to save along with the ndim parameters. </span>
+<span class="sd">		The nPar+1 column is the log-likelihood value &amp;</span>
+<span class="sd">		the last column is the node no. (used for clustering).</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">live</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span> <span class="p">,</span> <span class="s">&quot;phys_live.points&quot;</span><span class="p">)</span>
+		<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		This file contains the set of rejected points. It has nPar+3 </span>
+<span class="sd">		columns. The first nPar columns are the ndim</span>
+<span class="sd">		parameter values along with the (nPar-ndim)  additional </span>
+<span class="sd">		parameters that are being passed by the likelihood</span>
+<span class="sd">		routine for MultiNest to save along with the ndim parameters. </span>
+<span class="sd">		The nPar+1 column is the log-likelihood value,</span>
+<span class="sd">		nPar+2 column is the log(prior mass) &amp; the last column  is the </span>
+<span class="sd">		node no. (used for clustering).</span>
+<span class="sd">		&quot;&quot;&quot;</span>		
+		<span class="bp">self</span><span class="o">.</span><span class="n">rejected</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span> <span class="p">,</span> <span class="s">&quot;ev.dat&quot;</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="bp">True</span>
+	
+	<span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="ProgressPrinter"><a class="viewcode-back" href="../../pymultinest_watch.html#pymultinest.watch.ProgressPrinter">[docs]</a><span class="k">class</span> <span class="nc">ProgressPrinter</span><span class="p">(</span><span class="n">ProgressWatcher</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Continuously writes out the number of live and rejected points. </span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="kn">import</span> <span class="nn">time</span>
+		<span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+			<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interval_ms</span> <span class="o">/</span> <span class="mf">1000.</span><span class="p">)</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+				<span class="k">break</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="k">print</span> <span class="s">&#39;rejected points: &#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rejected</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+				<span class="k">print</span> <span class="s">&#39;alive points: &#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">live</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">())</span>
+			<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+				<span class="k">print</span> <span class="n">e</span>
+</div>
+<div class="viewcode-block" id="ProgressPlotter"><a class="viewcode-back" href="../../pymultinest_watch.html#pymultinest.watch.ProgressPlotter">[docs]</a><span class="k">class</span> <span class="nc">ProgressPlotter</span><span class="p">(</span><span class="n">ProgressWatcher</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Continuously creates plots (pdfs) of the live points. </span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+	<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="kn">import</span> <span class="nn">time</span>
+		<span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+			<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interval_ms</span> <span class="o">/</span> <span class="mf">1000.</span><span class="p">)</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+				<span class="k">break</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_plot_live</span><span class="p">()</span>
+			<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+				<span class="k">print</span> <span class="n">e</span>
+	
+	<span class="k">def</span> <span class="nf">_plot_live</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plot</span>
+		<span class="kn">import</span> <span class="nn">numpy</span>
+		<span class="kn">import</span> <span class="nn">shutil</span>
+		<span class="n">x</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">live</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_params</span><span class="p">):</span>
+			<span class="n">plot</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_params</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+			<span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">[:,</span><span class="n">i</span><span class="p">],</span> <span class="n">x</span><span class="p">[:,</span><span class="bp">self</span><span class="o">.</span><span class="n">n_params</span><span class="p">],</span> <span class="s">&#39;.&#39;</span><span class="p">)</span>
+		<span class="n">f</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.pdf&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">live</span>
+		<span class="n">ftmp</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.t.pdf&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">live</span>
+		<span class="n">plot</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">ftmp</span><span class="p">)</span>
+		<span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">ftmp</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../pymultinest.html" >pymultinest</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Johannes Buchner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

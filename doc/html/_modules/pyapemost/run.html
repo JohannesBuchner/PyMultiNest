@@ -1,0 +1,198 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyapemost.run &mdash; pymultinest v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pymultinest v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pyapemost.run</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Access module for the MCMC sampler APEMoST.</span>
+
+<span class="sd">N.B. The invocation of APEMoST is not side-effect-free. </span>
+
+<span class="sd">You need to provide the usual &quot;data&quot; and &quot;params&quot; file</span>
+<span class="sd">in the launch directory. See the APEMoST manual </span>
+<span class="sd">http://apemost.sf.net/</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">lib</span> <span class="o">=</span> <span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="s">&#39;libapemost.so&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">ctypesGsl</span> <span class="kn">as</span> <span class="nn">gsl</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	The current state of the Markov Chain. Foremost, you need to</span>
+<span class="sd">	access params using ctypesGsl.vector functions.</span>
+<span class="sd">	Secondly, data contains the file &quot;data&quot; read in as a matrix.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="k">class</span> <span class="nc">MCMC</span><span class="p">(</span><span class="n">Structure</span><span class="p">):</span>
+	<span class="n">_fields_</span> <span class="o">=</span> <span class="p">[</span>
+		<span class="p">(</span><span class="s">&#39;n_params&#39;</span><span class="p">,</span> <span class="n">c_uint</span><span class="p">),</span>
+		<span class="p">(</span><span class="s">&#39;accept&#39;</span><span class="p">,</span> <span class="n">c_ulong</span><span class="p">),</span>
+		<span class="p">(</span><span class="s">&#39;reject&#39;</span><span class="p">,</span> <span class="n">c_ulong</span><span class="p">),</span>
+		<span class="p">(</span><span class="s">&#39;probability&#39;</span><span class="p">,</span> <span class="n">c_double</span><span class="p">),</span>
+		<span class="p">(</span><span class="s">&#39;prior&#39;</span><span class="p">,</span> <span class="n">c_double</span><span class="p">),</span>
+		<span class="p">(</span><span class="s">&#39;probability_best&#39;</span><span class="p">,</span> <span class="n">c_double</span><span class="p">),</span>
+		<span class="p">(</span><span class="s">&#39;rng&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">gsl</span><span class="o">.</span><span class="n">gsl_rng</span><span class="p">)),</span>
+		<span class="p">(</span><span class="s">&#39;params&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">gsl</span><span class="o">.</span><span class="n">gsl_vector</span><span class="p">)),</span>
+		<span class="p">(</span><span class="s">&#39;params_best&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">gsl</span><span class="o">.</span><span class="n">gsl_vector</span><span class="p">)),</span>
+		<span class="p">(</span><span class="s">&#39;files&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_void_p</span><span class="p">)),</span>
+		<span class="p">(</span><span class="s">&#39;parameter_names&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_char_p</span><span class="p">)),</span>
+		<span class="p">(</span><span class="s">&#39;accept&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_ulong</span><span class="p">)),</span>
+		<span class="p">(</span><span class="s">&#39;reject&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_ulong</span><span class="p">)),</span>
+		<span class="p">(</span><span class="s">&#39;params_stepwidth&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">gsl</span><span class="o">.</span><span class="n">gsl_vector</span><span class="p">)),</span>
+		<span class="p">(</span><span class="s">&#39;params_min&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">gsl</span><span class="o">.</span><span class="n">gsl_vector</span><span class="p">)),</span>
+		<span class="p">(</span><span class="s">&#39;params_max&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">gsl</span><span class="o">.</span><span class="n">gsl_vector</span><span class="p">)),</span>
+		<span class="p">(</span><span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">gsl</span><span class="o">.</span><span class="n">gsl_matrix</span><span class="p">)),</span>
+		<span class="p">(</span><span class="s">&#39;n_iterations&#39;</span><span class="p">,</span> <span class="n">c_ulong</span><span class="p">),</span>
+		<span class="p">(</span><span class="s">&#39;extra_data&#39;</span><span class="p">,</span> <span class="n">c_void_p</span><span class="p">),</span>
+	<span class="p">]</span>
+	
+	<span class="k">def</span> <span class="nf">get_params</span><span class="p">():</span>
+		<span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">n_params</span><span class="p">))</span>
+
+
+<span class="n">callback_type</span> <span class="o">=</span> <span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_double</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">MCMC</span><span class="p">),</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">gsl</span><span class="o">.</span><span class="n">gsl_vector</span><span class="p">))</span>
+
+<div class="viewcode-block" id="set_function"><a class="viewcode-back" href="../../pyapemost.html#pyapemost.run.set_function">[docs]</a><span class="k">def</span> <span class="nf">set_function</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">,</span> <span class="n">Prior</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Initializes APEMoST with the two log-probability functions </span>
+<span class="sd">	Prior and LogLikelihood. They are called by APEMoST.</span>
+<span class="sd">	</span>
+<span class="sd">	Prior is given the current parameters and should return a</span>
+<span class="sd">	log</span>
+<span class="sd">	should transform the unit cube into the parameter cube. Here</span>
+<span class="sd">	is an example for a uniform prior::</span>
+<span class="sd">	</span>
+<span class="sd">		def Prior(cube, ndim, nparams):</span>
+<span class="sd">			for i in range(ndim):</span>
+<span class="sd">				cube[i] = cube[i] * 10 * math.pi</span>
+<span class="sd">	</span>
+<span class="sd">	The LogLikelihood function gets this parameter cube and should</span>
+<span class="sd">	return the logarithm of the likelihood.</span>
+<span class="sd">	Here is the example for the eggbox problem::</span>
+<span class="sd">	</span>
+<span class="sd">		def Loglike(cube, ndim, nparams):</span>
+<span class="sd">			chi = 1.</span>
+<span class="sd">			</span>
+<span class="sd">			for i in range(ndim):</span>
+<span class="sd">				chi *= math.cos(cube[i] / 2.)</span>
+<span class="sd">			return math.pow(2. + chi, 5)</span>
+<span class="sd">	@param LogLikelihood: Log of the Likelihood function</span>
+<span class="sd">		(without Prior)</span>
+<span class="sd">	</span>
+<span class="sd">	@param Prior: Log of the Prior function</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">lib</span><span class="o">.</span><span class="n">set_function</span><span class="p">(</span><span class="n">callback_type</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">),</span> <span class="n">callback_type</span><span class="p">(</span><span class="n">Prior</span><span class="p">))</span>
+	
+</div>
+<span class="n">calibrate_first_chain</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">calibrate_first</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Calibrate the first chain</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="n">calibrate_other_chains</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">calibrate_rest</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Calibrate the other chains</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="calibrate"><a class="viewcode-back" href="../../pyapemost.html#pyapemost.run.calibrate">[docs]</a><span class="k">def</span> <span class="nf">calibrate</span><span class="p">():</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Calibrate all chains</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">calibrate_first_chain</span><span class="p">()</span>
+	<span class="n">calibrate_other_chains</span><span class="p">()</span>
+
+	</div>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../pyapemost.html#pyapemost.run.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">max_iterations</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">append</span> <span class="o">=</span> <span class="bp">True</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Run the MCMC sampler.</span>
+<span class="sd">	</span>
+<span class="sd">	@param max_iterations: stop after this many iterations.</span>
+<span class="sd">	if 0, run indefinitely (until SIGTERM received).</span>
+<span class="sd">	</span>
+<span class="sd">	@param append: Append to existing files if found?</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">lib</span><span class="o">.</span><span class="n">prepare_and_run_sampler</span><span class="p">(</span><span class="n">max_iterations</span><span class="p">,</span> <span class="n">append</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Johannes Buchner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
