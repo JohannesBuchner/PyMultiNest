@@ -1,4 +1,0 @@
-Running APEMoST
-=======================================
-.. automodule:: pyapemost
-   :members: run

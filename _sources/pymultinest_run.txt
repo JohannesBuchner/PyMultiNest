@@ -1,3 +1,0 @@
-Running MultiNest
-=======================================
-.. automethod:: pymultinest.run
