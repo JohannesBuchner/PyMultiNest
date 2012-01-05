@@ -99,7 +99,8 @@ def run(LogLikelihood,
 	
 	prior_type = CFUNCTYPE(c_void_p, POINTER(c_double), c_int, c_int)
 	loglike_type = CFUNCTYPE(c_double, POINTER(c_double), c_int, c_int)
-	
+	lib.set_function(prior_type(Prior), loglike_type(LogLikelihood))
+
 	lib.run(c_int(multimodal), c_int(const_efficiency_mode), 
 		c_int(n_live_points), c_double(evidence_tolerance), 
 		c_double(sampling_efficiency), c_int(n_dims), c_int(n_params),
@@ -107,5 +108,5 @@ def run(LogLikelihood,
 		c_int(n_iter_before_update), c_double(evidence_tolerance), 
 		outputfiles_basename, c_int(seed), wraps,
 		c_int(verbose), c_int(resume), 
-		c_int(context), prior_type(Prior), loglike_type(LogLikelihood))
+		c_int(context))
 
