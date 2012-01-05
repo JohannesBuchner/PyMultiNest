@@ -1,0 +1,186 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installing PyMultiNest and PyAPEMoST &mdash; pymultinest v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="pymultinest v0.1 documentation" href="index.html" />
+    <link rel="next" title="PyMultiNest" href="pymultinest.html" />
+    <link rel="prev" title="Welcome to pymultinest’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pymultinest.html" title="PyMultiNest"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to pymultinest’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">pymultinest v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installing-pymultinest-and-pyapemost">
+<h1>Installing PyMultiNest and PyAPEMoST<a class="headerlink" href="#installing-pymultinest-and-pyapemost" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installing-the-python-library">
+<h2>Installing the python library<a class="headerlink" href="#installing-the-python-library" title="Permalink to this headline">¶</a></h2>
+<p>Just run</p>
+<div class="highlight-python"><pre>$ python setup.py install</pre>
+</div>
+<p>or if you only want to install locally:</p>
+<div class="highlight-python"><pre>$ python setup.py install --user</pre>
+</div>
+</div>
+<div class="section" id="installing-the-bridge-to-multinest">
+<h2>Installing the bridge to MultiNest<a class="headerlink" href="#installing-the-bridge-to-multinest" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">build MultiNest in some directory $MULTINEST:</p>
+<div class="highlight-python"><pre>$ export MULTINEST=/my/multinest/directory
+
+$ cd $MULTINEST &amp;&amp; make libnest3.so</pre>
+</div>
+</li>
+<li><p class="first">go into multinest_bridge and build:</p>
+<div class="highlight-python"><pre>$ cd multinest_bridge &amp;&amp; make libcnest.so</pre>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="installing-the-bridge-to-apemost">
+<h2>Installing the bridge to APEMoST<a class="headerlink" href="#installing-the-bridge-to-apemost" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic" start="3">
+<li><p class="first">build APEMoST in some directory $APEMOST:</p>
+<div class="highlight-python"><pre>$ export APEMOST=/my/apemost/directory
+
+$ cd $APEMOST &amp;&amp; make libapemost.so</pre>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="running-some-code">
+<h2>Running some code<a class="headerlink" href="#running-some-code" title="Permalink to this headline">¶</a></h2>
+<p>PyMultiNest / PyAPEMoST have to be able to find the corresponding
+libraries. So put the three directories in the dynamic library load path:</p>
+<div class="highlight-python"><pre>$ export LD_LIBRARY_PATH=$MULTINEST:$PWD/multinest_bridge:$APEMOST</pre>
+</div>
+<p>Test importing the libraries:</p>
+<div class="highlight-python"><pre>$ python -c 'import pymultinest'
+$ python -c 'import pyapemost'</pre>
+</div>
+<ol class="arabic" start="5">
+<li><p class="first">go to some directory and run your stuff:</p>
+<div class="highlight-python"><pre>$ cd /tmp
+$ python $OLDPWD/pymultinest_demo.py
+$ python $OLDPWD/pyapemost_demo.py</pre>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="generating-the-documentation">
+<h2>Generating the documentation<a class="headerlink" href="#generating-the-documentation" title="Permalink to this headline">¶</a></h2>
+<p>Go into doc and run make:</p>
+<div class="highlight-python"><pre>$ cd doc &amp;&amp; make html</pre>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Installing PyMultiNest and PyAPEMoST</a><ul>
+<li><a class="reference internal" href="#installing-the-python-library">Installing the python library</a></li>
+<li><a class="reference internal" href="#installing-the-bridge-to-multinest">Installing the bridge to MultiNest</a></li>
+<li><a class="reference internal" href="#installing-the-bridge-to-apemost">Installing the bridge to APEMoST</a></li>
+<li><a class="reference internal" href="#running-some-code">Running some code</a></li>
+<li><a class="reference internal" href="#generating-the-documentation">Generating the documentation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to pymultinest&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pymultinest.html"
+                        title="next chapter">PyMultiNest</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/install.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pymultinest.html" title="PyMultiNest"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to pymultinest’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">pymultinest v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Johannes Buchner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>
