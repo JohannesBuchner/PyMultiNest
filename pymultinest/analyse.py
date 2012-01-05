@@ -4,6 +4,13 @@ from StringIO import StringIO
 import re
 
 class Analyzer(object):
+	"""
+		Class for accessing the output of MultiNest.
+		
+		After the run, this class provides a mean of reading the result
+		in a structured way.
+		
+	"""
 	def __init__(self, n_params, outputfiles_basename = "chains/1-"):
 		self.outputfiles_basename = outputfiles_basename
 		self.n_params = n_params
@@ -38,6 +45,9 @@ class Analyzer(object):
 		self.equal_weighted_file = "%spost_equal_weights.dat" % self.outputfiles_basename
 	
 	def get_data(self):
+		"""
+			fetches self.data_file
+		"""
 		return numpy.loadtxt(self.data_file)
 	
 	def _read_error_line(self, l):
@@ -62,6 +72,10 @@ class Analyzer(object):
 		return data
 
 	def get_stats(self):
+		"""
+			information about the modes found:
+			mean, sigma, maximum a posterior in each dimension
+		"""
 		lines = file(self.stats_file).readlines()
 		text = "".join(lines)
 		parts = text.split("\n\n\n")
@@ -98,14 +112,38 @@ import matplotlib.patches
 import matplotlib.cm as cm
 
 class PlotMarginal(object):
+	"""
+		This class can be used to 
+		plot marginal and conditional likelihoods.
+		
+		@param analyser: A Analyzer instance
+	"""
 	def __init__(self, analyser):
 		self.analyser = analyser
 
-	def plot_conditional(self, dim1, dim2, 
+	def plot_conditional(self, dim1, dim2 = None, 
 		with_ellipses = True, with_points = True,
 		only_interpolate = False, use_log_values = False,
 		grid_points = 40,
 	):
+		"""
+			Generate a conditional/marginal probability plot.
+			 (marginalize all but two/one dimensions).
+		
+			@param dim1: first dimension to use
+			@param dim2: second dimension to use (set to None for marginal plot)
+		
+			@param with_ellipses: Show ellipses for the resulting modes
+		
+			@param with_points: Show the sampled points in the plot
+		
+			@param only_interpolate: Use a interpolation of the points 
+				instead of the points.
+		
+			@param use_log_values: Log-plot
+		
+			@param grid_points: how many bins the plot shall have
+		"""
 		data = self.analyser.get_data()
 		stats = self.analyser.get_stats()
 		n_params = self.analyser.n_params
@@ -220,6 +258,10 @@ class PlotMarginal(object):
 		
 	def plot_modes_marginal(self, dim1, cumulative = False, grid_points = 200, 
 		with_ellipses = True, with_points = True):
+		"""
+			generate a marginal probability plot, visualizing the calculated
+			modes.
+		"""
 		
 		data = self.analyser.get_data()
 		stats = self.analyser.get_stats()
@@ -303,7 +345,6 @@ class PlotMarginal(object):
 
 		
 
-
 	"""
 	create n-dimensional interpolation using scipy.interpolate.griddata
 	
@@ -317,8 +358,11 @@ class PlotMarginal(object):
 	
 	"""
 
+	"""
+	marginal is the same as conditional, call it with dim2 = None for the 
+	marginal behaviour.
+	"""
 	plot_marginal = plot_conditional
 
-	
 	
 

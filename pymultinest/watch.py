@@ -2,7 +2,7 @@ import threading
 
 class ProgressWatcher(threading.Thread):
 	"""
-		Watches the progress of MultiNest.
+		Abstract class for watching the progress of MultiNest.
 	"""
 	def __init__(self, n_params, interval_ms = 200, outputfiles_basename = "chains/1-"):
 		threading.Thread.__init__(self)
@@ -35,6 +35,10 @@ class ProgressWatcher(threading.Thread):
 	def stop(self):
 		self.running = False
 
+class ProgressPrinter(ProgressWatcher):
+	"""
+		Continuously writes out the number of live and rejected points. 
+	"""
 	def run(self):
 		import time
 		while self.running:
@@ -43,8 +47,23 @@ class ProgressWatcher(threading.Thread):
 				break
 			try:
 				print 'rejected points: ', len(file(self.rejected, 'r').readlines())
-				self._plot_live()
 				print 'alive points: ', len(file(self.live, 'r').readlines())
+			except Exception as e:
+				print e
+
+class ProgressPlotter(ProgressWatcher):
+	"""
+		Continuously creates plots (pdfs) of the live points. 
+	"""
+	
+	def run(self):
+		import time
+		while self.running:
+			time.sleep(self.interval_ms / 1000.)
+			if not self.running:
+				break
+			try:
+				self._plot_live()
 			except Exception as e:
 				print e
 	
@@ -60,6 +79,4 @@ class ProgressWatcher(threading.Thread):
 		ftmp = "%s.t.pdf" % self.live
 		plot.savefig(ftmp)
 		shutil.move(ftmp, f)
-		print "saved to %s" % f
-	
 
