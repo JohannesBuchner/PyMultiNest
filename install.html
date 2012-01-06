@@ -33,9 +33,6 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="pymultinest.html" title="PyMultiNest"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -85,8 +82,11 @@ If you only want to use one of them, skip steps according.</p>
 $ cd $MULTINEST &amp;&amp; make libnest3.so</pre>
 </div>
 </li>
-<li><p class="first">go into multinest_bridge and build:</p>
-<div class="highlight-python"><pre>$ cd multinest_bridge &amp;&amp; make libcnest.so</pre>
+</ol>
+<p>libnest3.so should be a dynamic library (compiled with -fPIC, linked with -shared -llapack -lpthread).</p>
+<ol class="arabic" start="2">
+<li><p class="first">build the multinest_bridge:</p>
+<div class="highlight-python"><pre>$ make -C multinest_bridge libcnest.so</pre>
 </div>
 </li>
 </ol>
@@ -182,9 +182,6 @@ $ python $OLDPWD/pyapemost_demo.py</pre>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
         <li class="right" >
           <a href="pymultinest.html" title="PyMultiNest"
              >next</a> |</li>
