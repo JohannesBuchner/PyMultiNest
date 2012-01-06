@@ -1,4 +1,4 @@
-Watching the progress of APEMoST
+Watching the progress
 =======================================
 .. automodule:: pyapemost.watch
       :members:

@@ -6,7 +6,12 @@ APEMoST (Automated Parameter Estimation and Model Selection Toolkit)
 is a free, fast MCMC engine that allows the user to apply 
 Bayesian inference for parameter estimation and model selection.
 
+Nota Bene: The invocation of APEMoST is not side-effect-free: 
+You need to provide the usual "data" and "params" file
+in the launch directory. See the APEMoST manual http://apemost.sf.net/
 
+To change the behavior of the MCMC algorithm, recompile the APEMoST library with the 
+relevant flags  (see the `API documentation <http://apemost.sourceforge.net/doc/api/html/>`_).
 
 """
 

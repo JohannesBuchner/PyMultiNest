@@ -1,6 +1,11 @@
 Installing PyMultiNest and PyAPEMoST
 =================================================
 
+.. contents::
+
+To use PyMultiNest or PyAPEMoST, follow these installation steps.
+If you only want to use one of them, skip steps according.
+
 Installing the python library
 ------------------------------------
 
@@ -47,11 +52,13 @@ Test importing the libraries::
      $ python -c 'import pymultinest'
      $ python -c 'import pyapemost'
 
-5. go to some directory and run your stuff::
+5. go to some directory try it out with the demo::
 
      $ cd /tmp
      $ python $OLDPWD/pymultinest_demo.py
      $ python $OLDPWD/pyapemost_demo.py
+
+Congratulations! You are now ready to run your own code.
 
 Generating the documentation
 ----------------------------

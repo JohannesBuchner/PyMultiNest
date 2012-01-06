@@ -3,14 +3,15 @@ PyMultiNest is a module to use the MultiNest sampling engine.
 
 To import this module, you must have 
 
-1. libcnest.so (multinest_bridge) compiled and in your LD_LIBRARY_PATH
+1. *libcnest.so* (multinest_bridge) compiled and in your LD_LIBRARY_PATH
+  Otherwise you will get an error like this::
 
-    Otherwise you will get an error like this:
     > OSError: libcnest.so: cannot open shared object file: No such file or directory
 
-2. libnest3.so (MultiNest) compiled and in your LD_LIBRARY_PATH
+2. *libnest3.so* (MultiNest) compiled and in your LD_LIBRARY_PATH
 
-    Otherwise you will get an error like this:
+  Otherwise you will get an error like this::
+
     > OSError: libnest3.so: cannot open shared object file: No such file or directory
 
 Common parameters:

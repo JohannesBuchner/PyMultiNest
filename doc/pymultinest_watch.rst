@@ -1,4 +1,4 @@
-Watching the progress of MultiNest
+Watching the progress
 =======================================
 .. automodule:: pymultinest.watch
       :members:

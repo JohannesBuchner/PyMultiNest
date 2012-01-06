@@ -1,13 +1,3 @@
-"""
-Access module for the MCMC sampler APEMoST.
-
-N.B. The invocation of APEMoST is not side-effect-free. 
-
-You need to provide the usual "data" and "params" file
-in the launch directory. See the APEMoST manual 
-http://apemost.sf.net/
-
-"""
 
 from ctypes import *
 lib = cdll.LoadLibrary('libapemost.so')
