@@ -54,10 +54,14 @@ Test importing the libraries::
      $ python -c 'import pymultinest'
      $ python -c 'import pyapemost'
 
-5. go to some directory try it out with the demo::
+5. Try out the demo programs distributed in the package. They produce a lot of output, so lets create a temporary directory::
 
-     $ cd /tmp
+     $ mkdir /tmp/demo_output
+     $ cd /tmp/demo_output
+     
+     $ mkdir chains/
      $ python $OLDPWD/pymultinest_demo.py
+     
      $ python $OLDPWD/pyapemost_demo.py
 
 Congratulations! You are now ready to run your own code.
