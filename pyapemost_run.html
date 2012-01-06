@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Watching the progress &mdash; pymultinest v0.1 documentation</title>
+    <title>Running the sampler &mdash; pymultinest v0.1 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,7 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pymultinest v0.1 documentation" href="index.html" />
     <link rel="up" title="PyAPEMoST" href="pyapemost.html" />
-    <link rel="prev" title="Analysing the output" href="pyapemost_analyse.html" /> 
+    <link rel="next" title="Analysing the output" href="pyapemost_analyse.html" />
+    <link rel="prev" title="PyAPEMoST" href="pyapemost.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,6 +38,9 @@
              >modules</a> |</li>
         <li class="right" >
           <a href="pyapemost_analyse.html" title="Analysing the output"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pyapemost.html" title="PyAPEMoST"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">pymultinest v0.1 documentation</a> &raquo;</li>
           <li><a href="pyapemost.html" accesskey="U">PyAPEMoST</a> &raquo;</li> 
@@ -48,14 +52,15 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-pyapemost.watch">
-<span id="watching-the-progress"></span><h1>Watching the progress<a class="headerlink" href="#module-pyapemost.watch" title="Permalink to this headline">¶</a></h1>
-<p>Module for watching the progress of APEMoST</p>
-<dl class="class">
-<dt id="pyapemost.watch.ProgressWatcher">
-<em class="property">class </em><tt class="descclassname">pyapemost.watch.</tt><tt class="descname">ProgressWatcher</tt><big>(</big><em>n_params</em>, <em>interval_ms=200</em>, <em>outputfiles_basename='.'</em><big>)</big><a class="reference internal" href="_modules/pyapemost/watch.html#ProgressWatcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyapemost.watch.ProgressWatcher" title="Permalink to this definition">¶</a></dt>
-<dd><p>Watches the progress of APEMost.</p>
-<p>Not implemented yet.</p>
+  <div class="section" id="module-pyapemost.run">
+<span id="running-the-sampler"></span><h1>Running the sampler<a class="headerlink" href="#module-pyapemost.run" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="pyapemost.run.run">
+<tt class="descclassname">pyapemost.run.</tt><tt class="descname">run</tt><big>(</big><em>max_iterations=0</em>, <em>append=True</em><big>)</big><a class="reference internal" href="_modules/pyapemost/run.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyapemost.run.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the MCMC sampler.</p>
+<p>&#64;param max_iterations: stop after this many iterations.
+if 0, run indefinitely (until SIGTERM received).</p>
+<p>&#64;param append: Append to existing files if found?</p>
 </dd></dl>
 
 </div>
@@ -67,11 +72,14 @@
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
+  <p class="topless"><a href="pyapemost.html"
+                        title="previous chapter">PyAPEMoST</a></p>
+  <h4>Next topic</h4>
   <p class="topless"><a href="pyapemost_analyse.html"
-                        title="previous chapter">Analysing the output</a></p>
+                        title="next chapter">Analysing the output</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/pyapemost_watch.txt"
+    <li><a href="_sources/pyapemost_run.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -102,6 +110,9 @@
              >modules</a> |</li>
         <li class="right" >
           <a href="pyapemost_analyse.html" title="Analysing the output"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pyapemost.html" title="PyAPEMoST"
              >previous</a> |</li>
         <li><a href="index.html">pymultinest v0.1 documentation</a> &raquo;</li>
           <li><a href="pyapemost.html" >PyAPEMoST</a> &raquo;</li> 

@@ -1,0 +1,202 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pymultinest.run &mdash; pymultinest v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="pymultinest v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="pymultinest" href="../pymultinest.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../pymultinest.html" accesskey="U">pymultinest</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pymultinest.run</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">cdll</span>
+<span class="n">lib</span> <span class="o">=</span> <span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="s">&#39;libcnest.so&#39;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">,</span>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../pymultinest_run.html#pymultinest.run.run">[docs]</a>	<span class="n">Prior</span><span class="p">,</span>
+	<span class="n">n_dims</span><span class="p">,</span> 
+	<span class="n">n_params</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> 
+	<span class="n">n_clustering_params</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">wrapped_params</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> 
+	<span class="n">multimodal</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">const_efficiency_mode</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="n">n_live_points</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+	<span class="n">evidence_tolerance</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">sampling_efficiency</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> 
+	<span class="n">n_iter_before_update</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">null_log_evidence</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e90</span><span class="p">,</span>
+	<span class="n">max_modes</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+	<span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s">&quot;chains/1-&quot;</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+	<span class="n">resume</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">context</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Runs MultiNest</span>
+<span class="sd">	</span>
+<span class="sd">	The most important parameters are the two log-probability functions Prior </span>
+<span class="sd">	and LogLikelihood. They are called by MultiNest.</span>
+<span class="sd">	</span>
+<span class="sd">	Prior should transform the unit cube into the parameter cube. Here</span>
+<span class="sd">	is an example for a uniform prior::</span>
+<span class="sd">	</span>
+<span class="sd">		def Prior(cube, ndim, nparams):</span>
+<span class="sd">			for i in range(ndim):</span>
+<span class="sd">				cube[i] = cube[i] * 10 * math.pi</span>
+<span class="sd">	</span>
+<span class="sd">	The LogLikelihood function gets this parameter cube and should</span>
+<span class="sd">	return the logarithm of the likelihood.</span>
+<span class="sd">	Here is the example for the eggbox problem::</span>
+<span class="sd">	</span>
+<span class="sd">		def Loglike(cube, ndim, nparams):</span>
+<span class="sd">			chi = 1.</span>
+<span class="sd">			</span>
+<span class="sd">			for i in range(ndim):</span>
+<span class="sd">				chi *= math.cos(cube[i] / 2.)</span>
+<span class="sd">			return math.pow(2. + chi, 5)</span>
+<span class="sd">	</span>
+<span class="sd">	Some of the parameters are explained below. Otherwise consult the </span>
+<span class="sd">	MultiNest documentation.</span>
+<span class="sd">	</span>
+<span class="sd">	@param n_params: </span>
+<span class="sd">		Total no. of parameters, should be equal to ndims in most cases </span>
+<span class="sd">		but if you need to store some additional</span>
+<span class="sd">		parameters with the actual parameters then you need to pass </span>
+<span class="sd">		them through the likelihood routine.</span>
+
+<span class="sd">	@param sampling_efficiency:</span>
+<span class="sd">		defines the sampling efficiency. 0.8 and 0.3 are recommended </span>
+<span class="sd">		for parameter estimation &amp; evidence evalutation</span>
+<span class="sd">		respectively.</span>
+<span class="sd">		use &#39;parameter&#39; or &#39;model&#39; to select the respective default </span>
+<span class="sd">		values</span>
+
+
+<span class="sd">	@param evidence_tolerance:</span>
+<span class="sd">		A value of 0.5 should give good enough accuracy.</span>
+
+<span class="sd">	@param n_clustering_params:</span>
+<span class="sd">		If mmodal is T, MultiNest will attempt to separate out the </span>
+<span class="sd">		modes. Mode separation is done through a clustering</span>
+<span class="sd">		algorithm. Mode separation can be done on all the parameters </span>
+<span class="sd">		(in which case nCdims should be set to ndims) &amp; it</span>
+<span class="sd">		can also be done on a subset of parameters (in which case </span>
+<span class="sd">		nCdims &lt; ndims) which might be advantageous as</span>
+<span class="sd">		clustering is less accurate as the dimensionality increases. </span>
+<span class="sd">		If nCdims &lt; ndims then mode separation is done on</span>
+<span class="sd">		the first nCdims parameters.</span>
+
+<span class="sd">	@param null_log_evidence:</span>
+<span class="sd">		If mmodal is T, MultiNest can find multiple modes &amp; also specify </span>
+<span class="sd">		which samples belong to which mode. It might be</span>
+<span class="sd">		desirable to have separate samples &amp; mode statistics for modes </span>
+<span class="sd">		with local log-evidence value greater than a</span>
+<span class="sd">		particular value in which case nullZ should be set to that </span>
+<span class="sd">		value. If there isn&#39;t any particulrly interesting</span>
+<span class="sd">		nullZ value, then nullZ should be set to a very large negative </span>
+<span class="sd">		number (e.g. -1.d90).</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="k">if</span> <span class="n">n_params</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+		<span class="n">n_params</span> <span class="o">=</span> <span class="n">n_dims</span>
+	<span class="k">if</span> <span class="n">n_clustering_params</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+		<span class="n">n_clustering_params</span> <span class="o">=</span> <span class="n">n_params</span>
+	<span class="k">if</span> <span class="n">wrapped_params</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+		<span class="n">wrapped_params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_params</span>
+	
+	<span class="n">WrappedType</span> <span class="o">=</span> <span class="n">c_int</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">wrapped_params</span><span class="p">)</span>
+	<span class="n">wraps</span> <span class="o">=</span> <span class="n">WrappedType</span><span class="p">(</span><span class="o">*</span><span class="n">wrapped_params</span><span class="p">)</span>
+	
+	<span class="k">if</span> <span class="n">sampling_efficiency</span> <span class="o">==</span> <span class="s">&#39;parameter&#39;</span><span class="p">:</span>
+		<span class="n">sampling_efficiency</span> <span class="o">=</span> <span class="mf">0.8</span>
+	<span class="k">if</span> <span class="n">sampling_efficiency</span> <span class="o">==</span> <span class="s">&#39;model&#39;</span><span class="p">:</span>
+		<span class="n">sampling_efficiency</span> <span class="o">=</span> <span class="mf">0.3</span>
+	
+	
+	<span class="n">prior_type</span> <span class="o">=</span> <span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_void_p</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">),</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">)</span>
+	<span class="n">loglike_type</span> <span class="o">=</span> <span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_double</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">),</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">)</span>
+	<span class="n">lib</span><span class="o">.</span><span class="n">set_function</span><span class="p">(</span><span class="n">prior_type</span><span class="p">(</span><span class="n">Prior</span><span class="p">),</span> <span class="n">loglike_type</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">))</span>
+
+	<span class="n">lib</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">c_int</span><span class="p">(</span><span class="n">multimodal</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">const_efficiency_mode</span><span class="p">),</span> 
+		<span class="n">c_int</span><span class="p">(</span><span class="n">n_live_points</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">evidence_tolerance</span><span class="p">),</span> 
+		<span class="n">c_double</span><span class="p">(</span><span class="n">sampling_efficiency</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">n_dims</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">n_params</span><span class="p">),</span>
+		<span class="n">c_int</span><span class="p">(</span><span class="n">n_clustering_params</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">max_modes</span><span class="p">),</span> 
+		<span class="n">c_int</span><span class="p">(</span><span class="n">n_iter_before_update</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">evidence_tolerance</span><span class="p">),</span> 
+		<span class="n">outputfiles_basename</span><span class="p">,</span> <span class="n">c_int</span><span class="p">(</span><span class="n">seed</span><span class="p">),</span> <span class="n">wraps</span><span class="p">,</span>
+		<span class="n">c_int</span><span class="p">(</span><span class="n">verbose</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">resume</span><span class="p">),</span> 
+		<span class="n">c_int</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../pymultinest.html" >pymultinest</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Johannes Buchner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

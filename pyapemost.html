@@ -22,8 +22,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pymultinest v0.1 documentation" href="index.html" />
-    <link rel="next" title="Analysing the output" href="pyapemost_analyse.html" />
-    <link rel="prev" title="Watching the progress of MultiNest" href="pymultinest_watch.html" /> 
+    <link rel="next" title="Running the sampler" href="pyapemost_run.html" />
+    <link rel="prev" title="Watching the progress" href="pymultinest_watch.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,10 +36,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pyapemost_analyse.html" title="Analysing the output"
+          <a href="pyapemost_run.html" title="Running the sampler"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="pymultinest_watch.html" title="Watching the progress of MultiNest"
+          <a href="pymultinest_watch.html" title="Watching the progress"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">pymultinest v0.1 documentation</a> &raquo;</li> 
       </ul>
@@ -54,74 +54,25 @@
 <h1>PyAPEMoST<a class="headerlink" href="#pyapemost" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="pyapemost_run.html">Running the sampler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyapemost_analyse.html">Analysing the output</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pyapemost_watch.html">Watching the progress of APEMoST</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pyapemost_watch.html">Watching the progress</a></li>
 </ul>
 </div>
-<span class="target" id="module-pyapemost.run"></span><p>Access module for the MCMC sampler APEMoST.</p>
-<p>N.B. The invocation of APEMoST is not side-effect-free.</p>
-<p>You need to provide the usual &#8220;data&#8221; and &#8220;params&#8221; file
-in the launch directory. See the APEMoST manual 
-<a class="reference external" href="http://apemost.sf.net/">http://apemost.sf.net/</a></p>
-<dl class="function">
-<dt id="pyapemost.run.calibrate">
-<tt class="descclassname">pyapemost.run.</tt><tt class="descname">calibrate</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyapemost/run.html#calibrate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyapemost.run.calibrate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calibrate all chains</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="pyapemost.run.calibrate_first_chain">
-<tt class="descclassname">pyapemost.run.</tt><tt class="descname">calibrate_first_chain</tt><a class="headerlink" href="#pyapemost.run.calibrate_first_chain" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calibrate the first chain</p>
-</dd></dl>
-
-<dl class="data">
-<dt id="pyapemost.run.calibrate_other_chains">
-<tt class="descclassname">pyapemost.run.</tt><tt class="descname">calibrate_other_chains</tt><a class="headerlink" href="#pyapemost.run.calibrate_other_chains" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calibrate the other chains</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyapemost.run.run">
-<tt class="descclassname">pyapemost.run.</tt><tt class="descname">run</tt><big>(</big><em>max_iterations=0</em>, <em>append=True</em><big>)</big><a class="reference internal" href="_modules/pyapemost/run.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyapemost.run.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run the MCMC sampler.</p>
-<p>&#64;param max_iterations: stop after this many iterations.
-if 0, run indefinitely (until SIGTERM received).</p>
-<p>&#64;param append: Append to existing files if found?</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyapemost.run.set_function">
-<tt class="descclassname">pyapemost.run.</tt><tt class="descname">set_function</tt><big>(</big><em>LogLikelihood</em>, <em>Prior</em><big>)</big><a class="reference internal" href="_modules/pyapemost/run.html#set_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyapemost.run.set_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initializes APEMoST with the two log-probability functions 
-Prior and LogLikelihood. They are called by APEMoST.</p>
-<p>Prior is given the current parameters and should return a
-log
-should transform the unit cube into the parameter cube. Here
-is an example for a uniform prior:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">Prior</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
-                <span class="n">cube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
-</pre></div>
+<span class="target" id="module-pyapemost"></span><p>PyAPEMoST is a module for accessing the MCMC sampler APEMoST 
+(<a class="reference external" href="http://apemost.sf.net/">http://apemost.sf.net/</a>)</p>
+<p>APEMoST (Automated Parameter Estimation and Model Selection Toolkit)
+is a free, fast MCMC engine that allows the user to apply 
+Bayesian inference for parameter estimation and model selection.</p>
+<p>Nota Bene: The invocation of APEMoST is not side-effect-free: 
+You need to provide the usual &#8220;data&#8221; and &#8220;params&#8221; file
+in the launch directory. See the APEMoST manual <a class="reference external" href="http://apemost.sf.net/">http://apemost.sf.net/</a></p>
+<p>To change the behavior of the MCMC algorithm, recompile the APEMoST library with the 
+relevant flags  (see the <a class="reference external" href="http://apemost.sourceforge.net/doc/api/html/">API documentation</a>).</p>
+<div class="section" id="demo-program-for-pyapemost">
+<h2>Demo program for PyAPEMoST<a class="headerlink" href="#demo-program-for-pyapemost" title="Permalink to this headline">¶</a></h2>
+<p>Take a look at, and run <a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest/blob/master/pyapemost_demo.py">pyapemost_demo.py</a></p>
 </div>
-<p>The LogLikelihood function gets this parameter cube and should
-return the logarithm of the likelihood.
-Here is the example for the eggbox problem:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">Loglike</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">):</span>
-        <span class="n">chi</span> <span class="o">=</span> <span class="mf">1.</span>
-        
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
-                <span class="n">chi</span> <span class="o">*=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">cube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mf">2.</span> <span class="o">+</span> <span class="n">chi</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-</pre></div>
-</div>
-<dl class="docutils">
-<dt>&#64;param LogLikelihood: Log of the Likelihood function</dt>
-<dd>(without Prior)</dd>
-</dl>
-<p>&#64;param Prior: Log of the Prior function</p>
-</dd></dl>
-
 </div>
 
 
@@ -130,12 +81,20 @@ Here is the example for the eggbox problem:</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">PyAPEMoST</a><ul>
+<li><a class="reference internal" href="#demo-program-for-pyapemost">Demo program for PyAPEMoST</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="pymultinest_watch.html"
-                        title="previous chapter">Watching the progress of MultiNest</a></p>
+                        title="previous chapter">Watching the progress</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="pyapemost_analyse.html"
-                        title="next chapter">Analysing the output</a></p>
+  <p class="topless"><a href="pyapemost_run.html"
+                        title="next chapter">Running the sampler</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/pyapemost.txt"
@@ -168,10 +127,10 @@ Here is the example for the eggbox problem:</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pyapemost_analyse.html" title="Analysing the output"
+          <a href="pyapemost_run.html" title="Running the sampler"
              >next</a> |</li>
         <li class="right" >
-          <a href="pymultinest_watch.html" title="Watching the progress of MultiNest"
+          <a href="pymultinest_watch.html" title="Watching the progress"
              >previous</a> |</li>
         <li><a href="index.html">pymultinest v0.1 documentation</a> &raquo;</li> 
       </ul>

@@ -22,8 +22,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="pymultinest v0.1 documentation" href="index.html" />
-    <link rel="next" title="Analysing the output" href="pymultinest_analyse.html" />
-    <link rel="prev" title="Welcome to pymultinest’s documentation!" href="index.html" /> 
+    <link rel="next" title="Running the sampler" href="pymultinest_run.html" />
+    <link rel="prev" title="Installing PyMultiNest and PyAPEMoST" href="install.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,10 +36,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pymultinest_analyse.html" title="Analysing the output"
+          <a href="pymultinest_run.html" title="Running the sampler"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Welcome to pymultinest’s documentation!"
+          <a href="install.html" title="Installing PyMultiNest and PyAPEMoST"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">pymultinest v0.1 documentation</a> &raquo;</li> 
       </ul>
@@ -54,91 +54,36 @@
 <h1>PyMultiNest<a class="headerlink" href="#pymultinest" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="pymultinest_run.html">Running the sampler</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pymultinest_analyse.html">Analysing the output</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pymultinest_watch.html">Watching the progress of MultiNest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pymultinest_watch.html">Watching the progress</a></li>
 </ul>
 </div>
 <span class="target" id="module-pymultinest"></span><p>PyMultiNest is a module to use the MultiNest sampling engine.</p>
 <p>To import this module, you must have</p>
-<ol class="arabic">
-<li><p class="first">libcnest.so (multinest_bridge) compiled and in your LD_LIBRARY_PATH</p>
-<blockquote>
-<div><p>Otherwise you will get an error like this:
-&gt; OSError: libcnest.so: cannot open shared object file: No such file or directory</p>
-</div></blockquote>
-</li>
-<li><p class="first">libnest3.so (MultiNest) compiled and in your LD_LIBRARY_PATH</p>
-<blockquote>
-<div><p>Otherwise you will get an error like this:
-&gt; OSError: libnest3.so: cannot open shared object file: No such file or directory</p>
-</div></blockquote>
-</li>
+<ol class="arabic simple">
+<li><em>libcnest.so</em> (multinest_bridge) compiled and in your LD_LIBRARY_PATH</li>
 </ol>
+<blockquote>
+<div><p>Otherwise you will get an error like this:</p>
+<div class="highlight-python"><pre>&gt; OSError: libcnest.so: cannot open shared object file: No such file or directory</pre>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><em>libnest3.so</em> (MultiNest) compiled and in your LD_LIBRARY_PATH</li>
+</ol>
+<blockquote>
+<div><p>Otherwise you will get an error like this:</p>
+<div class="highlight-python"><pre>&gt; OSError: libnest3.so: cannot open shared object file: No such file or directory</pre>
+</div>
+</div></blockquote>
 <p>Common parameters:</p>
 <p>outputfiles_basename is the prefix used for the output files of MultiNest 
 (default chains/1-).</p>
-<dl class="function">
-<dt id="pymultinest.run">
-<tt class="descclassname">pymultinest.</tt><tt class="descname">run</tt><big>(</big><em>LogLikelihood</em>, <em>Prior</em>, <em>n_dims</em>, <em>n_params=None</em>, <em>n_clustering_params=None</em>, <em>wrapped_params=None</em>, <em>multimodal=True</em>, <em>const_efficiency_mode=False</em>, <em>n_live_points=1000</em>, <em>evidence_tolerance=0.5</em>, <em>sampling_efficiency=0.8</em>, <em>n_iter_before_update=100</em>, <em>null_log_evidence=-1e+90</em>, <em>max_modes=100</em>, <em>outputfiles_basename='chains/1-'</em>, <em>seed=-1</em>, <em>verbose=False</em>, <em>resume=True</em>, <em>context=0</em><big>)</big><a class="headerlink" href="#pymultinest.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs MultiNest</p>
-<p>The most important parameters are the two log-probability functions Prior 
-and LogLikelihood. They are called by MultiNest.</p>
-<p>Prior should transform the unit cube into the parameter cube. Here
-is an example for a uniform prior:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">Prior</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
-                <span class="n">cube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
-</pre></div>
+<div class="section" id="demo-program-for-pymultinest">
+<h2>Demo program for PyMultiNest<a class="headerlink" href="#demo-program-for-pymultinest" title="Permalink to this headline">¶</a></h2>
+<p>Take a look at, and run <a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo.py">pymultinest_demo.py</a></p>
 </div>
-<p>The LogLikelihood function gets this parameter cube and should
-return the logarithm of the likelihood.
-Here is the example for the eggbox problem:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">Loglike</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">):</span>
-        <span class="n">chi</span> <span class="o">=</span> <span class="mf">1.</span>
-        
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
-                <span class="n">chi</span> <span class="o">*=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">cube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mf">2.</span> <span class="o">+</span> <span class="n">chi</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Some of the parameters are explained below. Otherwise consult the 
-MultiNest documentation.</p>
-<dl class="docutils">
-<dt>&#64;param n_params: </dt>
-<dd>Total no. of parameters, should be equal to ndims in most cases 
-but if you need to store some additional
-parameters with the actual parameters then you need to pass 
-them through the likelihood routine.</dd>
-<dt>&#64;param sampling_efficiency:</dt>
-<dd>defines the sampling efficiency. 0.8 and 0.3 are recommended 
-for parameter estimation &amp; evidence evalutation
-respectively.
-use &#8216;parameter&#8217; or &#8216;model&#8217; to select the respective default 
-values</dd>
-<dt>&#64;param evidence_tolerance:</dt>
-<dd>A value of 0.5 should give good enough accuracy.</dd>
-<dt>&#64;param n_clustering_params:</dt>
-<dd>If mmodal is T, MultiNest will attempt to separate out the 
-modes. Mode separation is done through a clustering
-algorithm. Mode separation can be done on all the parameters 
-(in which case nCdims should be set to ndims) &amp; it
-can also be done on a subset of parameters (in which case 
-nCdims &lt; ndims) which might be advantageous as
-clustering is less accurate as the dimensionality increases. 
-If nCdims &lt; ndims then mode separation is done on
-the first nCdims parameters.</dd>
-<dt>&#64;param null_log_evidence:</dt>
-<dd>If mmodal is T, MultiNest can find multiple modes &amp; also specify 
-which samples belong to which mode. It might be
-desirable to have separate samples &amp; mode statistics for modes 
-with local log-evidence value greater than a
-particular value in which case nullZ should be set to that 
-value. If there isn&#8217;t any particulrly interesting
-nullZ value, then nullZ should be set to a very large negative 
-number (e.g. -1.d90).</dd>
-</dl>
-</dd></dl>
-
 </div>
 
 
@@ -147,12 +92,20 @@ number (e.g. -1.d90).</dd>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">PyMultiNest</a><ul>
+<li><a class="reference internal" href="#demo-program-for-pymultinest">Demo program for PyMultiNest</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">Welcome to pymultinest&#8217;s documentation!</a></p>
+  <p class="topless"><a href="install.html"
+                        title="previous chapter">Installing PyMultiNest and PyAPEMoST</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="pymultinest_analyse.html"
-                        title="next chapter">Analysing the output</a></p>
+  <p class="topless"><a href="pymultinest_run.html"
+                        title="next chapter">Running the sampler</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/pymultinest.txt"
@@ -185,10 +138,10 @@ number (e.g. -1.d90).</dd>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pymultinest_analyse.html" title="Analysing the output"
+          <a href="pymultinest_run.html" title="Running the sampler"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Welcome to pymultinest’s documentation!"
+          <a href="install.html" title="Installing PyMultiNest and PyAPEMoST"
              >previous</a> |</li>
         <li><a href="index.html">pymultinest v0.1 documentation</a> &raquo;</li> 
       </ul>
