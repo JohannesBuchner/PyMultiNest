@@ -21,14 +21,16 @@ Installing the bridge to MultiNest
 ------------------------------------
 
 1. build MultiNest in some directory $MULTINEST::
-  
+
      $ export MULTINEST=/my/multinest/directory
 
      $ cd $MULTINEST && make libnest3.so
 
-2. go into multinest_bridge and build::
+libnest3.so should be a dynamic library (compiled with -fPIC, linked with -shared -llapack -lpthread).
 
-     $ cd multinest_bridge && make libcnest.so
+2. build the multinest_bridge::
+
+     $ make -C multinest_bridge libcnest.so
 
 Installing the bridge to APEMoST
 ------------------------------------
