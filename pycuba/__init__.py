@@ -35,7 +35,7 @@ def Vegas(integrand, ndim, userdata=NULL,
   neval = c_int()
   fail = c_int()
   comp = c_int()
-  ARR = c_double * NCOMP
+  ARR = c_double * ncomp
   integral = ARR()
   error = ARR()
   prob  = ARR()
@@ -64,7 +64,7 @@ def Suave(integrand, ndim, nnew=1000, flatness=25., userdata=NULL,
   fail = c_int()
   comp = c_int()
   nregions = c_int()
-  ARR = c_double * NCOMP
+  ARR = c_double * ncomp
   integral = ARR()
   error = ARR()
   prob  = ARR()
@@ -96,7 +96,7 @@ def Divonne(integrand, ndim,
   fail = c_int()
   comp = c_int()
   nregions = c_int()
-  ARR = c_double * NCOMP
+  ARR = c_double * ncomp
   integral = ARR()
   error = ARR()
   prob  = ARR()
@@ -141,7 +141,7 @@ def Cuhre(integrand, ndim,
   fail = c_int()
   comp = c_int()
   nregions = c_int()
-  ARR = c_double * NCOMP
+  ARR = c_double * ncomp
   integral = ARR()
   error = ARR()
   prob  = ARR()
@@ -161,8 +161,7 @@ def Cuhre(integrand, ndim,
       'prob':prob[comp]
       } for comp in range(ncomp)])
 
-if __name__ == '__main__':
-  sq = lambda x: x**2
+def demo():
   import math
 
   def Integrand(ndim, xx, ncomp, ff, userdata):
@@ -223,7 +222,8 @@ if __name__ == '__main__':
   print_header('Cuhre')
   print_results('Cuhre', Cuhre(Integrand, NDIM, key=KEY, verbose=2 | 4))
   
-
+if __name__ == '__main__':
+  demo()
 
 
 
