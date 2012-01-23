@@ -8,8 +8,8 @@ extern void __nested__nestrun(
 	char *root, int *seed, int *pWrap, int *fb, int *resume,
 	int *outfile, int *initMPI, double *nestlogzero,  
 	void (*Loglike)(double *Cube, int *n_dim, int *n_par, double *lnew), 
-	void (*dumper)(int * nsamples, int *nlive, int *npar, 
-		double * physlive, double *posterior, double *paramconstr,
+	void (*dumper)(int *nsamples, int *nlive, int *npar, 
+		double **physlive, double **posterior, double **paramconstr,
 		double * maxloglike, double * logz, double *logzerr),
 	int *context);
 
@@ -32,7 +32,9 @@ void set_function(
 	p.LogLike = LogLike;
 }
 
-void dumper(int *nSamples, int *nlive, int *nPar, double **physLive, double **posterior, double **paramConstr, double *maxLogLike, double *logZ, double *logZerr)
+void dumper(int *nSamples, int *nlive, int *nPar, double **physLive, 
+	double **posterior, double **paramConstr, double *maxLogLike, 
+		double *logZ, double *logZerr)
 {
 	// convert the 2D Fortran arrays to C arrays
 	
