@@ -4,9 +4,17 @@ CC = gcc
 FC = gfortran
 FFLAGS +=  -I. -O3 -w -fPIC
 CFLAGS +=  -I. -O3 -std=c99 -Wall -Wextra -fPIC
+ifndef MULTINEST_CALL
+# sometimes it is __nested__nestrun
+# then you can run 
+# $ MULTINEST_CALL=__nested__nestrun make
+# or 
+# $ make MULTINEST_CALL=__nested__nestrun
+#
 MULTINEST_CALL := __nested_MOD_nestrun
+endif
 
-ifneq ($(shell which mpif900),)
+ifneq ($(shell which mpif90),)
 FC = mpif90
 CC = mpicc
 FFLAGS += -DMPI
@@ -19,6 +27,8 @@ CFLAGS += -DMULTINEST_CALL=${MULTINEST_CALL}
 
 LINKLIB = ${FC} -shared
 LIBS =  -L$(MULTINEST) -lnest3 -llapack -lpthread
+# sometimes, this is needed:
+# LIBS +=  -lcblas -lf77blas -latlas
 
 libcnest.so: $(OBJFILES)
 	# 
