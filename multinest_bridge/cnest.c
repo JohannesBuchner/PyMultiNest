@@ -2,7 +2,7 @@
 #include<stdio.h>
 #include<string.h>
 
-extern void __nested_MOD_nestrun(
+extern void MULTINEST_CALL(
 	int *mmodal, int *ceff, int *nlive, double *tol, double *efr, int *ndims,
 	int *nPar, int *nClsPar, int *maxModes, int *updInt, double *Ztol, 
 	char *root, int *seed, int *pWrap, int *fb, int *resume, 
