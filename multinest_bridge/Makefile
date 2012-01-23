@@ -4,7 +4,7 @@ CC = gcc
 CFLAGS +=  -I. -O3 -std=c99 -Wall -Wextra
  
 LINKLIB = gfortran -shared
-LIBS =  -L$(MULTINEST) -lnest3 -llapack -lpthread
+LIBS =  -L$(MULTINEST) -lnest3 -llapack -lcblas -lf77blas -latlas -lpthread
 
 libcnest.so: $(OBJFILES)
 	# 
