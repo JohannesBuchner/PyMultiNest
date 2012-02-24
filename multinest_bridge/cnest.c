@@ -2,7 +2,7 @@
 #include<stdio.h>
 #include<string.h>
 
-extern void __nested__nestrun(
+extern void __nested_MOD_nestrun(
 	int *mmodal, int *ceff, int *nlive, double *tol, double *efr, int *ndims,
 	int *nPar, int *nClsPar, int *maxModes, int *updInt, double *Ztol, 
 	char *root, int *seed, int *pWrap, int *fb, int *resume,
@@ -81,7 +81,7 @@ void run(
 	}
 	
 	/* running MultiNest */
-	__nested__nestrun(&mmodal, &ceff, &nlive, &tol, &efr, &ndims, 
+	__nested_MOD_nestrun(&mmodal, &ceff, &nlive, &tol, &efr, &ndims, 
 		&nPar, &nClsPar, &maxModes, &updInt, &Ztol,
 		root, &seed, pWrap, &fb, &resume,
 		&outfile, &initMPI, &logZero,  
