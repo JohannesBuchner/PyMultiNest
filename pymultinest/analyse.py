@@ -22,6 +22,7 @@ class Analyzer(object):
 		likelihood & normalized by the evidence.
 		"""
 		self.data_file = "%s.txt" % self.outputfiles_basename
+		print '  analysing data from %s' % self.data_file
 
 		"""[root]post_separate.dat
 		This file is only created if mmodal is set to T. Posterior 
@@ -48,7 +49,6 @@ class Analyzer(object):
 		"""
 			fetches self.data_file
 		"""
-		print 'returning data from %s' % self.data_file
 		return numpy.loadtxt(self.data_file)
 	
 	def _read_error_line(self, l):
@@ -125,7 +125,7 @@ class PlotMarginal(object):
 	def plot_conditional(self, dim1, dim2 = None, 
 		with_ellipses = True, with_points = True,
 		only_interpolate = False, use_log_values = False,
-		grid_points = 40,
+		grid_points = 40, type='max'
 	):
 		"""
 			Generate a conditional/marginal probability plot.
@@ -144,6 +144,17 @@ class PlotMarginal(object):
 			@param use_log_values: Log-plot
 		
 			@param grid_points: how many bins the plot shall have
+			
+			@param type: how should the "marginal" or "conditional" be calculated:
+			       can be one of: 
+			       
+			       - max ... the maximum of the values is taken
+			       - mean ... the mean of the values is calculated
+			       - sum ... the sum of the values is taken
+			       
+			       A true marginal is difficult to obtain, because we don't have 
+			       equal spaced values.
+			       
 		"""
 		data = self.analyser.get_data()
 		stats = self.analyser.get_stats()
@@ -175,30 +186,30 @@ class PlotMarginal(object):
 			values = numpy.log(values)
 		#print "max z:", grid_z2.max()
 		grid_z1 = numpy.zeros((n,m))
-		n_z1    = numpy.zeros((n,m))
+		n_z1    = numpy.zeros((n,m), dtype='i')
 		minvalue = values.min()
 		maxvalue = values.max()
-		for i in range(len(values)):
-			a = int((dim1_column[i] - min1) * (n - 1) / (max1 - min1))
-			if a < 0 or a >= n:
-				print 'skipping data point', data[i], ": ", dim1_column[i], " is outside of mode borders", (min1, max1)
-				continue 
-			if dim2 is not None:
-				b = int((dim2_column[i] - min2) * (m - 1) / (max2 - min2))
-			else:
-				b = 0
-			if b < 0 or b >= m:
-				print 'skipping data point', data[i], ": ", dim2_column[i], " is outside of mode borders", (min2, max2)
+		
+		row = map(int, (dim1_column - min1) * (n - 1) / (max1 - min1))
+		
+		if dim2 is not None:
+			col = map(int, (dim2_column - min2) * (m - 1) / (max2 - min2))
+		else:
+			col = numpy.zeros_like(row)
+		for r,c,v in zip(row, col, values):
+			if r < 0 or r >= n or c < 0 or c >= m:
+				print 'skipping data point', v, ": it is outside of all mode borders"
 				continue
-			grid_z1[a,b] += values[i]
-			n_z1[a,b] += 1
-		for x in range(n):
-			for y in range(m):
-				if n_z1[x,y] == 0:
-					grid_z1[x,y] = minvalue
-				else:
-					grid_z1[x,y] = grid_z1[x,y] / n_z1[x,y]
-		print values.max(), grid_z1.max()
+			if type == 'max':
+				grid_z1[r,c] = max(grid_z1[r,c], v)
+			if type == 'sum':
+				grid_z1[r,c] += v
+			if type == 'mean':
+				## moving average formula
+				grid_z1[r,c] = (grid_z1[r,c] * n_z1[r,c] + v) / (n_z1[r,c] + 1)
+			n_z1[r,c] += 1
+		
+		#print 'maxima', values.max(), grid_z1.max()
 		# plot gridded data
 		if only_interpolate:
 		#   version A: interpolated -- may look weird because of the 
@@ -210,7 +221,7 @@ class PlotMarginal(object):
 			grid_z = grid_z1
 		if dim2 is not None:
 			plt.imshow(grid_z, extent=(min1,max1,min2,max2), origin='lower',
-				cmap=cm.gray, alpha = 0.8)
+				cmap=cm.gray_r, alpha = 0.8)
 			plt.colorbar()
 		else:
 			#plt.xlim(min1, max1)
@@ -224,13 +235,14 @@ class PlotMarginal(object):
 		
 		if dim2 is not None:
 			plt.contour(grid_x, grid_y, grid_z, levels, linewidths=0.5, colors='k')
-		else:
+		elif type == 'max':
+			# for the other types, these levels are pretty useless.
 			for i in range(len(levels)):
 				plt.plot([grid_x.min(), grid_x.max()], [levels[i]] * 2, '--', color='grey', label=leveltitles[i])
 		
 		# add points
-		if with_points:
-			plt.scatter(dim1_column, dim2_column, marker='x', color='black', s=1)
+		if with_points and dim2 is not None:
+			plt.scatter(dim1_column, dim2_column, marker='+', color='black', s=1, alpha=0.4)
 		# add ellipses
 		i = 0
 		for mode in modes:

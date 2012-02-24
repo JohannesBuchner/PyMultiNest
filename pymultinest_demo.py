@@ -54,10 +54,13 @@ plt.clf()
 # Here we will plot all the marginals and whatnot, just to show off
 # You may configure the format of the output here, or in matplotlibrc
 # All pymultinest does is filling in the data of the plot.
+
+# Copy and edit this file, and play with it.
+
 p = pymultinest.PlotMarginal(a)
 for i in range(n_params):
 	outfile = '%s-marginal-%d.pdf' % (a.outputfiles_basename,i)
-	p.plot_conditional(i, None, with_ellipses = True, with_points = False)
+	p.plot_marginal(i, with_ellipses = True, with_points = False, grid_points=200)
 	plt.savefig(outfile, format='pdf', bbox_inches='tight')
 	plt.close()
 	
