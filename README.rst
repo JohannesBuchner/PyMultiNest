@@ -25,16 +25,21 @@ I provide an interface to the great MultiNest library.
 What does PyMultiNest do?
 --------------------------
 
-  * Provides an easy-to-use interface to MultiNest
+PyMultiNest 
 
-  * Provides integration with your existing scientific python code (numpy, scipy)
+  * provides an easy-to-use interface to MultiNest
 
-  * Allows you to write Prior & LogLikelihood functions in Python. This is 
-    usally fast enough -- if not, see below.
+  * provides integration with your existing scientific Python code (numpy, scipy)
 
-  * (Planned) plotting and visualization of progress.
+  * allows you to write Prior & LogLikelihood functions in Python.
 
-  * (Planned) easy plotting and visualization of results. (Code welcome!)
+PyMultiNest can 
+
+  * Plot and visualize MultiNests progress (watch.ProgressWatcher, watch.ProgressPlotter). This is still fairly basic, contributions and ideas are welcome)
+
+  * Easy plotting, visualization and summary of MultiNest results.
+
+The plotting can be run on existing MultiNest output, and when not using PyMultiNest for running MultiNest.
 
 Code contributions are welcome! Contact me (buchner.johannes [ät] gmx.at).
 
@@ -46,6 +51,12 @@ What is PyAPEMoST?
 --------------------------------------------
 Similarly to PyMultiNest, it is an access module for a Bayesian inference engine.
 However, APEMoST is a Markov Chain Monte Carlo engine. See the `documentation <http://johannesbuchner.github.com/PyMultiNest/doc/html/pyapemost>`_.
+
+What is PyCuba?
+--------------------------------------------
+Cuba (http://www.feynarts.de/cuba/, https://github.com/JohannesBuchner/cuba) is a multidimensional numerical integration library for low dimensions. PyCuba allows integration of Python functions, providing an advanced alternative to the basic functions provided in scipy.integrate.
+
+In the Bayesian sense, it is possible to use Cuba for model selection.
 
 Q: Python callback functions are too slow!
 -------------------------------------------
