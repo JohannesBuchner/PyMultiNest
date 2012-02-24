@@ -125,7 +125,7 @@ class PlotMarginal(object):
 	def plot_conditional(self, dim1, dim2 = None, 
 		with_ellipses = True, with_points = True,
 		only_interpolate = False, use_log_values = False,
-		grid_points = 40, type='max'
+		grid_points = 40, marginalization_type='max'
 	):
 		"""
 			Generate a conditional/marginal probability plot.
@@ -145,10 +145,10 @@ class PlotMarginal(object):
 		
 			@param grid_points: how many bins the plot shall have
 			
-			@param type: how should the "marginal" or "conditional" be calculated:
+			@param marginalization_type: how should the "marginal" or "conditional" be calculated:
 			       can be one of: 
 			       
-			       - max ... the maximum of the values is taken
+			       - max (the default) ... the maximum of the values is taken
 			       - mean ... the mean of the values is calculated
 			       - sum ... the sum of the values is taken
 			       
@@ -196,17 +196,20 @@ class PlotMarginal(object):
 			col = map(int, (dim2_column - min2) * (m - 1) / (max2 - min2))
 		else:
 			col = numpy.zeros_like(row)
+		
 		for r,c,v in zip(row, col, values):
 			if r < 0 or r >= n or c < 0 or c >= m:
 				print 'skipping data point', v, ": it is outside of all mode borders"
 				continue
-			if type == 'max':
+			if marginalization_type == 'max':
 				grid_z1[r,c] = max(grid_z1[r,c], v)
-			if type == 'sum':
+			elif marginalization_type == 'sum':
 				grid_z1[r,c] += v
-			if type == 'mean':
+			elif marginalization_type == 'mean':
 				## moving average formula
 				grid_z1[r,c] = (grid_z1[r,c] * n_z1[r,c] + v) / (n_z1[r,c] + 1)
+			else:
+				assert marginalization_type in ['max', 'mean', 'sum']
 			n_z1[r,c] += 1
 		
 		#print 'maxima', values.max(), grid_z1.max()
@@ -235,7 +238,7 @@ class PlotMarginal(object):
 		
 		if dim2 is not None:
 			plt.contour(grid_x, grid_y, grid_z, levels, linewidths=0.5, colors='k')
-		elif type == 'max':
+		elif marginalization_type == 'max':
 			# for the other types, these levels are pretty useless.
 			for i in range(len(levels)):
 				plt.plot([grid_x.min(), grid_x.max()], [levels[i]] * 2, '--', color='grey', label=leveltitles[i])
