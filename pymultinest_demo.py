@@ -2,6 +2,12 @@ import pymultinest
 import math
 import os
 if not os.path.exists("chains"): os.mkdir("chains")
+def show(filepath):
+	""" open the output (pdf) file for the user """
+	import subprocess, os
+	if os.name == 'mac': subprocess.call(('open', filepath))
+	elif os.name == 'nt': os.startfile(filepath)
+	elif os.name == 'posix': subprocess.call(('xdg-open', filepath))
 
 # our probability functions
 # Taken from the eggbox problem.
@@ -24,12 +30,13 @@ def myloglike(cube, ndim, nparams):
 n_params = 2
 
 # we want to see some output while it is running
-progress = pymultinest.ProgressPrinter(n_params = n_params)
-#progress.start()
+progress = pymultinest.ProgressPlotter(n_params = n_params)
+progress.start()
+show("chains/1-phys_live.points.pdf")
 # run MultiNest
 pymultinest.run(myloglike, myprior, n_params, resume = True, verbose = True, sampling_efficiency = 0.3)
 # ok, done. Stop our progress watcher
-#progress.stop()
+progress.stop()
 
 # lets analyse the results
 a = pymultinest.Analyzer(n_params = n_params)
@@ -38,6 +45,7 @@ s = a.get_stats()
 import json
 json.dump(s, file('%s.json' % a.outputfiles_basename, 'w'), indent=2)
 print
+print "-" * 30, 'ANALYSIS', "-" * 30
 print "Global Evidence:\n\t%.15e +- %.15e" % ( s['global evidence'], s['global evidence error'] )
 
 import matplotlib.pyplot as plt
@@ -68,6 +76,7 @@ for i in range(n_params):
 		outfile = '%s-conditional-%d-%d.pdf' % (a.outputfiles_basename,i,j)
 		plt.savefig(outfile, format='pdf', bbox_inches='tight')
 		plt.close()
+		show(outfile)
 print "take a look at the pdf files in chains/" 
 
 
