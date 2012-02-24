@@ -48,6 +48,7 @@ class Analyzer(object):
 		"""
 			fetches self.data_file
 		"""
+		print 'returning data from %s' % self.data_file
 		return numpy.loadtxt(self.data_file)
 	
 	def _read_error_line(self, l):
@@ -179,10 +180,16 @@ class PlotMarginal(object):
 		maxvalue = values.max()
 		for i in range(len(values)):
 			a = int((dim1_column[i] - min1) * (n - 1) / (max1 - min1))
+			if a < 0 or a >= n:
+				print 'skipping data point', values[i]
+				continue 
 			if dim2 is not None:
 				b = int((dim2_column[i] - min2) * (m - 1) / (max2 - min1))
 			else:
 				b = 0
+			if b < 0 or b >= m:
+				print 'skipping data point', values[i]
+				continue
 			grid_z1[a,b] += values[i]
 			n_z1[a,b] += 1
 		for x in range(n):

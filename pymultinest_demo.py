@@ -14,10 +14,10 @@ def myprior(cube, ndim, nparams):
 
 def myloglike(cube, ndim, nparams):
 	chi = 1.
-	#print "cube", [cube[i] for i in range(ndim)], cube
+	print "cube", [cube[i] for i in range(ndim)], cube
 	for i in range(ndim):
 		chi *= math.cos(cube[i] / 2.)
-	#print "returning", math.pow(2. + chi, 5)
+	print "returning", math.pow(2. + chi, 5)
 	return math.pow(2. + chi, 5)
 
 # number of dimensions our problem has
@@ -25,11 +25,11 @@ n_params = 2
 
 # we want to see some output while it is running
 progress = pymultinest.ProgressPrinter(n_params = n_params)
-progress.start()
+#progress.start()
 # run MultiNest
 pymultinest.run(myloglike, myprior, n_params, resume = True, verbose = True, sampling_efficiency = 0.3)
 # ok, done. Stop our progress watcher
-progress.stop()
+#progress.stop()
 
 # lets analyse the results
 a = pymultinest.Analyzer(n_params = n_params)

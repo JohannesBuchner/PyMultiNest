@@ -14,7 +14,8 @@ def run(LogLikelihood,
 	n_iter_before_update = 100, null_log_evidence = -1e90,
 	max_modes = 100,
 	outputfiles_basename = "chains/1-", seed = -1, verbose = False,
-	resume = True, context = 0):
+	resume = True, context = 0, write_output = True, log_zero = -1e100, 
+	init_MPI = True, dump_callback = None):
 	"""
 	Runs MultiNest
 	
@@ -79,6 +80,19 @@ def run(LogLikelihood,
 		value. If there isn't any particulrly interesting
 		nullZ value, then nullZ should be set to a very large negative 
 		number (e.g. -1.d90).
+		
+	@param init_MPI:
+		initialize MPI routines?, relevant only if compiling with MPI
+	
+	@param log_zero: 
+		points with loglike < logZero will be ignored by MultiNest
+	
+	@param write_output:
+		write output files? This is required for analysis.
+		
+	@param dump_callback:
+		a callback function for dumping the current status
+	
 	"""
 
 	if n_params == None:
@@ -99,7 +113,18 @@ def run(LogLikelihood,
 	
 	prior_type = CFUNCTYPE(c_void_p, POINTER(c_double), c_int, c_int)
 	loglike_type = CFUNCTYPE(c_double, POINTER(c_double), c_int, c_int)
+	dumper_type = CFUNCTYPE(c_void_p, 
+		c_int, c_int, c_int, POINTER(c_double))
+	""", 
+		POINTER(c_double), POINTER(c_double), POINTER(c_double), 
+		POINTER(c_double), POINTER(c_double), POINTER(c_double),
+		c_double, c_double, c_double)"""
+	lib.reset()
+	
 	lib.set_function(prior_type(Prior), loglike_type(LogLikelihood))
+	
+	if dump_callback is not None:
+		lib.set_dumper(dumper_type(dump_wrapper))
 
 	lib.run(c_int(multimodal), c_int(const_efficiency_mode), 
 		c_int(n_live_points), c_double(evidence_tolerance), 
@@ -108,5 +133,7 @@ def run(LogLikelihood,
 		c_int(n_iter_before_update), c_double(evidence_tolerance), 
 		outputfiles_basename, c_int(seed), wraps,
 		c_int(verbose), c_int(resume), 
-		c_int(context))
+		c_int(write_output), c_int(init_MPI), 
+		c_double(log_zero), c_int(context))
+
 
