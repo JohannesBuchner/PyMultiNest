@@ -4,25 +4,29 @@ CC = gcc
 FC = gfortran
 FFLAGS +=  -I. -O3 -w -fPIC
 CFLAGS +=  -I. -O3 -std=c99 -Wall -Wextra -fPIC
-ifndef MULTINEST_CALL
-# sometimes it is __nested__nestrun
-# then you can run 
-# $ MULTINEST_CALL=__nested__nestrun make
-# or 
+
+# If the MultiNest function is named 
+# differently; then do e.g.
 # $ make MULTINEST_CALL=__nested__nestrun
-#
-MULTINEST_CALL := __nested_MOD_nestrun
-endif
 
 ifneq ($(shell which mpif90),)
 ifndef WITHOUT_MPI
+# compiling with MPI support. You can disable this with
+# $ make WITHOUT_MPI=1
 FC = mpif90
 CC = mpicc
 FFLAGS += -DMPI
 CFLAGS += -DMPI
+  ifndef MULTINEST_CALL
+     MULTINEST_CALL := __nested_nestrun
+  endif
 endif
 else
-$(warning "mpif90 not found, so will compile without MPI!")
+  $(warning "mpif90 not found, so will compile without MPI!")
+endif
+
+ifndef MULTINEST_CALL
+  MULTINEST_CALL := __nested_MOD_nestrun
 endif
 
 CFLAGS += -DMULTINEST_CALL=${MULTINEST_CALL}
@@ -30,6 +34,7 @@ CFLAGS += -DMULTINEST_CALL=${MULTINEST_CALL}
 LINKLIB = ${FC} -shared
 LIBS =  -L$(MULTINEST) -lnest3 -llapack -lpthread
 # sometimes, this is needed:
+# LIBS +=  -lcblas -latlas
 # LIBS +=  -lcblas -lf77blas -latlas
 
 libcnest.so: $(OBJFILES)

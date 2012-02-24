@@ -110,18 +110,23 @@ def run(LogLikelihood,
 	if sampling_efficiency == 'model':
 		sampling_efficiency = 0.3
 	
+	lib.reset()
 	
 	prior_type = CFUNCTYPE(c_void_p, POINTER(c_double), c_int, c_int)
+	if Prior is not None:
+		c_Prior = prior_type(Prior)
+		lib.set_prior(c_Prior)
+	
 	loglike_type = CFUNCTYPE(c_double, POINTER(c_double), c_int, c_int)
+	c_LogLikelihood = loglike_type(LogLikelihood)
+	lib.set_function(c_LogLikelihood)
+	
 	dumper_type = CFUNCTYPE(c_void_p, 
 		c_int, c_int, c_int, POINTER(c_double))
 	""", 
 		POINTER(c_double), POINTER(c_double), POINTER(c_double), 
 		POINTER(c_double), POINTER(c_double), POINTER(c_double),
 		c_double, c_double, c_double)"""
-	lib.reset()
-	
-	lib.set_function(prior_type(Prior), loglike_type(LogLikelihood))
 	
 	if dump_callback is not None:
 		lib.set_dumper(dumper_type(dump_wrapper))
@@ -134,6 +139,7 @@ def run(LogLikelihood,
 		outputfiles_basename, c_int(seed), wraps,
 		c_int(verbose), c_int(resume), 
 		c_int(write_output), c_int(init_MPI), 
-		c_double(log_zero), c_int(context))
+		c_double(log_zero), 
+		c_int(context))
 
 

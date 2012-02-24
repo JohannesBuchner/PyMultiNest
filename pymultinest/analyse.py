@@ -150,11 +150,11 @@ class PlotMarginal(object):
 		n_params = self.analyser.n_params
 		modes = stats['modes']
 		# determining min/max
-		min1 = min([mode['mean'][dim1] - 3*mode['sigma'][dim1] for mode in modes])
-		max1 = max([mode['mean'][dim1] + 3*mode['sigma'][dim1] for mode in modes])
+		min1 = min([mode['mean'][dim1] - 5*mode['sigma'][dim1] for mode in modes])
+		max1 = max([mode['mean'][dim1] + 5*mode['sigma'][dim1] for mode in modes])
 		if dim2 is not None:
-			min2 = min([mode['mean'][dim2] - 3*mode['sigma'][dim2] for mode in modes])
-			max2 = max([mode['mean'][dim2] + 3*mode['sigma'][dim2] for mode in modes])
+			min2 = min([mode['mean'][dim2] - 5*mode['sigma'][dim2] for mode in modes])
+			max2 = max([mode['mean'][dim2] + 5*mode['sigma'][dim2] for mode in modes])
 		#print dim1, min1, max1, dim2, min2, max2
 		# create grid
 		n = grid_points
@@ -181,14 +181,14 @@ class PlotMarginal(object):
 		for i in range(len(values)):
 			a = int((dim1_column[i] - min1) * (n - 1) / (max1 - min1))
 			if a < 0 or a >= n:
-				print 'skipping data point', values[i]
+				print 'skipping data point', data[i], ": ", dim1_column[i], " is outside of mode borders", (min1, max1)
 				continue 
 			if dim2 is not None:
-				b = int((dim2_column[i] - min2) * (m - 1) / (max2 - min1))
+				b = int((dim2_column[i] - min2) * (m - 1) / (max2 - min2))
 			else:
 				b = 0
 			if b < 0 or b >= m:
-				print 'skipping data point', values[i]
+				print 'skipping data point', data[i], ": ", dim2_column[i], " is outside of mode borders", (min2, max2)
 				continue
 			grid_z1[a,b] += values[i]
 			n_z1[a,b] += 1

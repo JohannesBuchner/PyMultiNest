@@ -33,7 +33,8 @@ struct problem {
 
 MULTINEST_CALLBACK(_LogLike)
 {
-	p.Prior(Cube, *ndim, *npars);
+	if (p.Prior != NULL)
+		p.Prior(Cube, *ndim, *npars);
 	*lnew = p.LogLike(Cube, *ndim, *npars);
 }
 MULTINEST_DUMPERTYPE(_noop_dumper)
@@ -68,8 +69,8 @@ MULTINEST_DUMPERTYPE(_DumperConverter)
 		printf("\tcalling client. \n");
 		printf("\tcalling %p\n", p.Dumper);
 		p.Dumper(*nsamples, *nlive, n, 
-			NULL /*, (double**)postdist, 
-			mean, std, best, map, *maxloglike, *logz, *logzerr */);
+			NULL, (double**)postdist, 
+			mean, std, best, map, *maxloglike, *logz, *logzerr);
 	}
 }
 
@@ -79,9 +80,11 @@ void reset() {
 	p.Dumper = NULL;
 }
 
-void set_function(LOGLIKETYPE(*LogLike), PRIORTYPE(*Prior)) {
-	p.Prior = Prior;
+void set_function(LOGLIKETYPE(*LogLike)) {
 	p.LogLike = LogLike;
+}
+void set_prior(PRIORTYPE(*Prior)) {
+	p.Prior = Prior;
 }
 
 void set_dumper(DUMPERTYPE(*Dumper)) {
@@ -100,11 +103,11 @@ void run(
 	strcpy(root, rootstr);
 	memset(root + strlen(root), ' ', 100 - strlen(root));
 	
-	if (p.Prior == NULL || p.LogLike == NULL) {
+	if (p.LogLike == NULL) {
 		fprintf(stderr, "Need to call set_function(prior, loglike) first, to define callback functions!\n");
 		return;
 	}
-	DUMPERTYPE(*dumpfunc) = _DumperConverter;
+	MULTINEST_DUMPERTYPE(*dumpfunc) = _DumperConverter;
 	if (p.Dumper == NULL) 
 		dumpfunc = _noop_dumper;
 	
