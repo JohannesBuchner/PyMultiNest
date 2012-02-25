@@ -68,15 +68,19 @@ class ProgressPlotter(ProgressWatcher):
 				print e
 	
 	def _plot_live(self):
-		import matplotlib.pyplot as plot
+		import matplotlib.pyplot as plt
 		import numpy
-		import shutil
+		import shutil, os
 		x = numpy.loadtxt(self.live, ndmin=2)
 		for i in range(self.n_params):
-			plot.subplot(self.n_params, 1, i)
-			plot.plot(x[:,i], x[:,self.n_params], '.')
+			plt.subplot(self.n_params, 1, i)
+			plt.plot(x[:,i], x[:,self.n_params], '.')
 		f = "%s.pdf" % self.live
-		ftmp = "%s.t.pdf" % self.live
-		plot.savefig(ftmp)
-		shutil.move(ftmp, f)
+		# using a temporary file because the writing 
+		# takes some time, during which the user should still be able
+		# to look at the previous version
+		ftmp = "%s.next.pdf" % self.live
+		plt.savefig(ftmp)
+		shutil.copyfile(ftmp, f)
+		os.remove(ftmp)
 
