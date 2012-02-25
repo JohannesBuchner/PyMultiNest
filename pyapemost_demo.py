@@ -2,7 +2,9 @@ import scipy
 import numpy
 import math
 import sys
+import matplotlib.pyplot as plt
 import pyapemost
+
 def show(filepath):
 	""" open the output (pdf) file for the user """
 	import subprocess, os
@@ -15,11 +17,20 @@ A     = 6.13
 omega = 1
 phase = 0.314
 sigma = 10
+offset = 0
 
 # generate some data
 x = numpy.linspace(0, 10, 1000)
-y = scipy.random.normal(A * numpy.sin((x * omega + phase) * 2 * math.pi), sigma)
+y = scipy.random.normal(A * numpy.sin((x * omega + phase) * 2 * math.pi) + offset, sigma)
 numpy.savetxt("data", numpy.vstack((x,y)).transpose())
+plt.title("Problem: Finding a sine signal in noisy data")
+plt.suptitle("amplitude: %f, phase: %f, frequency: %f, offset: %f" % (A, phase, omega, offset))
+plt.plot(x, A * numpy.sin((x * omega + phase) * 2 * math.pi), '--r', label="true sin")
+plt.plot(x, y, 'ob', label="observed data")
+plt.legend(loc='best')
+plt.savefig("data.pdf")
+plt.clf()
+show("data.pdf")
 
 f = file("params",'w')
 f.write("0	0	10	amplitude	-1\n")
@@ -63,7 +74,6 @@ if "analyse" in cmd:
 	plotter = pyapemost.analyse.VisitedAllPlotter()
 	plotter.plot()
 	show("chain0.pdf")
-	import matplotlib.pyplot as plt
 	histograms = pyapemost.create_histograms()
 	i = 1
 	plt.clf()
