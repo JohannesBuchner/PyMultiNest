@@ -71,7 +71,7 @@ class ProgressPlotter(ProgressWatcher):
 		import matplotlib.pyplot as plot
 		import numpy
 		import shutil
-		x = numpy.loadtxt(self.live)
+		x = numpy.loadtxt(self.live, ndmin=2)
 		for i in range(self.n_params):
 			plot.subplot(self.n_params, 1, i)
 			plot.plot(x[:,i], x[:,self.n_params], '.')

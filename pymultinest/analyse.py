@@ -49,7 +49,7 @@ class Analyzer(object):
 		"""
 			fetches self.data_file
 		"""
-		return numpy.loadtxt(self.data_file)
+		return numpy.loadtxt(self.data_file, ndmin=2)
 	
 	def _read_error_line(self, l):
 		#print '_read_error_line', l
@@ -67,7 +67,7 @@ class Analyzer(object):
 		else:
 			table = txt		
 		header, table = txt.split("\n", 1)
-		data = numpy.loadtxt(StringIO(table))
+		data = numpy.loadtxt(StringIO(table), ndmin=2)
 		if d is not None:
 			d[title.strip().lower()] = data
 		return data

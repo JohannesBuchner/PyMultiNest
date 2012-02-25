@@ -82,7 +82,7 @@ def model_probability(show=True):
 	
 	@param show: If true, print_model_probability is called
 	"""
-	calibration = numpy.loadtxt('calibration_results')
+	calibration = numpy.loadtxt('calibration_results', ndmin=2)
 	nchains = len(calibration)
 	beta = calibration[:,0]
 
