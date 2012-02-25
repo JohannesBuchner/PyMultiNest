@@ -24,13 +24,15 @@ Installing the bridge to MultiNest
 
      $ export MULTINEST=/my/multinest/directory
 
-     $ cd $MULTINEST && make libnest3.so
+     $ cd $MULTINEST && make libnest3.so WITHOUT_MPI=1
 
 libnest3.so should be a dynamic library (compiled with -fPIC, linked with -shared -llapack -lpthread).
 
 2. build the multinest_bridge::
 
-     $ make -C multinest_bridge libcnest.so
+     $ make -C multinest_bridge libcnest.so WITHOUT_MPI=1
+
+You can later remove the WITHOUT_MPI=1 part if you want to try out MPI support.
 
 Installing the bridge to APEMoST
 ------------------------------------
@@ -64,7 +66,7 @@ Test importing the libraries::
      
      $ python $OLDPWD/pyapemost_demo.py
 
-Congratulations! You are now ready to run your own code.
+Congratulations! You are now ready to run your own code. Copy the demo files as starting points, play with the functions and analysis, and integrate it to your own code. The documentation should help you.
 
 Generating the documentation
 ----------------------------
@@ -73,4 +75,4 @@ Go into doc and run make::
 
      $ cd doc && make html
 
-
+Point your web browser to _build/html/index.html in doc.
