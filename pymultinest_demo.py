@@ -1,10 +1,9 @@
 import pymultinest
 import math
-import os
+import os, threading, subprocess
 if not os.path.exists("chains"): os.mkdir("chains")
-def show(filepath):
+def show(filepath): 
 	""" open the output (pdf) file for the user """
-	import subprocess, os
 	if os.name == 'mac': subprocess.call(('open', filepath))
 	elif os.name == 'nt': os.startfile(filepath)
 	elif os.name == 'posix': subprocess.call(('xdg-open', filepath))
@@ -27,12 +26,12 @@ def myloglike(cube, ndim, nparams):
 	return math.pow(2. + chi, 5)
 
 # number of dimensions our problem has
-n_params = 2
+parameters = ["x", "y"]
+n_params = len(parameters)
 
 # we want to see some output while it is running
-progress = pymultinest.ProgressPlotter(n_params = n_params)
-progress.start()
-show("chains/1-phys_live.points.pdf")
+progress = pymultinest.ProgressPlotter(n_params = n_params); progress.start()
+threading.Timer(2, show, ["chains/1-phys_live.points.pdf"]).start() # delayed opening
 # run MultiNest
 pymultinest.run(myloglike, myprior, n_params, resume = True, verbose = True, sampling_efficiency = 0.3)
 # ok, done. Stop our progress watcher
@@ -61,22 +60,31 @@ p = pymultinest.PlotMarginal(a)
 for i in range(n_params):
 	outfile = '%s-marginal-%d.pdf' % (a.outputfiles_basename,i)
 	p.plot_marginal(i, with_ellipses = True, with_points = False, grid_points=200)
+	plt.ylabel("Probability")
+	plt.xlabel(parameters[i])
 	plt.savefig(outfile, format='pdf', bbox_inches='tight')
 	plt.close()
 	
 	outfile = '%s-mode-marginal-%d.pdf' % (a.outputfiles_basename,i)
 	p.plot_modes_marginal(i, with_ellipses = True, with_points = False)
+	plt.ylabel("Probability")
+	plt.xlabel(parameters[i])
 	plt.savefig(outfile, format='pdf', bbox_inches='tight')
 	plt.close()
 	
 	outfile = '%s-mode-marginal-cumulative-%d.pdf' % (a.outputfiles_basename,i)
 	p.plot_modes_marginal(i, cumulative = True, with_ellipses = True, with_points = False)
+	plt.ylabel("Cumulative probability")
+	plt.xlabel(parameters[i])
 	plt.savefig(outfile, format='pdf', bbox_inches='tight')
 	plt.close()
 	
 	for j in range(i):
 		p.plot_conditional(i, j, with_ellipses = True, with_points = False)
 		outfile = '%s-conditional-%d-%d.pdf' % (a.outputfiles_basename,i,j)
+		plt.xlabel(parameters[i])
+		plt.ylabel(parameters[j])
+		plt.title("Conditional probability")
 		plt.savefig(outfile, format='pdf', bbox_inches='tight')
 		plt.close()
 		show(outfile)

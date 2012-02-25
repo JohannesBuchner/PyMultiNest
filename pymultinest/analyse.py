@@ -111,6 +111,7 @@ import scipy.special
 import matplotlib.pyplot as plt
 import matplotlib.patches
 import matplotlib.cm as cm
+import itertools
 
 class PlotMarginal(object):
 	"""
@@ -125,7 +126,7 @@ class PlotMarginal(object):
 	def plot_conditional(self, dim1, dim2 = None, 
 		with_ellipses = True, with_points = True,
 		only_interpolate = False, use_log_values = False,
-		grid_points = 40, marginalization_type='max'
+		grid_points = 40, marginalization_type='sum'
 	):
 		"""
 			Generate a conditional/marginal probability plot.
@@ -148,12 +149,9 @@ class PlotMarginal(object):
 			@param marginalization_type: how should the "marginal" or "conditional" be calculated:
 			       can be one of: 
 			       
-			       - max (the default) ... the maximum of the values is taken
-			       - mean ... the mean of the values is calculated
-			       - sum ... the sum of the values is taken
-			       
-			       A true marginal is difficult to obtain, because we don't have 
-			       equal spaced values.
+			       - **sum**  ... real marginalization, and the default
+			       - **max**
+			       - **mean**
 			       
 		"""
 		data = self.analyser.get_data()
@@ -172,9 +170,14 @@ class PlotMarginal(object):
 		if dim2 is not None:
 			m = n
 			grid_x, grid_y = numpy.mgrid[min1:max1:n*1j, min2:max2:n*1j]
+			binsize2 = (max2 - min2) / m
 		else:
 			m = 1
 			grid_x = numpy.mgrid[min1:max1:n*1j]
+			grid_y = [0]
+		
+		binsize1 = (max1 - min1) / n
+		
 		dim1_column = data[:,2 + dim1]
 		if dim2 is not None:
 			dim2_column = data[:,2 + dim2]
@@ -184,44 +187,45 @@ class PlotMarginal(object):
 		values = data[:,0]
 		if use_log_values:
 			values = numpy.log(values)
-		#print "max z:", grid_z2.max()
-		grid_z1 = numpy.zeros((n,m))
-		n_z1    = numpy.zeros((n,m), dtype='i')
+		grid_z = numpy.zeros((n,m))
 		minvalue = values.min()
 		maxvalue = values.max()
 		
-		row = map(int, (dim1_column - min1) * (n - 1) / (max1 - min1))
-		
-		if dim2 is not None:
-			col = map(int, (dim2_column - min2) * (m - 1) / (max2 - min2))
-		else:
-			col = numpy.zeros_like(row)
-		
-		for r,c,v in zip(row, col, values):
-			if r < 0 or r >= n or c < 0 or c >= m:
-				print 'skipping data point', v, ": it is outside of all mode borders"
-				continue
-			if marginalization_type == 'max':
-				grid_z1[r,c] = max(grid_z1[r,c], v)
-			elif marginalization_type == 'sum':
-				grid_z1[r,c] += v
-			elif marginalization_type == 'mean':
-				## moving average formula
-				grid_z1[r,c] = (grid_z1[r,c] * n_z1[r,c] + v) / (n_z1[r,c] + 1)
+		# for each grid item, find the matching points and put them in.
+		for row, col in itertools.product(range(len(grid_x)), range(len(grid_y))):
+			if dim2 is not None:
+				xc = grid_x[row,col]
+				here_x = numpy.abs(dim1_column - xc) < binsize1 / 2.
+				yc = grid_y[row,col]
+				here_y = numpy.abs(dim2_column - yc) < binsize2 / 2.
 			else:
-				assert marginalization_type in ['max', 'mean', 'sum']
-			n_z1[r,c] += 1
+				xc = grid_x[row]
+				here_x = numpy.abs(dim1_column - xc) < binsize1 / 2.
+				here_y = True
+			
+			bin = values[numpy.logical_and(here_x, here_y)]
+			if bin.size != 0:
+				if marginalization_type == 'max':
+					grid_z[row,col] = bin.max()
+				elif marginalization_type == 'sum':
+					grid_z[row,col] = bin.sum()
+				elif marginalization_type == 'mean':
+					grid_z[row,col] = bin.mean()
+				elif marginalization_type == 'count':
+					grid_z[row,col] = bin.size
+				else:
+					assert False, "marginalization_type should be mean, sum or max"
+			else:
+				grid_z[row,col] = minvalue
 		
-		#print 'maxima', values.max(), grid_z1.max()
+		#print 'maxima', values.max(), grid_z.max()
 		# plot gridded data
 		if only_interpolate:
 		#   version A: interpolated -- may look weird because of the 
 		#              loss of dimensions
 			assert dim2 is not None
 			grid_z = scipy.interpolate.griddata(coords, values, (grid_x, grid_y), method='cubic')
-		else:
-		#   version B: marginalized
-			grid_z = grid_z1
+		
 		if dim2 is not None:
 			plt.imshow(grid_z, extent=(min1,max1,min2,max2), origin='lower',
 				cmap=cm.gray_r, alpha = 0.8)
