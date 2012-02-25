@@ -107,6 +107,14 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 class VisitedAnalyser(object):
+	"""
+	Internal, abstract class that has the visited points of chain 0 loaded. 
+	
+	You need to overwrite::
+	
+		marginal_plot(param1, values1)
+		conditional_plot(param1, values1, param2, values2)
+	"""
 	def __init__(self):
 		self.params = load_params()
 	
@@ -129,6 +137,14 @@ class VisitedAnalyser(object):
 				self.conditional_plot(p1, v1, p2, v2)
 	
 class VisitedPlotter(VisitedAnalyser):
+	"""
+	Produces individual plots of visited points for each parameter,
+	and each parameter pair.
+	
+	@param outputfiles_basename: prefix of output files
+	
+	The output files are named chain0-paramname1-paramname2.pdf and chain0-paramname.pdf
+	"""
 	def __init__(self, outputfiles_basename = ""):
 		VisitedAnalyser.__init__(self)
 		self.outputfiles_basename = outputfiles_basename
@@ -145,7 +161,7 @@ class VisitedPlotter(VisitedAnalyser):
 		plt.title("%s vs %s" % names)
 	def conditional_plot_after(self, param1, values1, param2, values2):
 		names = (param1['name'],param2['name'])
-		plt.savefig(self.outputfiles_basename + "conditional-%s-%s.pdf" % names)
+		plt.savefig(self.outputfiles_basename + "chain0-%s-%s.pdf" % names)
 	
 	def marginal_plot(self, param, values):
 		self.marginal_plot_before(param, values)
@@ -162,6 +178,11 @@ class VisitedPlotter(VisitedAnalyser):
 		plt.clf()
 
 class VisitedAllPlotter(VisitedPlotter):
+	"""
+	Extends VisitedPlotter to put all of those plots into one file (named chain0.pdf).
+	
+	@see VisitedPlotter
+	"""
 	def plot(self):
 		self.paramnames = list(self.params['name'])
 		self.nparams = len(self.params)
@@ -207,6 +228,12 @@ class VisitedAllPlotter(VisitedPlotter):
 	
 
 class VisitedWindow(VisitedAnalyser):
+	"""
+	Not implemented / tested yet.
+	
+	Should give a window to watch the progress of the Markov Chain,
+	similar to **VisitedAllPlotter** but continuously updating.
+	"""
 	def __init__(self):
 		VisitedAnalyser.__init__(self)
 		plt.ion()
