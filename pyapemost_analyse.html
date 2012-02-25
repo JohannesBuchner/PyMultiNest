@@ -57,6 +57,41 @@
 <p>Module for analysing the output of APEMoST</p>
 <p>The output files are in an easy-to-process format, so
 there is no requirement to use a specific set of tools.</p>
+<dl class="class">
+<dt id="pyapemost.analyse.VisitedAllPlotter">
+<em class="property">class </em><tt class="descclassname">pyapemost.analyse.</tt><tt class="descname">VisitedAllPlotter</tt><big>(</big><em>outputfiles_basename=''</em><big>)</big><a class="reference internal" href="_modules/pyapemost/analyse.html#VisitedAllPlotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyapemost.analyse.VisitedAllPlotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends VisitedPlotter to put all of those plots into one file (named chain0.pdf).</p>
+<p>&#64;see VisitedPlotter</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyapemost.analyse.VisitedAnalyser">
+<em class="property">class </em><tt class="descclassname">pyapemost.analyse.</tt><tt class="descname">VisitedAnalyser</tt><a class="reference internal" href="_modules/pyapemost/analyse.html#VisitedAnalyser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyapemost.analyse.VisitedAnalyser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Internal, abstract class that has the visited points of chain 0 loaded.</p>
+<p>You need to overwrite:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">marginal_plot</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">values1</span><span class="p">)</span>
+<span class="n">conditional_plot</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">values1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">values2</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyapemost.analyse.VisitedPlotter">
+<em class="property">class </em><tt class="descclassname">pyapemost.analyse.</tt><tt class="descname">VisitedPlotter</tt><big>(</big><em>outputfiles_basename=''</em><big>)</big><a class="reference internal" href="_modules/pyapemost/analyse.html#VisitedPlotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyapemost.analyse.VisitedPlotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produces individual plots of visited points for each parameter,
+and each parameter pair.</p>
+<p>&#64;param outputfiles_basename: prefix of output files</p>
+<p>The output files are named chain0-paramname1-paramname2.pdf and chain0-paramname.pdf</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyapemost.analyse.VisitedWindow">
+<em class="property">class </em><tt class="descclassname">pyapemost.analyse.</tt><tt class="descname">VisitedWindow</tt><a class="reference internal" href="_modules/pyapemost/analyse.html#VisitedWindow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyapemost.analyse.VisitedWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not implemented / tested yet.</p>
+<p>Should give a window to watch the progress of the Markov Chain,
+similar to <strong>VisitedAllPlotter</strong> but continuously updating.</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="pyapemost.analyse.create_histogram">
 <tt class="descclassname">pyapemost.analyse.</tt><tt class="descname">create_histogram</tt><big>(</big><em>parameter_name</em>, <em>nbins=100</em>, <em>writeFile=True</em><big>)</big><a class="reference internal" href="_modules/pyapemost/analyse.html#create_histogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyapemost.analyse.create_histogram" title="Permalink to this definition">¶</a></dt>

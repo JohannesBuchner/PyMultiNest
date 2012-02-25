@@ -60,16 +60,6 @@
 <dd><p>Class for accessing the output of MultiNest.</p>
 <p>After the run, this class provides a mean of reading the result
 in a structured way.</p>
-<dl class="attribute">
-<dt id="pymultinest.analyse.Analyzer.data_file">
-<tt class="descname">data_file</tt><a class="headerlink" href="#pymultinest.analyse.Analyzer.data_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>[root]post_separate.dat
-This file is only created if mmodal is set to T. Posterior
-samples for modes with local log-evidence value
-greater than nullZ, separated by 2 blank lines. Format is the
-same as [root].txt file.</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="pymultinest.analyse.Analyzer.get_data">
 <tt class="descname">get_data</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pymultinest/analyse.html#Analyzer.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.Analyzer.get_data" title="Permalink to this definition">¶</a></dt>
@@ -120,7 +110,7 @@ plot marginal and conditional likelihoods.</p>
 <p>&#64;param analyser: A Analyzer instance</p>
 <dl class="method">
 <dt id="pymultinest.analyse.PlotMarginal.plot_conditional">
-<tt class="descname">plot_conditional</tt><big>(</big><em>dim1</em>, <em>dim2=None</em>, <em>with_ellipses=True</em>, <em>with_points=True</em>, <em>only_interpolate=False</em>, <em>use_log_values=False</em>, <em>grid_points=40</em><big>)</big><a class="reference internal" href="_modules/pymultinest/analyse.html#PlotMarginal.plot_conditional"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.PlotMarginal.plot_conditional" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot_conditional</tt><big>(</big><em>dim1</em>, <em>dim2=None</em>, <em>with_ellipses=True</em>, <em>with_points=True</em>, <em>only_interpolate=False</em>, <em>use_log_values=False</em>, <em>grid_points=40</em>, <em>marginalization_type='max'</em><big>)</big><a class="reference internal" href="_modules/pymultinest/analyse.html#PlotMarginal.plot_conditional"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.PlotMarginal.plot_conditional" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Generate a conditional/marginal probability plot.</dt>
 <dd>(marginalize all but two/one dimensions).</dd>
@@ -135,11 +125,23 @@ plot marginal and conditional likelihoods.</p>
 </dl>
 <p>&#64;param use_log_values: Log-plot</p>
 <p>&#64;param grid_points: how many bins the plot shall have</p>
+<dl class="docutils">
+<dt>&#64;param marginalization_type: how should the &#8220;marginal&#8221; or &#8220;conditional&#8221; be calculated:</dt>
+<dd><p class="first">can be one of:</p>
+<ul class="simple">
+<li>max (the default) ... the maximum of the values is taken</li>
+<li>mean ... the mean of the values is calculated</li>
+<li>sum ... the sum of the values is taken</li>
+</ul>
+<p class="last">A true marginal is difficult to obtain, because we don&#8217;t have 
+equal spaced values.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymultinest.analyse.PlotMarginal.plot_marginal">
-<tt class="descname">plot_marginal</tt><big>(</big><em>dim1</em>, <em>dim2=None</em>, <em>with_ellipses=True</em>, <em>with_points=True</em>, <em>only_interpolate=False</em>, <em>use_log_values=False</em>, <em>grid_points=40</em><big>)</big><a class="headerlink" href="#pymultinest.analyse.PlotMarginal.plot_marginal" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot_marginal</tt><big>(</big><em>dim1</em>, <em>dim2=None</em>, <em>with_ellipses=True</em>, <em>with_points=True</em>, <em>only_interpolate=False</em>, <em>use_log_values=False</em>, <em>grid_points=40</em>, <em>marginalization_type='max'</em><big>)</big><a class="headerlink" href="#pymultinest.analyse.PlotMarginal.plot_marginal" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Generate a conditional/marginal probability plot.</dt>
 <dd>(marginalize all but two/one dimensions).</dd>
@@ -154,6 +156,18 @@ plot marginal and conditional likelihoods.</p>
 </dl>
 <p>&#64;param use_log_values: Log-plot</p>
 <p>&#64;param grid_points: how many bins the plot shall have</p>
+<dl class="docutils">
+<dt>&#64;param marginalization_type: how should the &#8220;marginal&#8221; or &#8220;conditional&#8221; be calculated:</dt>
+<dd><p class="first">can be one of:</p>
+<ul class="simple">
+<li>max (the default) ... the maximum of the values is taken</li>
+<li>mean ... the mean of the values is calculated</li>
+<li>sum ... the sum of the values is taken</li>
+</ul>
+<p class="last">A true marginal is difficult to obtain, because we don&#8217;t have 
+equal spaced values.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">

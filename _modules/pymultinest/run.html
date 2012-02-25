@@ -60,7 +60,8 @@
 	<span class="n">n_iter_before_update</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">null_log_evidence</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e90</span><span class="p">,</span>
 	<span class="n">max_modes</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
 	<span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s">&quot;chains/1-&quot;</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
-	<span class="n">resume</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">context</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+	<span class="n">resume</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">context</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">write_output</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">log_zero</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e100</span><span class="p">,</span> 
+	<span class="n">init_MPI</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">dump_callback</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Runs MultiNest</span>
 <span class="sd">	</span>
@@ -125,6 +126,19 @@
 <span class="sd">		value. If there isn&#39;t any particulrly interesting</span>
 <span class="sd">		nullZ value, then nullZ should be set to a very large negative </span>
 <span class="sd">		number (e.g. -1.d90).</span>
+<span class="sd">		</span>
+<span class="sd">	@param init_MPI:</span>
+<span class="sd">		initialize MPI routines?, relevant only if compiling with MPI</span>
+<span class="sd">	</span>
+<span class="sd">	@param log_zero: </span>
+<span class="sd">		points with loglike &lt; logZero will be ignored by MultiNest</span>
+<span class="sd">	</span>
+<span class="sd">	@param write_output:</span>
+<span class="sd">		write output files? This is required for analysis.</span>
+<span class="sd">		</span>
+<span class="sd">	@param dump_callback:</span>
+<span class="sd">		a callback function for dumping the current status</span>
+<span class="sd">	</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 
 	<span class="k">if</span> <span class="n">n_params</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
@@ -142,10 +156,26 @@
 	<span class="k">if</span> <span class="n">sampling_efficiency</span> <span class="o">==</span> <span class="s">&#39;model&#39;</span><span class="p">:</span>
 		<span class="n">sampling_efficiency</span> <span class="o">=</span> <span class="mf">0.3</span>
 	
+	<span class="n">lib</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 	
 	<span class="n">prior_type</span> <span class="o">=</span> <span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_void_p</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">),</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">Prior</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+		<span class="n">c_Prior</span> <span class="o">=</span> <span class="n">prior_type</span><span class="p">(</span><span class="n">Prior</span><span class="p">)</span>
+		<span class="n">lib</span><span class="o">.</span><span class="n">set_prior</span><span class="p">(</span><span class="n">c_Prior</span><span class="p">)</span>
+	
 	<span class="n">loglike_type</span> <span class="o">=</span> <span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_double</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">),</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">)</span>
-	<span class="n">lib</span><span class="o">.</span><span class="n">set_function</span><span class="p">(</span><span class="n">prior_type</span><span class="p">(</span><span class="n">Prior</span><span class="p">),</span> <span class="n">loglike_type</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">))</span>
+	<span class="n">c_LogLikelihood</span> <span class="o">=</span> <span class="n">loglike_type</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">)</span>
+	<span class="n">lib</span><span class="o">.</span><span class="n">set_function</span><span class="p">(</span><span class="n">c_LogLikelihood</span><span class="p">)</span>
+	
+	<span class="n">dumper_type</span> <span class="o">=</span> <span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_void_p</span><span class="p">,</span> 
+		<span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">))</span>
+	<span class="sd">&quot;&quot;&quot;, </span>
+<span class="sd">		POINTER(c_double), POINTER(c_double), POINTER(c_double), </span>
+<span class="sd">		POINTER(c_double), POINTER(c_double), POINTER(c_double),</span>
+<span class="sd">		c_double, c_double, c_double)&quot;&quot;&quot;</span>
+	
+	<span class="k">if</span> <span class="n">dump_callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+		<span class="n">lib</span><span class="o">.</span><span class="n">set_dumper</span><span class="p">(</span><span class="n">dumper_type</span><span class="p">(</span><span class="n">dump_wrapper</span><span class="p">))</span>
 
 	<span class="n">lib</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">c_int</span><span class="p">(</span><span class="n">multimodal</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">const_efficiency_mode</span><span class="p">),</span> 
 		<span class="n">c_int</span><span class="p">(</span><span class="n">n_live_points</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">evidence_tolerance</span><span class="p">),</span> 
@@ -154,6 +184,8 @@
 		<span class="n">c_int</span><span class="p">(</span><span class="n">n_iter_before_update</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">evidence_tolerance</span><span class="p">),</span> 
 		<span class="n">outputfiles_basename</span><span class="p">,</span> <span class="n">c_int</span><span class="p">(</span><span class="n">seed</span><span class="p">),</span> <span class="n">wraps</span><span class="p">,</span>
 		<span class="n">c_int</span><span class="p">(</span><span class="n">verbose</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">resume</span><span class="p">),</span> 
+		<span class="n">c_int</span><span class="p">(</span><span class="n">write_output</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">init_MPI</span><span class="p">),</span> 
+		<span class="n">c_double</span><span class="p">(</span><span class="n">log_zero</span><span class="p">),</span> 
 		<span class="n">c_int</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
 </pre></div></div>
 

@@ -82,17 +82,18 @@ If you only want to use one of them, skip steps according.</p>
 <li><p class="first">build MultiNest in some directory $MULTINEST:</p>
 <div class="highlight-python"><pre>$ export MULTINEST=/my/multinest/directory
 
-$ cd $MULTINEST &amp;&amp; make libnest3.so</pre>
+$ cd $MULTINEST &amp;&amp; make libnest3.so WITHOUT_MPI=1</pre>
 </div>
 </li>
 </ol>
 <p>libnest3.so should be a dynamic library (compiled with -fPIC, linked with -shared -llapack -lpthread).</p>
 <ol class="arabic" start="2">
 <li><p class="first">build the multinest_bridge:</p>
-<div class="highlight-python"><pre>$ make -C multinest_bridge libcnest.so</pre>
+<div class="highlight-python"><pre>$ make -C multinest_bridge libcnest.so WITHOUT_MPI=1</pre>
 </div>
 </li>
 </ol>
+<p>You can later remove the WITHOUT_MPI=1 part if you want to try out MPI support.</p>
 </div>
 <div class="section" id="installing-the-bridge-to-apemost">
 <h2><a class="toc-backref" href="#id4">Installing the bridge to APEMoST</a><a class="headerlink" href="#installing-the-bridge-to-apemost" title="Permalink to this headline">¶</a></h2>
@@ -127,13 +128,14 @@ $ python $OLDPWD/pyapemost_demo.py</pre>
 </div>
 </li>
 </ol>
-<p>Congratulations! You are now ready to run your own code.</p>
+<p>Congratulations! You are now ready to run your own code. Copy the demo files as starting points, play with the functions and analysis, and integrate it to your own code. The documentation should help you.</p>
 </div>
 <div class="section" id="generating-the-documentation">
 <h2><a class="toc-backref" href="#id6">Generating the documentation</a><a class="headerlink" href="#generating-the-documentation" title="Permalink to this headline">¶</a></h2>
 <p>Go into doc and run make:</p>
 <div class="highlight-python"><pre>$ cd doc &amp;&amp; make html</pre>
 </div>
+<p>Point your web browser to _build/html/index.html in doc.</p>
 </div>
 </div>
 

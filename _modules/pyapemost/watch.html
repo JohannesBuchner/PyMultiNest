@@ -50,16 +50,17 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">import</span> <span class="nn">analyse</span>
 
 <div class="viewcode-block" id="ProgressWatcher"><a class="viewcode-back" href="../../pyapemost_watch.html#pyapemost.watch.ProgressWatcher">[docs]</a><span class="k">class</span> <span class="nc">ProgressWatcher</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">		Watches the progress of APEMost.</span>
+<span class="sd">		Watches the progress of APEMoST.</span>
 <span class="sd">		</span>
 <span class="sd">		Not implemented yet.</span>
 <span class="sd">	&quot;&quot;&quot;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_params</span><span class="p">,</span> <span class="n">interval_ms</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s">&quot;.&quot;</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval_ms</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s">&quot;.&quot;</span><span class="p">):</span>
 		<span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">n_params</span> <span class="o">=</span> <span class="n">n_params</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">analyse</span><span class="o">.</span><span class="n">load_params</span><span class="p">()</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="n">outputfiles_basename</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">interval_ms</span> <span class="o">=</span> <span class="n">interval_ms</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="bp">True</span>
@@ -73,12 +74,18 @@
 			<span class="k">try</span><span class="p">:</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_plot_live</span><span class="p">()</span>
 			<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-				<span class="k">print</span> <span class="n">e</span>
+				<span class="kn">import</span> <span class="nn">traceback</span>
+				<span class="n">traceback</span><span class="o">.</span><span class="n">print_exc</span><span class="p">()</span>
+	
+	<span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="bp">False</span>
 	
 	<span class="k">def</span> <span class="nf">_plot_live</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">pass</span>
-	
-</pre></div></div>
+		<span class="c"># there are some issues because simultaneous read access to the output files </span>
+		<span class="c"># seems to cause segmentation faults.</span>
+		<span class="k">return</span>
+	</div>
+</pre></div>
 
           </div>
         </div>
