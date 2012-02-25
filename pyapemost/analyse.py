@@ -10,6 +10,10 @@ import numpy
 import json
 import sys
 
+def load_params():
+	dtype = [('initial', 'f'), ('min', 'f'), ('max', 'f'), ('name', 'S100'), ('stepsize', 'f')]
+	return numpy.loadtxt('params', dtype=dtype, ndmin=1)
+
 def create_histogram(parameter_name, nbins=100, writeFile=True):
 	"""
 	Returns a histogram and some statistics about this parameter.
@@ -38,7 +42,7 @@ def create_histograms(nbins=100, writeFile=True):
 	Runs create_histogram for all parameters and returns
 	a dictionary of the results
 	"""
-	paramnames = numpy.loadtxt('params', dtype='S')[:,3]
+	paramnames = load_params()['name']
 	return dict([(p, create_histogram(p, nbins=nbins, writeFile=writeFile)) for p in paramnames])
 
 def print_model_probability(logprob):
@@ -98,3 +102,153 @@ def model_probability(show=True):
 		print_model_probability(logprob)
 	return logprob
 
+import numpy
+import matplotlib
+import matplotlib.pyplot as plt
+
+class VisitedAnalyser(object):
+	def __init__(self):
+		self.params = load_params()
+	
+	def plot(self):
+		# load data
+		values = []
+		print "loading chains ..."
+		for p in self.params:
+			f = "%s-chain-0.prob.dump" % p['name']
+			print "	loading chain %s" % f
+			v = numpy.genfromtxt(f, skip_footer=1, dtype='f')
+			values.append(v)
+		print "loading chains finished."
+		nvalues = min(map(len, values))
+		values = map(lambda v: v[:nvalues], values)
+		
+		for p1,v1,i in zip(self.params, values, range(len(self.params))):
+			self.marginal_plot(p1, v1)
+			for p2,v2 in zip(self.params[:i], values[:i]):
+				self.conditional_plot(p1, v1, p2, v2)
+	
+class VisitedPlotter(VisitedAnalyser):
+	def __init__(self, outputfiles_basename = ""):
+		VisitedAnalyser.__init__(self)
+		self.outputfiles_basename = outputfiles_basename
+	
+	def conditional_plot(self, param1, values1, param2, values2):
+		self.conditional_plot_before(param1, values1, param2, values2)
+		plt.plot(values1, values2, '+', color='black', markersize=2, alpha=0.5)
+		self.conditional_plot_after(param1, values1, param2, values2)
+	
+	def conditional_plot_before(self, param1, values1, param2, values2):
+		names = (param1['name'],param2['name'])
+		print "creating conditional plot of %s vs %s" % names
+		plt.figure(figsize=(5,5))
+		plt.title("%s vs %s" % names)
+	def conditional_plot_after(self, param1, values1, param2, values2):
+		names = (param1['name'],param2['name'])
+		plt.savefig(self.outputfiles_basename + "conditional-%s-%s.pdf" % names)
+	
+	def marginal_plot(self, param, values):
+		self.marginal_plot_before(param, values)
+		plt.plot(values, color='gray')
+		self.marginal_plot_after(param, values)
+	def marginal_plot_before(self, param, values):
+		name = param['name']
+		print "creating marginal plot of %s" % name
+		plt.figure(figsize=(5,5))
+		plt.title("%s" % name)
+	def marginal_plot_after(self, param, values):
+		name = param['name']
+		plt.savefig(self.outputfiles_basename + "chain0-%s.pdf" % name)
+		plt.clf()
+
+class VisitedAllPlotter(VisitedPlotter):
+	def plot(self):
+		self.paramnames = list(self.params['name'])
+		self.nparams = len(self.params)
+		self.plots = {}
+		for i, p1 in zip(range(self.nparams), self.params):
+			self.choose_plot(i, i)
+			plt.title("%s" % p1['name'])
+			
+			for j, p2 in zip(range(i), self.params):
+				self.choose_plot(i, j)
+				names = (str(p1['name']), str(p2['name']))
+				plt.title("%s vs %s" % names)
+		
+		plt.figure(figsize=(5*self.nparams,5*self.nparams))
+		VisitedPlotter.plot(self)
+		print "saving output ..."
+		plt.savefig(self.outputfiles_basename + "chain0.pdf")
+		print "saving output done"
+	
+	def choose_plot(self, i, j):
+		plt.subplot(self.nparams, self.nparams, self.nparams * j + i + 1)
+	
+	def conditional_plot_before(self, param1, values1, param2, values2):
+		names = [param1['name'],param2['name']]
+		i, j = map(self.paramnames.index, names)
+		self.choose_plot(i, j)
+		names = (param1['name'],param2['name'])
+		print "creating conditional plot of %s vs %s" % names
+		plt.xlabel(param1['name'])
+		plt.ylabel(param2['name'])
+	def conditional_plot_after(self, param1, values1, param2, values2):
+		pass
+	
+	def marginal_plot_before(self, param, values):
+		name = param['name']
+		i = self.paramnames.index(name)
+		thisplot = self.choose_plot(i, i)
+		print "creating marginal plot of %s" % name
+		plt.xlabel("iteration")
+		plt.ylabel(name)
+	def marginal_plot_after(self, param, values):
+		pass
+	
+
+class VisitedWindow(VisitedAnalyser):
+	def __init__(self):
+		VisitedAnalyser.__init__(self)
+		plt.ion()
+		self.paramnames = list(self.params['name'])
+		self.nparams = len(self.params)
+		self.plots = {}
+		for i, p1 in zip(range(self.nparams), self.params):
+			self.plots[i] = {i:{}}
+			self.choose_plot(i, i)
+			plt.title("%s" % p1['name'])
+			
+			for j, p2 in zip(range(i), self.params):
+				self.plots[i][j] = {}
+				self.choose_plot(i, j)
+				names = (str(p1['name']), str(p2['name']))
+				plt.title("%s vs %s" % names)
+	
+	def choose_plot(self, i, j):
+		plt.subplot(self.nparams, self.nparams, self.nparams * i + j + 1)
+		return self.plots[i][j]
+	def update_plot(self, plot, name, x, y):
+		if name not in plot:
+			plot[name] = plt.plot(x, y, label=name)
+		else:
+			plot[name].set_xdata(x)
+			plot[name].set_ydata(y)
+	
+	def conditional_plot(self, param1, values1, param2, values2):
+		names = [param1['name'],param2['name']]
+		i, j = map(self.paramnames.index, names)
+		thisplot = self.choose_plot(i, j)
+		
+		if len(values1) > 500:
+			self.update_plot(thisplot, "previous", values1[:-500], values2[:-500])
+		if len(values1) > 50:
+			self.update_plot(thisplot, "current", values1[-500:-50], values2[-500:-50])
+		self.update_plot(thisplot, "newest", values1[-50:], values2[-50:])
+		plt.draw()
+		
+	def marginal_plot(self, param, values):
+		name = param['name']
+		i = self.paramnames.index(name)
+		thisplot = self.choose_plot(i, i)
+		self.update_plot(thisplot, "progress", xrange(len(values)), values)
+		

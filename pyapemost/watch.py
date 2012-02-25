@@ -3,16 +3,17 @@ Module for watching the progress of APEMoST
 """
 
 import threading
+import analyse
 
 class ProgressWatcher(threading.Thread):
 	"""
-		Watches the progress of APEMost.
+		Watches the progress of APEMoST.
 		
 		Not implemented yet.
 	"""
-	def __init__(self, n_params, interval_ms = 200, outputfiles_basename = "."):
+	def __init__(self, interval_ms = 200, outputfiles_basename = "."):
 		threading.Thread.__init__(self)
-		self.n_params = n_params
+		self.params = analyse.load_params()
 		self.outputfiles_basename = outputfiles_basename
 		self.interval_ms = interval_ms
 		self.running = True
@@ -26,9 +27,14 @@ class ProgressWatcher(threading.Thread):
 			try:
 				self._plot_live()
 			except Exception as e:
-				print e
+				import traceback
+				traceback.print_exc()
+	
+	def stop(self):
+		self.running = False
 	
 	def _plot_live(self):
-		pass
+		# there are some issues because simultaneous read access to the output files 
+		# seems to cause segmentation faults.
+		return
 	
-

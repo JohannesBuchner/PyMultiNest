@@ -3,6 +3,12 @@ import numpy
 import math
 import sys
 import pyapemost
+def show(filepath):
+	""" open the output (pdf) file for the user """
+	import subprocess, os
+	if os.name == 'mac': subprocess.call(('open', filepath))
+	elif os.name == 'nt': os.startfile(filepath)
+	elif os.name == 'posix': subprocess.call(('xdg-open', filepath))
 
 # we will try to recover these parameters
 A     = 6.13
@@ -50,21 +56,26 @@ if "calibrate" in cmd:
 	pyapemost.calibrate()
 # run APEMoST
 if "run" in cmd:
-	pyapemost.run(max_iterations = 100000)
-
+	pyapemost.run(max_iterations = 10000, append = False)
 
 # lets analyse the results
 if "analyse" in cmd:
+	plotter = pyapemost.analyse.VisitedAllPlotter()
+	plotter.plot()
+	show("chain0.pdf")
 	import matplotlib.pyplot as plt
 	histograms = pyapemost.create_histograms()
 	i = 1
+	plt.clf()
+	plt.figure(figsize=(7, 4 * len(histograms)))
 	for k,(v,stats) in histograms.iteritems():
 		plt.subplot(len(histograms), 1, i)
 		plt.plot(v[:,0], v[:,2], ls='steps--', label=k)
 		plt.legend()
 		print k, stats
 		i = i + 1
-	plt.show()
+	plt.savefig("marginals.pdf")
+	show("marginals.pdf")
 	
 	print pyapemost.model_probability()
 
