@@ -49,7 +49,7 @@ libcnest.so: $(OBJFILES)
 	test -e ${MULTINEST}/libnest3.so
 	# Found.
 	#
-	$(LINKLIB) $(LIBS) $(CFLAGS) cnest.c -o libcnest.so
+	$(LINKLIB) $(CFLAGS) cnest.c -o libcnest.so $(LIBS)
 	# all done.
 
 clean:
