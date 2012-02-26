@@ -8,7 +8,7 @@ import numpy
 import scipy
 import numpy
 import json
-import sys
+import sys, os
 
 def load_params():
 	dtype = [('initial', 'f'), ('min', 'f'), ('max', 'f'), ('name', 'S100'), ('stepsize', 'f')]
@@ -124,16 +124,17 @@ class VisitedAnalyser(object):
 	def plot(self):
 		# load data
 		values = []
-		print "loading chains ..."
+		print "visualization: loading chains ..."
 		for p in self.params:
 			f = "%s-chain-0.prob.dump" % p['name']
 			print "	loading chain %s" % f
+			if not os.path.exists(f):
+				raise Exception("visualization: chains not available yet.")
 			v = numpy.genfromtxt(f, skip_footer=1, dtype='f')
 			values.append(v)
-		print "loading chains finished."
 		nvalues = min(map(len, values))
-		values = map(lambda v: v[-self.nlast:nvalues], values)
-		
+		print "visualization: loading chains finished; %d values" % nvalues
+		values = map(lambda v: v[:nvalues][-self.nlast:], values)
 		for p1,v1,i in zip(self.params, values, range(len(self.params))):
 			self.marginal_plot(p1, v1)
 			for p2,v2 in zip(self.params[:i], values[:i]):
@@ -159,7 +160,7 @@ class VisitedPlotter(VisitedAnalyser):
 	
 	def conditional_plot_before(self, param1, values1, param2, values2):
 		names = (param1['name'],param2['name'])
-		print "creating conditional plot of %s vs %s" % names
+		print "visualization: creating conditional plot of %s vs %s" % names
 		plt.figure(figsize=(5,5))
 		plt.title("%s vs %s" % names)
 	def conditional_plot_after(self, param1, values1, param2, values2):
@@ -172,7 +173,7 @@ class VisitedPlotter(VisitedAnalyser):
 		self.marginal_plot_after(param, values)
 	def marginal_plot_before(self, param, values):
 		name = param['name']
-		print "creating marginal plot of %s" % name
+		print "visualization: creating marginal plot of %s" % name
 		plt.figure(figsize=(5,5))
 		plt.title("%s" % name)
 	def marginal_plot_after(self, param, values):
@@ -201,9 +202,9 @@ class VisitedAllPlotter(VisitedPlotter):
 		
 		plt.figure(figsize=(5*self.nparams,5*self.nparams))
 		VisitedPlotter.plot(self)
-		print "saving output ..."
+		print "visualization: saving output ..."
 		plt.savefig(self.outputfiles_basename + "chain0.pdf")
-		print "saving output done"
+		print "visualization: saving output done"
 	
 	def choose_plot(self, i, j):
 		plt.subplot(self.nparams, self.nparams, self.nparams * j + i + 1)
@@ -213,7 +214,7 @@ class VisitedAllPlotter(VisitedPlotter):
 		i, j = map(self.paramnames.index, names)
 		self.choose_plot(i, j)
 		names = (param1['name'],param2['name'])
-		print "creating conditional plot of %s vs %s" % names
+		print "visualization: creating conditional plot of %s vs %s" % names
 		plt.xlabel(param1['name'])
 		plt.ylabel(param2['name'])
 	def conditional_plot_after(self, param1, values1, param2, values2):
@@ -223,7 +224,7 @@ class VisitedAllPlotter(VisitedPlotter):
 		name = param['name']
 		i = self.paramnames.index(name)
 		thisplot = self.choose_plot(i, i)
-		print "creating marginal plot of %s" % name
+		print "visualization: creating marginal plot of %s" % name
 		plt.xlabel("iteration")
 		plt.ylabel(name)
 	def marginal_plot_after(self, param, values):
