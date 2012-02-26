@@ -159,11 +159,11 @@ class PlotMarginal(object):
 		n_params = self.analyser.n_params
 		modes = stats['modes']
 		# determining min/max
-		min1 = min([mode['mean'][dim1] - 5*mode['sigma'][dim1] for mode in modes])
-		max1 = max([mode['mean'][dim1] + 5*mode['sigma'][dim1] for mode in modes])
+		min1 = min([mode['mean'][dim1] - 3*mode['sigma'][dim1] for mode in modes])
+		max1 = max([mode['mean'][dim1] + 3*mode['sigma'][dim1] for mode in modes])
 		if dim2 is not None:
-			min2 = min([mode['mean'][dim2] - 5*mode['sigma'][dim2] for mode in modes])
-			max2 = max([mode['mean'][dim2] + 5*mode['sigma'][dim2] for mode in modes])
+			min2 = min([mode['mean'][dim2] - 3*mode['sigma'][dim2] for mode in modes])
+			max2 = max([mode['mean'][dim2] + 3*mode['sigma'][dim2] for mode in modes])
 		#print dim1, min1, max1, dim2, min2, max2
 		# create grid
 		n = grid_points
@@ -227,12 +227,14 @@ class PlotMarginal(object):
 			grid_z = scipy.interpolate.griddata(coords, values, (grid_x, grid_y), method='cubic')
 		
 		if dim2 is not None:
-			plt.imshow(grid_z, extent=(min1,max1,min2,max2), origin='lower',
-				cmap=cm.gray_r, alpha = 0.8)
+			plt.xlim((min1,max1))
+			plt.ylim((min2,max2))
+			plt.imshow(grid_z, origin='lower',
+				cmap=cm.gray_r, alpha = 0.8, aspect = 'auto')
 			plt.colorbar()
 		else:
 			#plt.xlim(min1, max1)
-			plt.plot(grid_x, grid_z[:,0], 'o-', color='grey')
+			plt.plot(grid_x, grid_z[:,0], '-', color='grey', drawstyle='steps')
 		# add contours
 		if use_log_values:
 			levels = [maxvalue, maxvalue - .5, maxvalue - 1.0, maxvalue - 2.0]
