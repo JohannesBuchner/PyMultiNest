@@ -149,7 +149,7 @@ class VisitedPlotter(VisitedAnalyser):
 	The output files are named chain0-paramname1-paramname2.pdf and chain0-paramname.pdf
 	"""
 	def __init__(self, outputfiles_basename = "", nlast = 0):
-		VisitedAnalyser.__init__(self, nlast = 0)
+		VisitedAnalyser.__init__(self, nlast = nlast)
 		self.outputfiles_basename = outputfiles_basename
 	
 	def conditional_plot(self, param1, values1, param2, values2):
