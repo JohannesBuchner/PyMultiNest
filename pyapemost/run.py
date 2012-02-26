@@ -36,7 +36,7 @@ class MCMC(Structure):
 
 
 callback_type = CFUNCTYPE(c_double, POINTER(MCMC), POINTER(gsl.gsl_vector))
-
+_last_functions = None
 def set_function(LogLikelihood, Prior):
 	"""
 	Initializes APEMoST with the two log-probability functions 
@@ -66,7 +66,10 @@ def set_function(LogLikelihood, Prior):
 
 	@param Prior: Log of the Prior function
 	"""
-	lib.set_function(callback_type(LogLikelihood), callback_type(Prior))
+	global _last_functions
+	# avoid garbage collection of functions, which leads to segfaults
+	_last_functions = callback_type(LogLikelihood), callback_type(Prior)
+	lib.set_function(*_last_functions)
 	
 
 calibrate_first_chain = lib.calibrate_first

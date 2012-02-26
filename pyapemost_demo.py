@@ -67,7 +67,10 @@ if "calibrate" in cmd:
 	pyapemost.calibrate()
 # run APEMoST
 if "run" in cmd:
+	w = pyapemost.watch.ProgressWatcher()
+	w.start()
 	pyapemost.run(max_iterations = 10000, append = False)
+	w.stop()
 
 # lets analyse the results
 if "analyse" in cmd:

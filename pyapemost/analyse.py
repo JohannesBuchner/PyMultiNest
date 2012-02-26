@@ -114,9 +114,12 @@ class VisitedAnalyser(object):
 	
 		marginal_plot(param1, values1)
 		conditional_plot(param1, values1, param2, values2)
+		
+	@param nlast: if 0, use all points; otherwise only the last *nlast* ones.
 	"""
-	def __init__(self):
+	def __init__(self, nlast = 0):
 		self.params = load_params()
+		self.nlast = nlast
 	
 	def plot(self):
 		# load data
@@ -129,7 +132,7 @@ class VisitedAnalyser(object):
 			values.append(v)
 		print "loading chains finished."
 		nvalues = min(map(len, values))
-		values = map(lambda v: v[:nvalues], values)
+		values = map(lambda v: v[-self.nlast:nvalues], values)
 		
 		for p1,v1,i in zip(self.params, values, range(len(self.params))):
 			self.marginal_plot(p1, v1)
@@ -145,8 +148,8 @@ class VisitedPlotter(VisitedAnalyser):
 	
 	The output files are named chain0-paramname1-paramname2.pdf and chain0-paramname.pdf
 	"""
-	def __init__(self, outputfiles_basename = ""):
-		VisitedAnalyser.__init__(self)
+	def __init__(self, outputfiles_basename = "", nlast = 0):
+		VisitedAnalyser.__init__(self, nlast = 0)
 		self.outputfiles_basename = outputfiles_basename
 	
 	def conditional_plot(self, param1, values1, param2, values2):
@@ -235,11 +238,13 @@ class VisitedWindow(VisitedAnalyser):
 	similar to **VisitedAllPlotter** but continuously updating.
 	"""
 	def __init__(self):
-		VisitedAnalyser.__init__(self)
+		plt.clf()
 		plt.ion()
+		VisitedAnalyser.__init__(self)
 		self.paramnames = list(self.params['name'])
 		self.nparams = len(self.params)
 		self.plots = {}
+		plt.figure(figsize=(3*self.nparams,3*self.nparams))
 		for i, p1 in zip(range(self.nparams), self.params):
 			self.plots[i] = {i:{}}
 			self.choose_plot(i, i)
@@ -252,30 +257,34 @@ class VisitedWindow(VisitedAnalyser):
 				plt.title("%s vs %s" % names)
 	
 	def choose_plot(self, i, j):
-		plt.subplot(self.nparams, self.nparams, self.nparams * i + j + 1)
+		plt.subplot(self.nparams, self.nparams, self.nparams * j + i + 1)
 		return self.plots[i][j]
 	def update_plot(self, plot, name, x, y):
-		if name not in plot:
-			plot[name] = plt.plot(x, y, label=name)
+		if name not in plot or True:
+			plot[name], = plt.plot(x, y, '+', markersize=2, alpha=0.5, label=name)
 		else:
 			plot[name].set_xdata(x)
 			plot[name].set_ydata(y)
+		plt.draw()
+		plt.show()
 	
 	def conditional_plot(self, param1, values1, param2, values2):
 		names = [param1['name'],param2['name']]
 		i, j = map(self.paramnames.index, names)
 		thisplot = self.choose_plot(i, j)
 		
-		if len(values1) > 500:
-			self.update_plot(thisplot, "previous", values1[:-500], values2[:-500])
-		if len(values1) > 50:
-			self.update_plot(thisplot, "current", values1[-500:-50], values2[-500:-50])
 		self.update_plot(thisplot, "newest", values1[-50:], values2[-50:])
-		plt.draw()
+		plt.xlabel(param1['name'])
+		plt.ylabel(param2['name'])
 		
 	def marginal_plot(self, param, values):
 		name = param['name']
 		i = self.paramnames.index(name)
 		thisplot = self.choose_plot(i, i)
 		self.update_plot(thisplot, "progress", xrange(len(values)), values)
+		plt.xlabel("iteration")
+		plt.ylabel(name)
 		
+	def plot(self):
+		VisitedAnalyser.plot(self)
+		plt.show()
