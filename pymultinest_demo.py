@@ -57,14 +57,24 @@ plt.clf()
 # Copy and edit this file, and play with it.
 
 p = pymultinest.PlotMarginal(a)
+plt.figure(figsize=(5*n_params, 5*n_params))
+#plt.subplots_adjust(wspace=0, hspace=0)
 for i in range(n_params):
-	outfile = '%s-marginal-%d.pdf' % (a.outputfiles_basename,i)
-	p.plot_marginal(i, with_ellipses = True, with_points = False, grid_points=200)
+	plt.subplot(n_params, n_params, n_params * i + i + 1)
+	p.plot_marginal(i, with_ellipses = True, with_points = False, grid_points=50)
 	plt.ylabel("Probability")
 	plt.xlabel(parameters[i])
-	plt.savefig(outfile, format='pdf', bbox_inches='tight')
-	plt.close()
 	
+	for j in range(i):
+		plt.subplot(n_params, n_params, n_params * j + i + 1)
+		#plt.subplots_adjust(left=0, bottom=0, right=0, top=0, wspace=0, hspace=0)
+		p.plot_conditional(i, j, with_ellipses = False, with_points = True, grid_points=30)
+		plt.xlabel(parameters[i])
+		plt.ylabel(parameters[j])
+
+plt.savefig("marginals_multinest.pdf") #, bbox_inches='tight')
+show("marginals_multinest.pdf")
+for i in range(n_params):
 	outfile = '%s-mode-marginal-%d.pdf' % (a.outputfiles_basename,i)
 	p.plot_modes_marginal(i, with_ellipses = True, with_points = False)
 	plt.ylabel("Probability")
@@ -78,16 +88,7 @@ for i in range(n_params):
 	plt.xlabel(parameters[i])
 	plt.savefig(outfile, format='pdf', bbox_inches='tight')
 	plt.close()
-	
-	for j in range(i):
-		p.plot_conditional(i, j, with_ellipses = True, with_points = False)
-		outfile = '%s-conditional-%d-%d.pdf' % (a.outputfiles_basename,i,j)
-		plt.xlabel(parameters[i])
-		plt.ylabel(parameters[j])
-		plt.title("Conditional probability")
-		plt.savefig(outfile, format='pdf', bbox_inches='tight')
-		plt.close()
-		show(outfile)
+
 print "take a look at the pdf files in chains/" 
 
 
