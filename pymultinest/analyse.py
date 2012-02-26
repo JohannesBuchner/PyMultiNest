@@ -230,7 +230,7 @@ class PlotMarginal(object):
 			plt.xlim((min1,max1))
 			plt.ylim((min2,max2))
 			plt.imshow(grid_z, origin='lower',
-				cmap=cm.gray_r, alpha = 0.8, aspect = 'auto')
+				cmap=cm.gray_r, alpha = 0.8, extent=(min1,max1,min2,max2))
 			plt.colorbar()
 		else:
 			#plt.xlim(min1, max1)
