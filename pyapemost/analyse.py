@@ -106,6 +106,8 @@ import numpy
 import matplotlib
 import matplotlib.pyplot as plt
 
+verbose = 1
+
 class VisitedAnalyser(object):
 	"""
 	Internal, abstract class that has the visited points of chain 0 loaded. 
@@ -124,16 +126,20 @@ class VisitedAnalyser(object):
 	def plot(self):
 		# load data
 		values = []
-		print "visualization: loading chains ..."
+		if verbose: print
+		if verbose: print "visualization: loading chains ..."
 		for p in self.params:
 			f = "%s-chain-0.prob.dump" % p['name']
-			print "	loading chain %s" % f
+			if verbose: print "	loading chain %s" % f
 			if not os.path.exists(f):
 				raise Exception("visualization: chains not available yet.")
-			v = numpy.genfromtxt(f, skip_footer=1, dtype='f')
+			try:
+				v = numpy.genfromtxt(f, skip_footer=1, dtype='f')
+			except Exception as e:
+				raise Exception("visualization: chains couldn't be loaded; perhaps no data yet: " + str(e))
 			values.append(v)
 		nvalues = min(map(len, values))
-		print "visualization: loading chains finished; %d values" % nvalues
+		if verbose: print "visualization: loading chains finished; %d values" % nvalues
 		values = map(lambda v: v[:nvalues][-self.nlast:], values)
 		for p1,v1,i in zip(self.params, values, range(len(self.params))):
 			self.marginal_plot(p1, v1)
@@ -160,7 +166,7 @@ class VisitedPlotter(VisitedAnalyser):
 	
 	def conditional_plot_before(self, param1, values1, param2, values2):
 		names = (param1['name'],param2['name'])
-		print "visualization: creating conditional plot of %s vs %s" % names
+		if verbose: print "visualization: creating conditional plot of %s vs %s" % names
 		plt.figure(figsize=(5,5))
 		plt.title("%s vs %s" % names)
 	def conditional_plot_after(self, param1, values1, param2, values2):
@@ -173,7 +179,7 @@ class VisitedPlotter(VisitedAnalyser):
 		self.marginal_plot_after(param, values)
 	def marginal_plot_before(self, param, values):
 		name = param['name']
-		print "visualization: creating marginal plot of %s" % name
+		if verbose: print "visualization: creating marginal plot of %s" % name
 		plt.figure(figsize=(5,5))
 		plt.title("%s" % name)
 	def marginal_plot_after(self, param, values):
@@ -202,9 +208,9 @@ class VisitedAllPlotter(VisitedPlotter):
 		
 		plt.figure(figsize=(5*self.nparams,5*self.nparams))
 		VisitedPlotter.plot(self)
-		print "visualization: saving output ..."
+		if verbose: print "visualization: saving output ..."
 		plt.savefig(self.outputfiles_basename + "chain0.pdf")
-		print "visualization: saving output done"
+		if verbose: print "visualization: saving output done"
 	
 	def choose_plot(self, i, j):
 		plt.subplot(self.nparams, self.nparams, self.nparams * j + i + 1)
@@ -214,7 +220,7 @@ class VisitedAllPlotter(VisitedPlotter):
 		i, j = map(self.paramnames.index, names)
 		self.choose_plot(i, j)
 		names = (param1['name'],param2['name'])
-		print "visualization: creating conditional plot of %s vs %s" % names
+		if verbose: print "visualization: creating conditional plot of %s vs %s" % names
 		plt.xlabel(param1['name'])
 		plt.ylabel(param2['name'])
 	def conditional_plot_after(self, param1, values1, param2, values2):
@@ -224,7 +230,7 @@ class VisitedAllPlotter(VisitedPlotter):
 		name = param['name']
 		i = self.paramnames.index(name)
 		thisplot = self.choose_plot(i, i)
-		print "visualization: creating marginal plot of %s" % name
+		if verbose: print "visualization: creating marginal plot of %s" % name
 		plt.xlabel("iteration")
 		plt.ylabel(name)
 	def marginal_plot_after(self, param, values):

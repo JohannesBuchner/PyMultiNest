@@ -19,6 +19,7 @@ class MCMC(Structure):
 		('rng', POINTER(gsl.gsl_rng)),
 		('params', POINTER(gsl.gsl_vector)),
 		('params_best', POINTER(gsl.gsl_vector)),
+		('dice', c_double),
 		('files', POINTER(c_void_p)),
 		('parameter_names', POINTER(c_char_p)),
 		('accept', POINTER(c_ulong)),

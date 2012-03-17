@@ -37,8 +37,9 @@ class ProgressWatcher(threading.Thread):
 			try:
 				self._plot_live()
 			except Exception as e:
-				import traceback
-				traceback.print_exc()
+				print 'Plotting failed', e
+				#import traceback
+				#traceback.print_exc()
 	
 	def stop(self):
 		self.running = False
