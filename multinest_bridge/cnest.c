@@ -6,10 +6,11 @@
 #define LOGLIKETYPE(f) double (f)(double *Cube, int n_dim, int n_par)
 #define PRIORTYPE(f) void (f)(double *Cube, int n_dim, int n_par)
 
-#define MULTINEST_CALLBACK(f) void (f) (double *Cube, int *ndim, int *npars, double *lnew)
+#define MULTINEST_CALLBACK(f) void (f) (double *Cube, int *ndim, int *npars, \
+					double *lnew, void *context)
 #define MULTINEST_DUMPERTYPE(f) void (f)(int *nsamples, int *nlive, int *npar, \
 		double **physlive, double **posterior, double **paramconstr, \
-		double * maxloglike, double * logz, double *logzerr)
+		double *maxloglike, double *logz, double *logzerr, void *context)
 #define DUMPERTYPE(f) void (f)(int nsamples, int nlive, int npar, \
 		double ** physlive, double ** posterior, \
 		double *mean, double *std, double *best, double *map, \
@@ -20,7 +21,7 @@ extern void MULTINEST_CALL(
 	int *mmodal, int *ceff, int *nlive, double *tol, double *efr, int *ndims,
 	int *nPar, int *nClsPar, int *maxModes, int *updInt, double *Ztol, 
 	char *root, int *seed, int *pWrap, int *fb, int *resume,
-	int *outfile, int *initMPI, double *nestlogzero,  
+	int *outfile, int *initMPI, double *nestlogzero,  int *nestMaxIter,
 	MULTINEST_CALLBACK(*Loglike), 
 	MULTINEST_DUMPERTYPE(*Dumper),
 	int *context);
@@ -95,7 +96,7 @@ void run(
 	int mmodal, int ceff, int nlive, double tol, double efr, int ndims,
 	int nPar, int nClsPar, int maxModes, int updInt, double Ztol, 
 	char *rootstr, int seed, int * pWrap, int fb, int resume, int outfile, 
-	int initMPI, double logZero, int context
+	int initMPI, double logZero, int maxIter, int context
 )
 {
 	char root[100];
@@ -116,7 +117,7 @@ void run(
 	MULTINEST_CALL(&mmodal, &ceff, &nlive, &tol, &efr, &ndims, 
 		&nPar, &nClsPar, &maxModes, &updInt, &Ztol,
 		root, &seed, pWrap, &fb, &resume,
-		&outfile, &initMPI, &logZero,  
-			 _LogLike, dumpfunc, &context);
+		&outfile, &initMPI, &logZero, &maxIter,
+		_LogLike, dumpfunc, &context);
 }
 

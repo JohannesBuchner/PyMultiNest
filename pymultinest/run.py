@@ -15,7 +15,7 @@ def run(LogLikelihood,
 	max_modes = 100,
 	outputfiles_basename = "chains/1-", seed = -1, verbose = False,
 	resume = True, context = 0, write_output = True, log_zero = -1e100, 
-	init_MPI = True, dump_callback = None):
+	max_iter = 0, init_MPI = True, dump_callback = None):
 	"""
 	Runs MultiNest
 	
@@ -87,6 +87,9 @@ def run(LogLikelihood,
 	@param log_zero: 
 		points with loglike < logZero will be ignored by MultiNest
 	
+	@param max_iter: 
+		maximum number of iterations. 0 is unlimited.
+	
 	@param write_output:
 		write output files? This is required for analysis.
 		
@@ -98,9 +101,9 @@ def run(LogLikelihood,
 	if n_params == None:
 		n_params = n_dims
 	if n_clustering_params == None:
-		n_clustering_params = n_params
+		n_clustering_params = n_dims
 	if wrapped_params == None:
-		wrapped_params = [0] * n_params
+		wrapped_params = [0] * n_dims
 	
 	WrappedType = c_int * len(wrapped_params)
 	wraps = WrappedType(*wrapped_params)
@@ -139,7 +142,7 @@ def run(LogLikelihood,
 		outputfiles_basename, c_int(seed), wraps,
 		c_int(verbose), c_int(resume), 
 		c_int(write_output), c_int(init_MPI), 
-		c_double(log_zero), 
+		c_double(log_zero), c_int(max_iter),
 		c_int(context))
 
 
