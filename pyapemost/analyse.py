@@ -263,7 +263,7 @@ class VisitedPlotter(VisitedAnalyser):
 					contour_sigmas.append(u'%.0f sigma' % s)
 			
 			print 'z_mins', z_mins
-			CS = plt.contour(Y, X, Z, z_mins, labels=contour_sigmas, **contourargs)
+			CS = plt.contour(X, Y, Z.transpose(), z_mins, labels=contour_sigmas, **contourargs)
 			plt.clabel(CS, fmt=dict(zip(z_mins, contour_sigmas)), inline=1, fontsize=10)
 			## 1, 3 and 5 sigma equivalents by FWHM
 			##lines = 2 * (2 * ndim * numpy.log([1,3,5])**0.5
