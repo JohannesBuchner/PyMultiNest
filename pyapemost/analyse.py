@@ -5,7 +5,7 @@ The output files are in an easy-to-process format, so
 there is no requirement to use a specific set of tools.
 """
 import numpy
-import scipy
+import scipy, scipy.stats
 import numpy
 import json
 import sys, os
@@ -14,36 +14,67 @@ def load_params():
 	dtype = [('initial', 'f'), ('min', 'f'), ('max', 'f'), ('name', 'S100'), ('stepsize', 'f')]
 	return numpy.loadtxt('params', dtype=dtype, ndmin=1)
 
-def create_histogram(parameter_name, nbins=100, writeFile=True):
+import scipy.ndimage.filters
+def smoothen_histogram(bins):
+	bins[:,2] = scipy.ndimage.filters.median_filter(bins[:,2], size=10)
+	return bins
+
+def truncate_histogram(bins, sigma):
+	#print 'bins', bins[:,2]
+	bins_sorted = numpy.asarray(sorted(bins[:,2].reshape((-1,)), reverse=True))
+	#print 'bins_sorted', bins_sorted
+	bins_cum = bins_sorted.cumsum()
+	bins_tot = bins_sorted.sum()
+	#print 'bins_cum', bins_cum
+	
+	limit = scipy.stats.norm.cdf(sigma) - scipy.stats.norm.cdf(-sigma)
+	badbins = bins_cum > limit * bins_tot
+	
+	# find next-best
+	#print "limit for %f is %f: %d bins" % (sigma, limit, badbins.sum())
+	if badbins.sum() != 0:
+		minvalue = bins_sorted[badbins][0]
+		
+		#print 'good bins', bins[bins[:,2] >= minvalue]
+		return bins[bins[:,2] >= minvalue]
+	else:
+		return bins
+
+def create_histogram(parameter_name, nbins=100, writeFile=True, skipfirst=0, truncate=False, smooth=False):
 	"""
 	Returns a histogram and some statistics about this parameter.
 		
 	@param writeFile: if true, write the histogram to paramname.histogram
 	"""
 	f = "%s-chain-0.prob.dump" % parameter_name
-	values = numpy.recfromtxt(f)
+	values = numpy.recfromtxt(f)[skipfirst:]
 
 	statistics = {
 		'min':   float(values.min()),
 		'max':   float(values.max()),
 		'stdev': float(values.std()),
 		'mean':  float(values.mean()),
-		'median':float(numpy.median(values))
+		'median':float(numpy.median(values)),
+		'q1':    float(scipy.stats.scoreatpercentile(values, 25)),
+		'q3':    float(scipy.stats.scoreatpercentile(values, 75)),
+		'p5':    float(scipy.stats.scoreatpercentile(values, 5)),
+		'p95':    float(scipy.stats.scoreatpercentile(values, 95)),
 	}
-
-	hist = scipy.histogram(values, bins=nbins, normed=True)
+	
+	hist = scipy.histogram(values, bins = nbins if not smooth else nbins*10, normed=True)
 	histwithborders = numpy.dstack([hist[1][0:nbins], hist[1][1:nbins+1], hist[0]])
 	if writeFile:
 		scipy.savetxt('%s.histogram' % parameter_name, histwithborders[0], delimiter="\t")
 	return histwithborders[0], statistics
 
-def create_histograms(nbins=100, writeFile=True):
+
+def create_histograms(**kwargs):
 	"""
 	Runs create_histogram for all parameters and returns
 	a dictionary of the results
 	"""
 	paramnames = load_params()['name']
-	return dict([(p, create_histogram(p, nbins=nbins, writeFile=writeFile)) for p in paramnames])
+	return dict([(p, create_histogram(p, **kwargs)) for p in paramnames])
 
 def print_model_probability(logprob):
 	"""
@@ -123,11 +154,19 @@ class VisitedAnalyser(object):
 		self.params = load_params()
 		self.nlast = nlast
 	
-	def plot(self):
+	def load(self):
 		# load data
 		values = []
 		if verbose: print
 		if verbose: print "visualization: loading chains ..."
+		f = "prob-chain0.dump"
+		if not os.path.exists(f):
+			raise Exception("visualization: chains not available yet.")
+		try:
+			# I think the first column is the probabilities, the second is without prior
+			probabilities = numpy.genfromtxt(f, skip_footer=1, dtype='f')[:,0]
+		except Exception as e:
+			raise Exception("visualization: chains couldn't be loaded; perhaps no data yet: " + str(e))
 		for p in self.params:
 			f = "%s-chain-0.prob.dump" % p['name']
 			if verbose: print "	loading chain %s" % f
@@ -140,11 +179,25 @@ class VisitedAnalyser(object):
 			values.append(v)
 		nvalues = min(map(len, values))
 		if verbose: print "visualization: loading chains finished; %d values" % nvalues
-		values = map(lambda v: v[:nvalues][-self.nlast:], values)
-		for p1,v1,i in zip(self.params, values, range(len(self.params))):
-			self.marginal_plot(p1, v1)
-			for p2,v2 in zip(self.params[:i], values[:i]):
-				self.conditional_plot(p1, v1, p2, v2)
+		self.values = map(lambda v: v[:nvalues][-self.nlast:], values)
+		self.probabilities = probabilities[:nvalues][-self.nlast:]
+	
+	def plot_only(self):
+		for p1,v1,i in zip(self.params, self.values, range(len(self.params))):
+			self.marginal_plot(p1, v1, self.probabilities)
+			for p2,v2 in zip(self.params[:i], self.values[:i]):
+				self.conditional_plot(p1, v1, p2, v2, self.probabilities)
+	def after_plot(self):
+		pass
+	def before_plot(self):
+		pass
+	def plot(self):
+		self.load()
+		self.before_plot()
+		self.plot_only()
+		self.after_plot()
+		del self.values
+		del self.probabilities
 	
 class VisitedPlotter(VisitedAnalyser):
 	"""
@@ -159,10 +212,66 @@ class VisitedPlotter(VisitedAnalyser):
 		VisitedAnalyser.__init__(self, nlast = nlast)
 		self.outputfiles_basename = outputfiles_basename
 	
-	def conditional_plot(self, param1, values1, param2, values2):
+	def conditional_plot(self, param1, values1, param2, values2, probabilities, points = True, contours = False, best = True, good = True, sigmas = [1.,3.], contourargs = {}):
 		self.conditional_plot_before(param1, values1, param2, values2)
-		plt.plot(values1, values2, '+', color='black', markersize=2, alpha=0.5)
+		if best:
+			best = probabilities.argmax()
+		if good:
+			good = probabilities > (probabilities[best] - 0.5)
+		else:
+			good = numpy.zeros_like(probabilities)
+		
+		CS = None
+		sigmas = numpy.asarray(sigmas)
+		
+		if points:
+			plt.plot(values1[-good], values2[-good], '+', color='#444444', markersize=2, alpha=0.5)
+			plt.plot(values1[good], values2[good], 'x', color='#22FF22', markersize=2, alpha=0.5, label='good')
+			if best:
+				plt.plot([values1[best]], [values2[best]], 'o', color='red', markersize=2, alpha=0.5, label='best')
+		
+		if contours:
+			H, xedges, yedges = numpy.histogram2d(values1, values2, bins=int(len(values1)**0.5 / 4), normed=True)
+			#print H, xedges, yedges
+			
+			X, Y = numpy.meshgrid(
+				(xedges[:-1] + xedges[1:])/2., 
+				(yedges[:-1] + yedges[1:])/2.)
+			Z = H.transpose() / H.max()
+			
+			ndim = len(self.params)
+			
+			# order bins by value
+			#print 'Z', Z
+			z_sorted = numpy.asarray(sorted(Z.reshape((-1,)), reverse=True))
+			#print 'z_sorted', z_sorted
+			# adding up largest bins first
+			z_cum = z_sorted.cumsum()
+			z_tot = z_sorted.sum()
+			#print 'z_cum', z_cum
+			
+			z_mins = []
+			contour_sigmas = []
+			for s in sigmas:
+				limit = scipy.stats.norm.cdf(s) - scipy.stats.norm.cdf(-s)
+				badbins = z_cum > limit * z_tot
+				# find next-best
+				#print "limit for %f is %f: %d bins" % (s, limit, badbins.sum())
+				if badbins.sum() != 0:
+					z_min = z_sorted[badbins][0]
+					z_mins.append(z_min)
+					contour_sigmas.append(u'%.0f sigma' % s)
+			
+			print 'z_mins', z_mins
+			CS = plt.contour(Y, X, Z, z_mins, labels=contour_sigmas, **contourargs)
+			plt.clabel(CS, fmt=dict(zip(z_mins, contour_sigmas)), inline=1, fontsize=10)
+			## 1, 3 and 5 sigma equivalents by FWHM
+			##lines = 2 * (2 * ndim * numpy.log([1,3,5])**0.5
+			#lines = numpy.exp(-1/2. * sigmas)
+			#CS = plt.contour(X, Y, Z, lines, **contourargs)
+		
 		self.conditional_plot_after(param1, values1, param2, values2)
+		return CS
 	
 	def conditional_plot_before(self, param1, values1, param2, values2):
 		names = (param1['name'],param2['name'])
@@ -173,9 +282,15 @@ class VisitedPlotter(VisitedAnalyser):
 		names = (param1['name'],param2['name'])
 		plt.savefig(self.outputfiles_basename + "chain0-%s-%s.pdf" % names)
 	
-	def marginal_plot(self, param, values):
+	def marginal_plot(self, param, values, probabilities):
 		self.marginal_plot_before(param, values)
-		plt.plot(values, color='gray')
+		best = probabilities.argmax()
+		good = probabilities > (probabilities[best] - 0.5)
+		i = numpy.arange(len(probabilities))
+		plt.plot(i[-good], values[-good], '+', color='gray')
+		plt.plot(i[good], values[good], 'x', color='#22FF22')
+		plt.plot([i[best]], [values[best]], 'o', color='red')
+		
 		self.marginal_plot_after(param, values)
 	def marginal_plot_before(self, param, values):
 		name = param['name']
@@ -193,7 +308,7 @@ class VisitedAllPlotter(VisitedPlotter):
 	
 	@see VisitedPlotter
 	"""
-	def plot(self):
+	def before_plot(self):
 		self.paramnames = list(self.params['name'])
 		self.nparams = len(self.params)
 		self.plots = {}
@@ -205,11 +320,18 @@ class VisitedAllPlotter(VisitedPlotter):
 				self.choose_plot(i, j)
 				names = (str(p1['name']), str(p2['name']))
 				plt.title("%s vs %s" % names)
-		
+			for j, p2 in zip(range(i), self.params):
+				self.choose_plot(j, i)
+				names = (str(p1['name']), str(p2['name']))
+				plt.title("%s vs %s" % names)
+		self.before_plot_newfigure()
+	def before_plot_newfigure(self):
 		plt.figure(figsize=(5*self.nparams,5*self.nparams))
-		VisitedPlotter.plot(self)
+	
+	def after_plot(self):
 		if verbose: print "visualization: saving output ..."
 		plt.savefig(self.outputfiles_basename + "chain0.pdf")
+		plt.close()
 		if verbose: print "visualization: saving output done"
 	
 	def choose_plot(self, i, j):
@@ -223,6 +345,10 @@ class VisitedAllPlotter(VisitedPlotter):
 		if verbose: print "visualization: creating conditional plot of %s vs %s" % names
 		plt.xlabel(param1['name'])
 		plt.ylabel(param2['name'])
+	def conditional_plot(self, param1, values1, param2, values2, probabilities, **kwargs):
+		VisitedPlotter.conditional_plot(self, param1, values1, param2, values2, points = True, contours = False, probabilities = probabilities, **kwargs)
+		VisitedPlotter.conditional_plot(self, param2, values2, param1, values1, points = False, contours = True, probabilities = probabilities, **kwargs)
+	
 	def conditional_plot_after(self, param1, values1, param2, values2):
 		pass
 	
@@ -292,6 +418,5 @@ class VisitedWindow(VisitedAnalyser):
 		plt.xlabel("iteration")
 		plt.ylabel(name)
 		
-	def plot(self):
-		VisitedAnalyser.plot(self)
+	def after_plot(self):
 		plt.show()
