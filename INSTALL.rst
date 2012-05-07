@@ -6,6 +6,12 @@ Installing PyMultiNest and PyAPEMoST
 To use PyMultiNest or PyAPEMoST, follow these installation steps.
 If you only want to use one of them, skip steps according.
 
+Prerequisites
+------------------------------------
+
+  * ctypesGsl (python library, get it using easy_install or pip)
+
+
 Installing the python library
 ------------------------------------
 
