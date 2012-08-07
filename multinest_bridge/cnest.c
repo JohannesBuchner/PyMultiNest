@@ -80,8 +80,9 @@ struct problem {
 
 MULTINEST_CALLBACK(_LogLike)
 {
-	if (p.Prior != NULL)
+	if (p.Prior != NULL) {
 		p.Prior(Cube, *ndim, *npars);
+	}
 	*lnew = p.LogLike(Cube, *ndim, *npars);
 }
 MULTINEST_DUMPERTYPE(_noop_dumper)
