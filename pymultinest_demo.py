@@ -56,7 +56,7 @@ plt.clf()
 
 # Copy and edit this file, and play with it.
 
-p = pymultinest.PlotMarginal(a)
+p = pymultinest.PlotMarginalModes(a)
 plt.figure(figsize=(5*n_params, 5*n_params))
 #plt.subplots_adjust(wspace=0, hspace=0)
 for i in range(n_params):

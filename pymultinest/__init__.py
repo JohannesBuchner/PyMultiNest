@@ -25,7 +25,7 @@ from run import run
 from analyse import Analyzer
 try:            
 	from watch import ProgressWatcher, ProgressPrinter, ProgressPlotter
-	from plot import PlotMarginal
+	from plot import PlotMarginal, PlotMarginalModes
 except ImportError as e:
 	print e
 	print 'WARNING: no plotting available -- check matplotlib installation and error above'

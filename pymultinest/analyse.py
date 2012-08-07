@@ -1,4 +1,3 @@
-
 import numpy
 from StringIO import StringIO
 import re
