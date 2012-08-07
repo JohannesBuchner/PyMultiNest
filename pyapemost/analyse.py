@@ -10,6 +10,8 @@ import numpy
 import json
 import sys, os
 
+nevery = 1
+
 def load_params():
 	dtype = [('initial', 'f'), ('min', 'f'), ('max', 'f'), ('name', 'S100'), ('stepsize', 'f')]
 	return numpy.loadtxt('params', dtype=dtype, ndmin=1)
@@ -31,12 +33,13 @@ def truncate_histogram(bins, sigma):
 	badbins = bins_cum > limit * bins_tot
 	
 	# find next-best
-	#print "limit for %f is %f: %d bins" % (sigma, limit, badbins.sum())
+	#print "limit for %f is %f: %d/%d bins" % (sigma, limit, badbins.sum(), len(bins))
 	if badbins.sum() != 0:
 		minvalue = bins_sorted[badbins][0]
 		
 		#print 'good bins', bins[bins[:,2] >= minvalue]
-		return bins[bins[:,2] >= minvalue]
+		bins[bins[:,2] < minvalue,2] = 0.
+		return bins # [bins[:,2] >= minvalue]
 	else:
 		return bins
 
@@ -47,7 +50,7 @@ def create_histogram(parameter_name, nbins=100, writeFile=True, skipfirst=0, tru
 	@param writeFile: if true, write the histogram to paramname.histogram
 	"""
 	f = "%s-chain-0.prob.dump" % parameter_name
-	values = numpy.recfromtxt(f)[skipfirst:]
+	values = numpy.recfromtxt(f)[skipfirst::nevery]
 
 	statistics = {
 		'min':   float(values.min()),
@@ -125,7 +128,8 @@ def model_probability(show=True):
 	logprob = 0.
 	for i in range(nchains - 1, -1, -1):
 		f = 'prob-chain%d.dump' % i
-		value = numpy.loadtxt(f).mean() / beta[i]
+		# this file has 2 columns: with prior and *without*.
+		value = numpy.loadtxt(f)[:,1].mean() / beta[i]
 		logprob = logprob + value * (beta[i] - previous_beta)
 		previous_beta = beta[i]
 	
@@ -179,8 +183,8 @@ class VisitedAnalyser(object):
 			values.append(v)
 		nvalues = min(map(len, values))
 		if verbose: print "visualization: loading chains finished; %d values" % nvalues
-		self.values = map(lambda v: v[:nvalues][-self.nlast:], values)
-		self.probabilities = probabilities[:nvalues][-self.nlast:]
+		self.values = map(lambda v: v[:nvalues][-self.nlast::nevery], values)
+		self.probabilities = probabilities[:nvalues][-self.nlast::nevery]
 	
 	def plot_only(self):
 		for p1,v1,i in zip(self.params, self.values, range(len(self.params))):
@@ -232,18 +236,54 @@ class VisitedPlotter(VisitedAnalyser):
 		
 		if contours:
 			H, xedges, yedges = numpy.histogram2d(values1, values2, bins=int(len(values1)**0.5 / 4), normed=True)
-			#print H, xedges, yedges
+			#print 'edges', xedges, yedges
 			
-			X, Y = numpy.meshgrid(
-				(xedges[:-1] + xedges[1:])/2., 
-				(yedges[:-1] + yedges[1:])/2.)
-			Z = H.transpose() / H.max()
+			# using the binning results as the value of the center of the histogram
+			# would be an inaccurate visualization of the borders
+			# instead, we make 4 points (one for each corner)
+			
+			#X1, Y1 = numpy.meshgrid(
+				#(xedges[:-1]*9 + xedges[1:])/10., 
+				#(yedges[:-1]*9 + yedges[1:])/10.)
+			Z1 = H / H.max()
+			
+			X = []
+			Y = []
+			Z = []
+			for i in range(len(xedges) - 1):
+				xlow = xedges[i]
+				xhigh = xedges[i+1]
+				X_row_low  = [(xlow*9 + xhigh)/10.]*((len(yedges)-1)*2)
+				X_row_high = [(xlow + 9*xhigh)/10.]*((len(yedges)-1)*2)
+				Y_row = []
+				Z_row = []
+				
+				for j in range(len(yedges)-1):
+					ylow = yedges[j]
+					yhigh = yedges[j+1]
+					#print ylow, yhigh
+					Y_row.append((ylow*9 + yhigh)/10.)
+					Y_row.append((ylow + 9*yhigh)/10.)
+					z = Z1[i,j]
+					Z_row += [z]*2
+				#print len(X_row_low), len(X_row_high), len(yedges)
+				X.append(X_row_low)
+				X.append(X_row_high)
+				Y.append(Y_row)
+				Y.append(Y_row)
+				Z.append(Z_row)
+				Z.append(Z_row)
+			
+			X = numpy.array(X)
+			Y = numpy.array(Y)
+			Z = numpy.array(Z)
+			#print X.shape, Y.shape, Z.shape
 			
 			ndim = len(self.params)
 			
 			# order bins by value
 			#print 'Z', Z
-			z_sorted = numpy.asarray(sorted(Z.reshape((-1,)), reverse=True))
+			z_sorted = numpy.asarray(sorted(Z1.reshape((-1,)), reverse=True))
 			#print 'z_sorted', z_sorted
 			# adding up largest bins first
 			z_cum = z_sorted.cumsum()
@@ -252,6 +292,7 @@ class VisitedPlotter(VisitedAnalyser):
 			
 			z_mins = []
 			contour_sigmas = []
+			colors = []
 			for s in sigmas:
 				limit = scipy.stats.norm.cdf(s) - scipy.stats.norm.cdf(-s)
 				badbins = z_cum > limit * z_tot
@@ -261,10 +302,16 @@ class VisitedPlotter(VisitedAnalyser):
 					z_min = z_sorted[badbins][0]
 					z_mins.append(z_min)
 					contour_sigmas.append(u'%.0f sigma' % s)
+					if s == 1: colors.append("#dddddd")
+					if s == 3: colors.append("#cccccc")
 			
-			print 'z_mins', z_mins
-			CS = plt.contour(X, Y, Z.transpose(), z_mins, labels=contour_sigmas, **contourargs)
+			#print 'z_mins', z_mins
+			CS = plt.contour(X, Y, Z, z_mins, labels=contour_sigmas, **contourargs)
 			plt.clabel(CS, fmt=dict(zip(z_mins, contour_sigmas)), inline=1, fontsize=10)
+			if len(z_mins) > 1:
+				#print [z_mins[-1], z_mins[0]]
+				plt.contourf(X, Y, Z, z_mins[::-1] + [Z1.max()+1], colors=colors, alpha=0.3)
+			
 			## 1, 3 and 5 sigma equivalents by FWHM
 			##lines = 2 * (2 * ndim * numpy.log([1,3,5])**0.5
 			#lines = numpy.exp(-1/2. * sigmas)
