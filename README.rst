@@ -14,13 +14,8 @@ http://apemost.sf.net/ ).
 The efficient Monte Carlo algorithm for sampling the parameter space is based 
 on nested sampling and the idea of disjoint multi-dimensional ellipse sampling.
 
-MultiNest is a great and fast algorithm, but I just wish it were easier to 
-access. Fortran is too difficult to read, and rewriting the code in a modern 
-language would be good -- for scientific verification alone --
-but is just too difficult for me. 
-
-For the scientific community, where Python is the new lingua franca (luckily),
-I provide an interface to the great MultiNest library.
+For the scientific community, where Python is becoming the new lingua franca (luckily),
+I provide an interface to MultiNest.
 
 What does PyMultiNest do?
 --------------------------
@@ -45,12 +40,12 @@ Code contributions are welcome! Contact me (buchner.johannes [ät] gmx.at).
 
 How can I use MultiNest with Python?
 --------------------------------------------
-Look at the documentation available at http://johannesbuchner.github.com/PyMultiNest/doc/html/index.html
+Look at the documentation available at http://johannesbuchner.github.com/PyMultiNest/index.html
 
 What is PyAPEMoST?
 --------------------------------------------
 Similarly to PyMultiNest, it is an access module for a Bayesian inference engine.
-However, APEMoST is a Markov Chain Monte Carlo engine. See the `documentation <http://johannesbuchner.github.com/PyMultiNest/doc/html/pyapemost>`_.
+However, APEMoST is a Markov Chain Monte Carlo engine. See the `documentation <http://johannesbuchner.github.com/PyMultiNest/pyapemost>`_.
 
 What is PyCuba?
 --------------------------------------------
