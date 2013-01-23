@@ -12,7 +12,7 @@ def run(LogLikelihood,
 	multimodal = True, const_efficiency_mode = False, n_live_points = 1000,
 	evidence_tolerance = 0.5, sampling_efficiency = 0.8, 
 	n_iter_before_update = 100, null_log_evidence = -1e90,
-	max_modes = 100,
+	max_modes = 100, mode_tolerance = 1e-90,
 	outputfiles_basename = "chains/1-", seed = -1, verbose = False,
 	resume = True, context = 0, write_output = True, log_zero = -1e100, 
 	max_iter = 0, init_MPI = True, dump_callback = None):
@@ -56,6 +56,11 @@ def run(LogLikelihood,
 		use 'parameter' or 'model' to select the respective default 
 		values
 
+	@param mode_tolerance:
+		MultiNest can find multiple modes & also specify which samples belong to which mode. It might be
+		desirable to have separate samples & mode statistics for modes with local log-evidence value greater than a
+		particular value in which case Ztol should be set to that value. If there isn't any particularly interesting
+		Ztol value, then Ztol should be set to a very large negative number (e.g. -1e90).
 
 	@param evidence_tolerance:
 		A value of 0.5 should give good enough accuracy.
@@ -138,7 +143,7 @@ def run(LogLikelihood,
 		c_int(n_live_points), c_double(evidence_tolerance), 
 		c_double(sampling_efficiency), c_int(n_dims), c_int(n_params),
 		c_int(n_clustering_params), c_int(max_modes), 
-		c_int(n_iter_before_update), c_double(evidence_tolerance), 
+		c_int(n_iter_before_update), c_double(mode_tolerance), 
 		outputfiles_basename, c_int(seed), wraps,
 		c_int(verbose), c_int(resume), 
 		c_int(write_output), c_int(init_MPI), 
