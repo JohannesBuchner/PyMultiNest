@@ -2,13 +2,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Analysing the output &mdash; pymultinest v0.1 documentation</title>
+    <title>Analysing the output &mdash; pymultinest 0.1 documentation</title>
+    
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -21,7 +24,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pymultinest v0.1 documentation" href="index.html" />
+    <link rel="top" title="pymultinest 0.1 documentation" href="index.html" />
     <link rel="up" title="PyMultiNest" href="pymultinest.html" />
     <link rel="next" title="Watching the progress" href="pymultinest_watch.html" />
     <link rel="prev" title="Running the sampler" href="pymultinest_run.html" /> 
@@ -42,7 +45,7 @@
         <li class="right" >
           <a href="pymultinest_run.html" title="Running the sampler"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+        <li><a href="index.html">pymultinest 0.1 documentation</a> &raquo;</li>
           <li><a href="pymultinest.html" accesskey="U">PyMultiNest</a> &raquo;</li> 
       </ul>
     </div>  
@@ -67,15 +70,21 @@ in a structured way.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pymultinest.analyse.Analyzer.get_stats">
-<tt class="descname">get_stats</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pymultinest/analyse.html#Analyzer.get_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.Analyzer.get_stats" title="Permalink to this definition">¶</a></dt>
+<dt id="pymultinest.analyse.Analyzer.get_equal_weighted_posterior">
+<tt class="descname">get_equal_weighted_posterior</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pymultinest/analyse.html#Analyzer.get_equal_weighted_posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.Analyzer.get_equal_weighted_posterior" title="Permalink to this definition">¶</a></dt>
+<dd><p>fetches self.data_file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pymultinest.analyse.Analyzer.get_mode_stats">
+<tt class="descname">get_mode_stats</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pymultinest/analyse.html#Analyzer.get_mode_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.Analyzer.get_mode_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>information about the modes found:
 mean, sigma, maximum a posterior in each dimension</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pymultinest.analyse.Analyzer.n_params">
-<tt class="descname">n_params</tt><a class="headerlink" href="#pymultinest.analyse.Analyzer.n_params" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">n_params</tt><em class="property"> = None</em><a class="headerlink" href="#pymultinest.analyse.Analyzer.n_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>[root].txt
 Compatable with getdist with 2+nPar columns. Columns have
 sample probability, -2*loglikehood, samples. Sample
@@ -85,7 +94,7 @@ likelihood &amp; normalized by the evidence.</p>
 
 <dl class="attribute">
 <dt id="pymultinest.analyse.Analyzer.post_file">
-<tt class="descname">post_file</tt><a class="headerlink" href="#pymultinest.analyse.Analyzer.post_file" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">post_file</tt><em class="property"> = None</em><a class="headerlink" href="#pymultinest.analyse.Analyzer.post_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>[root]stats.dat
 Contains the global log-evidence, its error &amp; local log-evidence
 with error &amp; parameter means &amp; standard
@@ -95,86 +104,9 @@ the mode found with local log-evidence &gt; nullZ.</p>
 
 <dl class="attribute">
 <dt id="pymultinest.analyse.Analyzer.stats_file">
-<tt class="descname">stats_file</tt><a class="headerlink" href="#pymultinest.analyse.Analyzer.stats_file" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">stats_file</tt><em class="property"> = None</em><a class="headerlink" href="#pymultinest.analyse.Analyzer.stats_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>[root]post_equal_weights.dat
 Contains the equally weighted posterior samples</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pymultinest.analyse.PlotMarginal">
-<em class="property">class </em><tt class="descclassname">pymultinest.analyse.</tt><tt class="descname">PlotMarginal</tt><big>(</big><em>analyser</em><big>)</big><a class="reference internal" href="_modules/pymultinest/analyse.html#PlotMarginal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.PlotMarginal" title="Permalink to this definition">¶</a></dt>
-<dd><p>This class can be used to 
-plot marginal and conditional likelihoods.</p>
-<p>&#64;param analyser: A Analyzer instance</p>
-<dl class="method">
-<dt id="pymultinest.analyse.PlotMarginal.plot_conditional">
-<tt class="descname">plot_conditional</tt><big>(</big><em>dim1</em>, <em>dim2=None</em>, <em>with_ellipses=True</em>, <em>with_points=True</em>, <em>only_interpolate=False</em>, <em>use_log_values=False</em>, <em>grid_points=40</em>, <em>marginalization_type='max'</em><big>)</big><a class="reference internal" href="_modules/pymultinest/analyse.html#PlotMarginal.plot_conditional"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.PlotMarginal.plot_conditional" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Generate a conditional/marginal probability plot.</dt>
-<dd>(marginalize all but two/one dimensions).</dd>
-</dl>
-<p>&#64;param dim1: first dimension to use
-&#64;param dim2: second dimension to use (set to None for marginal plot)</p>
-<p>&#64;param with_ellipses: Show ellipses for the resulting modes</p>
-<p>&#64;param with_points: Show the sampled points in the plot</p>
-<dl class="docutils">
-<dt>&#64;param only_interpolate: Use a interpolation of the points </dt>
-<dd>instead of the points.</dd>
-</dl>
-<p>&#64;param use_log_values: Log-plot</p>
-<p>&#64;param grid_points: how many bins the plot shall have</p>
-<dl class="docutils">
-<dt>&#64;param marginalization_type: how should the &#8220;marginal&#8221; or &#8220;conditional&#8221; be calculated:</dt>
-<dd><p class="first">can be one of:</p>
-<ul class="simple">
-<li>max (the default) ... the maximum of the values is taken</li>
-<li>mean ... the mean of the values is calculated</li>
-<li>sum ... the sum of the values is taken</li>
-</ul>
-<p class="last">A true marginal is difficult to obtain, because we don&#8217;t have 
-equal spaced values.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pymultinest.analyse.PlotMarginal.plot_marginal">
-<tt class="descname">plot_marginal</tt><big>(</big><em>dim1</em>, <em>dim2=None</em>, <em>with_ellipses=True</em>, <em>with_points=True</em>, <em>only_interpolate=False</em>, <em>use_log_values=False</em>, <em>grid_points=40</em>, <em>marginalization_type='max'</em><big>)</big><a class="headerlink" href="#pymultinest.analyse.PlotMarginal.plot_marginal" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Generate a conditional/marginal probability plot.</dt>
-<dd>(marginalize all but two/one dimensions).</dd>
-</dl>
-<p>&#64;param dim1: first dimension to use
-&#64;param dim2: second dimension to use (set to None for marginal plot)</p>
-<p>&#64;param with_ellipses: Show ellipses for the resulting modes</p>
-<p>&#64;param with_points: Show the sampled points in the plot</p>
-<dl class="docutils">
-<dt>&#64;param only_interpolate: Use a interpolation of the points </dt>
-<dd>instead of the points.</dd>
-</dl>
-<p>&#64;param use_log_values: Log-plot</p>
-<p>&#64;param grid_points: how many bins the plot shall have</p>
-<dl class="docutils">
-<dt>&#64;param marginalization_type: how should the &#8220;marginal&#8221; or &#8220;conditional&#8221; be calculated:</dt>
-<dd><p class="first">can be one of:</p>
-<ul class="simple">
-<li>max (the default) ... the maximum of the values is taken</li>
-<li>mean ... the mean of the values is calculated</li>
-<li>sum ... the sum of the values is taken</li>
-</ul>
-<p class="last">A true marginal is difficult to obtain, because we don&#8217;t have 
-equal spaced values.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pymultinest.analyse.PlotMarginal.plot_modes_marginal">
-<tt class="descname">plot_modes_marginal</tt><big>(</big><em>dim1</em>, <em>cumulative=False</em>, <em>grid_points=200</em>, <em>with_ellipses=True</em>, <em>with_points=True</em><big>)</big><a class="reference internal" href="_modules/pymultinest/analyse.html#PlotMarginal.plot_modes_marginal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.PlotMarginal.plot_modes_marginal" title="Permalink to this definition">¶</a></dt>
-<dd><p>generate a marginal probability plot, visualizing the calculated
-modes.</p>
 </dd></dl>
 
 </dd></dl>
@@ -201,7 +133,7 @@ modes.</p>
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -230,13 +162,13 @@ modes.</p>
         <li class="right" >
           <a href="pymultinest_run.html" title="Running the sampler"
              >previous</a> |</li>
-        <li><a href="index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+        <li><a href="index.html">pymultinest 0.1 documentation</a> &raquo;</li>
           <li><a href="pymultinest.html" >PyMultiNest</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2012, Johannes Buchner.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

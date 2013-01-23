@@ -2,13 +2,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pymultinest.run &mdash; pymultinest v0.1 documentation</title>
+    <title>pymultinest.run &mdash; pymultinest 0.1 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -21,7 +24,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="pymultinest v0.1 documentation" href="../../index.html" />
+    <link rel="top" title="pymultinest 0.1 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -34,7 +37,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pymultinest 0.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -58,10 +61,10 @@
 	<span class="n">multimodal</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">const_efficiency_mode</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="n">n_live_points</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
 	<span class="n">evidence_tolerance</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">sampling_efficiency</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> 
 	<span class="n">n_iter_before_update</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">null_log_evidence</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e90</span><span class="p">,</span>
-	<span class="n">max_modes</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+	<span class="n">max_modes</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">mode_tolerance</span> <span class="o">=</span> <span class="mf">1e-90</span><span class="p">,</span>
 	<span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s">&quot;chains/1-&quot;</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
 	<span class="n">resume</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">context</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">write_output</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">log_zero</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e100</span><span class="p">,</span> 
-	<span class="n">init_MPI</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">dump_callback</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+	<span class="n">max_iter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">init_MPI</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">dump_callback</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Runs MultiNest</span>
 <span class="sd">	</span>
@@ -102,6 +105,11 @@
 <span class="sd">		use &#39;parameter&#39; or &#39;model&#39; to select the respective default </span>
 <span class="sd">		values</span>
 
+<span class="sd">	@param mode_tolerance:</span>
+<span class="sd">		MultiNest can find multiple modes &amp; also specify which samples belong to which mode. It might be</span>
+<span class="sd">		desirable to have separate samples &amp; mode statistics for modes with local log-evidence value greater than a</span>
+<span class="sd">		particular value in which case Ztol should be set to that value. If there isn&#39;t any particularly interesting</span>
+<span class="sd">		Ztol value, then Ztol should be set to a very large negative number (e.g. -1e90).</span>
 
 <span class="sd">	@param evidence_tolerance:</span>
 <span class="sd">		A value of 0.5 should give good enough accuracy.</span>
@@ -133,6 +141,9 @@
 <span class="sd">	@param log_zero: </span>
 <span class="sd">		points with loglike &lt; logZero will be ignored by MultiNest</span>
 <span class="sd">	</span>
+<span class="sd">	@param max_iter: </span>
+<span class="sd">		maximum number of iterations. 0 is unlimited.</span>
+<span class="sd">	</span>
 <span class="sd">	@param write_output:</span>
 <span class="sd">		write output files? This is required for analysis.</span>
 <span class="sd">		</span>
@@ -144,9 +155,9 @@
 	<span class="k">if</span> <span class="n">n_params</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
 		<span class="n">n_params</span> <span class="o">=</span> <span class="n">n_dims</span>
 	<span class="k">if</span> <span class="n">n_clustering_params</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-		<span class="n">n_clustering_params</span> <span class="o">=</span> <span class="n">n_params</span>
+		<span class="n">n_clustering_params</span> <span class="o">=</span> <span class="n">n_dims</span>
 	<span class="k">if</span> <span class="n">wrapped_params</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
-		<span class="n">wrapped_params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_params</span>
+		<span class="n">wrapped_params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_dims</span>
 	
 	<span class="n">WrappedType</span> <span class="o">=</span> <span class="n">c_int</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">wrapped_params</span><span class="p">)</span>
 	<span class="n">wraps</span> <span class="o">=</span> <span class="n">WrappedType</span><span class="p">(</span><span class="o">*</span><span class="n">wrapped_params</span><span class="p">)</span>
@@ -181,11 +192,11 @@
 		<span class="n">c_int</span><span class="p">(</span><span class="n">n_live_points</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">evidence_tolerance</span><span class="p">),</span> 
 		<span class="n">c_double</span><span class="p">(</span><span class="n">sampling_efficiency</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">n_dims</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">n_params</span><span class="p">),</span>
 		<span class="n">c_int</span><span class="p">(</span><span class="n">n_clustering_params</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">max_modes</span><span class="p">),</span> 
-		<span class="n">c_int</span><span class="p">(</span><span class="n">n_iter_before_update</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">evidence_tolerance</span><span class="p">),</span> 
+		<span class="n">c_int</span><span class="p">(</span><span class="n">n_iter_before_update</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">mode_tolerance</span><span class="p">),</span> 
 		<span class="n">outputfiles_basename</span><span class="p">,</span> <span class="n">c_int</span><span class="p">(</span><span class="n">seed</span><span class="p">),</span> <span class="n">wraps</span><span class="p">,</span>
 		<span class="n">c_int</span><span class="p">(</span><span class="n">verbose</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">resume</span><span class="p">),</span> 
 		<span class="n">c_int</span><span class="p">(</span><span class="n">write_output</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">init_MPI</span><span class="p">),</span> 
-		<span class="n">c_double</span><span class="p">(</span><span class="n">log_zero</span><span class="p">),</span> 
+		<span class="n">c_double</span><span class="p">(</span><span class="n">log_zero</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">max_iter</span><span class="p">),</span>
 		<span class="n">c_int</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
 </pre></div></div>
 
@@ -197,7 +208,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -220,13 +231,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pymultinest 0.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2012, Johannes Buchner.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

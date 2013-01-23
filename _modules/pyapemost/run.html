@@ -2,13 +2,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyapemost.run &mdash; pymultinest v0.1 documentation</title>
+    <title>pyapemost.run &mdash; pymultinest 0.1 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -21,7 +24,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="pymultinest v0.1 documentation" href="../../index.html" />
+    <link rel="top" title="pymultinest 0.1 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -34,7 +37,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pymultinest 0.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -65,6 +68,7 @@
 		<span class="p">(</span><span class="s">&#39;rng&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">gsl</span><span class="o">.</span><span class="n">gsl_rng</span><span class="p">)),</span>
 		<span class="p">(</span><span class="s">&#39;params&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">gsl</span><span class="o">.</span><span class="n">gsl_vector</span><span class="p">)),</span>
 		<span class="p">(</span><span class="s">&#39;params_best&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">gsl</span><span class="o">.</span><span class="n">gsl_vector</span><span class="p">)),</span>
+		<span class="p">(</span><span class="s">&#39;dice&#39;</span><span class="p">,</span> <span class="n">c_double</span><span class="p">),</span>
 		<span class="p">(</span><span class="s">&#39;files&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_void_p</span><span class="p">)),</span>
 		<span class="p">(</span><span class="s">&#39;parameter_names&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_char_p</span><span class="p">)),</span>
 		<span class="p">(</span><span class="s">&#39;accept&#39;</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_ulong</span><span class="p">)),</span>
@@ -82,7 +86,7 @@
 
 
 <span class="n">callback_type</span> <span class="o">=</span> <span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_double</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">MCMC</span><span class="p">),</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">gsl</span><span class="o">.</span><span class="n">gsl_vector</span><span class="p">))</span>
-
+<span class="n">_last_functions</span> <span class="o">=</span> <span class="bp">None</span>
 <span class="k">def</span> <span class="nf">set_function</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">,</span> <span class="n">Prior</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Initializes APEMoST with the two log-probability functions </span>
@@ -112,7 +116,10 @@
 
 <span class="sd">	@param Prior: Log of the Prior function</span>
 <span class="sd">	&quot;&quot;&quot;</span>
-	<span class="n">lib</span><span class="o">.</span><span class="n">set_function</span><span class="p">(</span><span class="n">callback_type</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">),</span> <span class="n">callback_type</span><span class="p">(</span><span class="n">Prior</span><span class="p">))</span>
+	<span class="k">global</span> <span class="n">_last_functions</span>
+	<span class="c"># avoid garbage collection of functions, which leads to segfaults</span>
+	<span class="n">_last_functions</span> <span class="o">=</span> <span class="n">callback_type</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">),</span> <span class="n">callback_type</span><span class="p">(</span><span class="n">Prior</span><span class="p">)</span>
+	<span class="n">lib</span><span class="o">.</span><span class="n">set_function</span><span class="p">(</span><span class="o">*</span><span class="n">_last_functions</span><span class="p">)</span>
 	
 
 <span class="n">calibrate_first_chain</span> <span class="o">=</span> <span class="n">lib</span><span class="o">.</span><span class="n">calibrate_first</span>
@@ -152,7 +159,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -175,13 +182,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pymultinest 0.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2012, Johannes Buchner.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>

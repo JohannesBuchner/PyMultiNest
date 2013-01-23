@@ -2,13 +2,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyapemost.analyse &mdash; pymultinest v0.1 documentation</title>
+    <title>pyapemost.analyse &mdash; pymultinest 0.1 documentation</title>
+    
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -21,7 +24,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="pymultinest v0.1 documentation" href="../../index.html" />
+    <link rel="top" title="pymultinest 0.1 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -34,7 +37,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pymultinest 0.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -52,45 +55,79 @@
 <span class="sd">there is no requirement to use a specific set of tools.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">scipy</span><span class="o">,</span> <span class="nn">scipy.stats</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">json</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+
+<span class="n">nevery</span> <span class="o">=</span> <span class="mi">1</span>
 
 <span class="k">def</span> <span class="nf">load_params</span><span class="p">():</span>
 	<span class="n">dtype</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;initial&#39;</span><span class="p">,</span> <span class="s">&#39;f&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;min&#39;</span><span class="p">,</span> <span class="s">&#39;f&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;max&#39;</span><span class="p">,</span> <span class="s">&#39;f&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;S100&#39;</span><span class="p">),</span> <span class="p">(</span><span class="s">&#39;stepsize&#39;</span><span class="p">,</span> <span class="s">&#39;f&#39;</span><span class="p">)]</span>
 	<span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&#39;params&#39;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
-<div class="viewcode-block" id="create_histogram"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.create_histogram">[docs]</a><span class="k">def</span> <span class="nf">create_histogram</span><span class="p">(</span><span class="n">parameter_name</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">writeFile</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<span class="kn">import</span> <span class="nn">scipy.ndimage.filters</span>
+<span class="k">def</span> <span class="nf">smoothen_histogram</span><span class="p">(</span><span class="n">bins</span><span class="p">):</span>
+	<span class="n">bins</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">ndimage</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">median_filter</span><span class="p">(</span><span class="n">bins</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">bins</span>
+
+<span class="k">def</span> <span class="nf">truncate_histogram</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+	<span class="c">#print &#39;bins&#39;, bins[:,2]</span>
+	<span class="n">bins_sorted</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">bins</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+	<span class="c">#print &#39;bins_sorted&#39;, bins_sorted</span>
+	<span class="n">bins_cum</span> <span class="o">=</span> <span class="n">bins_sorted</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+	<span class="n">bins_tot</span> <span class="o">=</span> <span class="n">bins_sorted</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+	<span class="c">#print &#39;bins_cum&#39;, bins_cum</span>
+	
+	<span class="n">limit</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">sigma</span><span class="p">)</span> <span class="o">-</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">sigma</span><span class="p">)</span>
+	<span class="n">badbins</span> <span class="o">=</span> <span class="n">bins_cum</span> <span class="o">&gt;</span> <span class="n">limit</span> <span class="o">*</span> <span class="n">bins_tot</span>
+	
+	<span class="c"># find next-best</span>
+	<span class="c">#print &quot;limit for %f is %f: %d/%d bins&quot; % (sigma, limit, badbins.sum(), len(bins))</span>
+	<span class="k">if</span> <span class="n">badbins</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+		<span class="n">minvalue</span> <span class="o">=</span> <span class="n">bins_sorted</span><span class="p">[</span><span class="n">badbins</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+		
+		<span class="c">#print &#39;good bins&#39;, bins[bins[:,2] &gt;= minvalue]</span>
+		<span class="n">bins</span><span class="p">[</span><span class="n">bins</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">minvalue</span><span class="p">,</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+		<span class="k">return</span> <span class="n">bins</span> <span class="c"># [bins[:,2] &gt;= minvalue]</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">bins</span>
+
+<div class="viewcode-block" id="create_histogram"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.create_histogram">[docs]</a><span class="k">def</span> <span class="nf">create_histogram</span><span class="p">(</span><span class="n">parameter_name</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">writeFile</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">skipfirst</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">smooth</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Returns a histogram and some statistics about this parameter.</span>
 <span class="sd">		</span>
 <span class="sd">	@param writeFile: if true, write the histogram to paramname.histogram</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="n">f</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">-chain-0.prob.dump&quot;</span> <span class="o">%</span> <span class="n">parameter_name</span>
-	<span class="n">values</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">recfromtxt</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+	<span class="n">values</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">recfromtxt</span><span class="p">(</span><span class="n">f</span><span class="p">)[</span><span class="n">skipfirst</span><span class="p">::</span><span class="n">nevery</span><span class="p">]</span>
 
 	<span class="n">statistics</span> <span class="o">=</span> <span class="p">{</span>
 		<span class="s">&#39;min&#39;</span><span class="p">:</span>   <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span>
 		<span class="s">&#39;max&#39;</span><span class="p">:</span>   <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
 		<span class="s">&#39;stdev&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">std</span><span class="p">()),</span>
 		<span class="s">&#39;mean&#39;</span><span class="p">:</span>  <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
-		<span class="s">&#39;median&#39;</span><span class="p">:</span><span class="nb">float</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+		<span class="s">&#39;median&#39;</span><span class="p">:</span><span class="nb">float</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span>
+		<span class="s">&#39;q1&#39;</span><span class="p">:</span>    <span class="nb">float</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">scoreatpercentile</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="mi">25</span><span class="p">)),</span>
+		<span class="s">&#39;q3&#39;</span><span class="p">:</span>    <span class="nb">float</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">scoreatpercentile</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="mi">75</span><span class="p">)),</span>
+		<span class="s">&#39;p5&#39;</span><span class="p">:</span>    <span class="nb">float</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">scoreatpercentile</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="mi">5</span><span class="p">)),</span>
+		<span class="s">&#39;p95&#39;</span><span class="p">:</span>    <span class="nb">float</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">scoreatpercentile</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="mi">95</span><span class="p">)),</span>
 	<span class="p">}</span>
-
-	<span class="n">hist</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+	
+	<span class="n">hist</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">bins</span> <span class="o">=</span> <span class="n">nbins</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">smooth</span> <span class="k">else</span> <span class="n">nbins</span><span class="o">*</span><span class="mi">10</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 	<span class="n">histwithborders</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">dstack</span><span class="p">([</span><span class="n">hist</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="n">nbins</span><span class="p">],</span> <span class="n">hist</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="n">nbins</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">hist</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
 	<span class="k">if</span> <span class="n">writeFile</span><span class="p">:</span>
 		<span class="n">scipy</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">.histogram&#39;</span> <span class="o">%</span> <span class="n">parameter_name</span><span class="p">,</span> <span class="n">histwithborders</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">delimiter</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
 	<span class="k">return</span> <span class="n">histwithborders</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">statistics</span>
+
 </div>
-<div class="viewcode-block" id="create_histograms"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.create_histograms">[docs]</a><span class="k">def</span> <span class="nf">create_histograms</span><span class="p">(</span><span class="n">nbins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">writeFile</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="create_histograms"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.create_histograms">[docs]</a><span class="k">def</span> <span class="nf">create_histograms</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Runs create_histogram for all parameters and returns</span>
 <span class="sd">	a dictionary of the results</span>
 <span class="sd">	&quot;&quot;&quot;</span>
 	<span class="n">paramnames</span> <span class="o">=</span> <span class="n">load_params</span><span class="p">()[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
-	<span class="k">return</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">p</span><span class="p">,</span> <span class="n">create_histogram</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">nbins</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span> <span class="n">writeFile</span><span class="o">=</span><span class="n">writeFile</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paramnames</span><span class="p">])</span>
+	<span class="k">return</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">p</span><span class="p">,</span> <span class="n">create_histogram</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">paramnames</span><span class="p">])</span>
 </div>
 <div class="viewcode-block" id="print_model_probability"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.print_model_probability">[docs]</a><span class="k">def</span> <span class="nf">print_model_probability</span><span class="p">(</span><span class="n">logprob</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
@@ -141,7 +178,8 @@
 	<span class="n">logprob</span> <span class="o">=</span> <span class="mf">0.</span>
 	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nchains</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
 		<span class="n">f</span> <span class="o">=</span> <span class="s">&#39;prob-chain</span><span class="si">%d</span><span class="s">.dump&#39;</span> <span class="o">%</span> <span class="n">i</span>
-		<span class="n">value</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">/</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+		<span class="c"># this file has 2 columns: with prior and *without*.</span>
+		<span class="n">value</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">f</span><span class="p">)[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">/</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 		<span class="n">logprob</span> <span class="o">=</span> <span class="n">logprob</span> <span class="o">+</span> <span class="n">value</span> <span class="o">*</span> <span class="p">(</span><span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">previous_beta</span><span class="p">)</span>
 		<span class="n">previous_beta</span> <span class="o">=</span> <span class="n">beta</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 	
@@ -153,54 +191,207 @@
 <span class="kn">import</span> <span class="nn">matplotlib</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 
+<span class="n">verbose</span> <span class="o">=</span> <span class="mi">1</span>
+
 <div class="viewcode-block" id="VisitedAnalyser"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.VisitedAnalyser">[docs]</a><span class="k">class</span> <span class="nc">VisitedAnalyser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Internal, abstract class that has the visited points of chain 0 loaded. </span>
+<span class="sd">	</span>
+<span class="sd">	You need to overwrite::</span>
+<span class="sd">	</span>
+<span class="sd">		marginal_plot(param1, values1)</span>
+<span class="sd">		conditional_plot(param1, values1, param2, values2)</span>
+<span class="sd">		</span>
+<span class="sd">	@param nlast: if 0, use all points; otherwise only the last *nlast* ones.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nlast</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">load_params</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">nlast</span> <span class="o">=</span> <span class="n">nlast</span>
 	
-	<span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="c"># load data</span>
 		<span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
-		<span class="k">print</span> <span class="s">&quot;loading chains ...&quot;</span>
+		<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span>
+		<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&quot;visualization: loading chains ...&quot;</span>
+		<span class="n">f</span> <span class="o">=</span> <span class="s">&quot;prob-chain0.dump&quot;</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;visualization: chains not available yet.&quot;</span><span class="p">)</span>
+		<span class="k">try</span><span class="p">:</span>
+			<span class="c"># I think the first column is the probabilities, the second is without prior</span>
+			<span class="n">probabilities</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">skip_footer</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;f&#39;</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">]</span>
+		<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+			<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;visualization: chains couldn&#39;t be loaded; perhaps no data yet: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 		<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
 			<span class="n">f</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">-chain-0.prob.dump&quot;</span> <span class="o">%</span> <span class="n">p</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
-			<span class="k">print</span> <span class="s">&quot;	loading chain </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">f</span>
-			<span class="n">v</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">skip_footer</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;f&#39;</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&quot;	loading chain </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">f</span>
+			<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+				<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;visualization: chains not available yet.&quot;</span><span class="p">)</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">v</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">genfromtxt</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">skip_footer</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&#39;f&#39;</span><span class="p">)</span>
+			<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+				<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;visualization: chains couldn&#39;t be loaded; perhaps no data yet: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 			<span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-		<span class="k">print</span> <span class="s">&quot;loading chains finished.&quot;</span>
 		<span class="n">nvalues</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">len</span><span class="p">,</span> <span class="n">values</span><span class="p">))</span>
-		<span class="n">values</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="p">[:</span><span class="n">nvalues</span><span class="p">],</span> <span class="n">values</span><span class="p">)</span>
-		
-		<span class="k">for</span> <span class="n">p1</span><span class="p">,</span><span class="n">v1</span><span class="p">,</span><span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">))):</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">marginal_plot</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">v1</span><span class="p">)</span>
-			<span class="k">for</span> <span class="n">p2</span><span class="p">,</span><span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[:</span><span class="n">i</span><span class="p">],</span> <span class="n">values</span><span class="p">[:</span><span class="n">i</span><span class="p">]):</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">conditional_plot</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&quot;visualization: loading chains finished; </span><span class="si">%d</span><span class="s"> values&quot;</span> <span class="o">%</span> <span class="n">nvalues</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="p">[:</span><span class="n">nvalues</span><span class="p">][</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">nlast</span><span class="p">::</span><span class="n">nevery</span><span class="p">],</span> <span class="n">values</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span> <span class="o">=</span> <span class="n">probabilities</span><span class="p">[:</span><span class="n">nvalues</span><span class="p">][</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">nlast</span><span class="p">::</span><span class="n">nevery</span><span class="p">]</span>
+	
+	<span class="k">def</span> <span class="nf">plot_only</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">for</span> <span class="n">p1</span><span class="p">,</span><span class="n">v1</span><span class="p">,</span><span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">))):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">marginal_plot</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">)</span>
+			<span class="k">for</span> <span class="n">p2</span><span class="p">,</span><span class="n">v2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[:</span><span class="n">i</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[:</span><span class="n">i</span><span class="p">]):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">conditional_plot</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">v2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span><span class="p">)</span>
+	<span class="k">def</span> <span class="nf">after_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">pass</span>
+	<span class="k">def</span> <span class="nf">before_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">pass</span>
+	<span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">before_plot</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">plot_only</span><span class="p">()</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">after_plot</span><span class="p">()</span>
+		<span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span>
+		<span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">probabilities</span>
 	</div>
 <div class="viewcode-block" id="VisitedPlotter"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.VisitedPlotter">[docs]</a><span class="k">class</span> <span class="nc">VisitedPlotter</span><span class="p">(</span><span class="n">VisitedAnalyser</span><span class="p">):</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">):</span>
-		<span class="n">VisitedAnalyser</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Produces individual plots of visited points for each parameter,</span>
+<span class="sd">	and each parameter pair.</span>
+<span class="sd">	</span>
+<span class="sd">	@param outputfiles_basename: prefix of output files</span>
+<span class="sd">	</span>
+<span class="sd">	The output files are named chain0-paramname1-paramname2.pdf and chain0-paramname.pdf</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">nlast</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+		<span class="n">VisitedAnalyser</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nlast</span> <span class="o">=</span> <span class="n">nlast</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="n">outputfiles_basename</span>
 	
-	<span class="k">def</span> <span class="nf">conditional_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">values1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">values2</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">conditional_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">values1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">values2</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="n">points</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">contours</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="n">best</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">good</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">sigmas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span><span class="mf">3.</span><span class="p">],</span> <span class="n">contourargs</span> <span class="o">=</span> <span class="p">{}):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">conditional_plot_before</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">values1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">values2</span><span class="p">)</span>
-		<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">values1</span><span class="p">,</span> <span class="n">values2</span><span class="p">,</span> <span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">best</span><span class="p">:</span>
+			<span class="n">best</span> <span class="o">=</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+		<span class="k">if</span> <span class="n">good</span><span class="p">:</span>
+			<span class="n">good</span> <span class="o">=</span> <span class="n">probabilities</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">probabilities</span><span class="p">[</span><span class="n">best</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">good</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
+		
+		<span class="n">CS</span> <span class="o">=</span> <span class="bp">None</span>
+		<span class="n">sigmas</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sigmas</span><span class="p">)</span>
+		
+		<span class="k">if</span> <span class="n">points</span><span class="p">:</span>
+			<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">values1</span><span class="p">[</span><span class="o">-</span><span class="n">good</span><span class="p">],</span> <span class="n">values2</span><span class="p">[</span><span class="o">-</span><span class="n">good</span><span class="p">],</span> <span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;#444444&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+			<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">values1</span><span class="p">[</span><span class="n">good</span><span class="p">],</span> <span class="n">values2</span><span class="p">[</span><span class="n">good</span><span class="p">],</span> <span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;#22FF22&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;good&#39;</span><span class="p">)</span>
+			<span class="k">if</span> <span class="n">best</span><span class="p">:</span>
+				<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">values1</span><span class="p">[</span><span class="n">best</span><span class="p">]],</span> <span class="p">[</span><span class="n">values2</span><span class="p">[</span><span class="n">best</span><span class="p">]],</span> <span class="s">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;red&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s">&#39;best&#39;</span><span class="p">)</span>
+		
+		<span class="k">if</span> <span class="n">contours</span><span class="p">:</span>
+			<span class="n">H</span><span class="p">,</span> <span class="n">xedges</span><span class="p">,</span> <span class="n">yedges</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">histogram2d</span><span class="p">(</span><span class="n">values1</span><span class="p">,</span> <span class="n">values2</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values1</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span> <span class="o">/</span> <span class="mi">4</span><span class="p">),</span> <span class="n">normed</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+			<span class="c">#print &#39;edges&#39;, xedges, yedges</span>
+			
+			<span class="c"># using the binning results as the value of the center of the histogram</span>
+			<span class="c"># would be an inaccurate visualization of the borders</span>
+			<span class="c"># instead, we make 4 points (one for each corner)</span>
+			
+			<span class="c">#X1, Y1 = numpy.meshgrid(</span>
+				<span class="c">#(xedges[:-1]*9 + xedges[1:])/10., </span>
+				<span class="c">#(yedges[:-1]*9 + yedges[1:])/10.)</span>
+			<span class="n">Z1</span> <span class="o">=</span> <span class="n">H</span> <span class="o">/</span> <span class="n">H</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+			
+			<span class="n">X</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="n">Y</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="n">Z</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">xedges</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+				<span class="n">xlow</span> <span class="o">=</span> <span class="n">xedges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+				<span class="n">xhigh</span> <span class="o">=</span> <span class="n">xedges</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+				<span class="n">X_row_low</span>  <span class="o">=</span> <span class="p">[(</span><span class="n">xlow</span><span class="o">*</span><span class="mi">9</span> <span class="o">+</span> <span class="n">xhigh</span><span class="p">)</span><span class="o">/</span><span class="mf">10.</span><span class="p">]</span><span class="o">*</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">yedges</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+				<span class="n">X_row_high</span> <span class="o">=</span> <span class="p">[(</span><span class="n">xlow</span> <span class="o">+</span> <span class="mi">9</span><span class="o">*</span><span class="n">xhigh</span><span class="p">)</span><span class="o">/</span><span class="mf">10.</span><span class="p">]</span><span class="o">*</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">yedges</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
+				<span class="n">Y_row</span> <span class="o">=</span> <span class="p">[]</span>
+				<span class="n">Z_row</span> <span class="o">=</span> <span class="p">[]</span>
+				
+				<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">yedges</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+					<span class="n">ylow</span> <span class="o">=</span> <span class="n">yedges</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+					<span class="n">yhigh</span> <span class="o">=</span> <span class="n">yedges</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+					<span class="c">#print ylow, yhigh</span>
+					<span class="n">Y_row</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ylow</span><span class="o">*</span><span class="mi">9</span> <span class="o">+</span> <span class="n">yhigh</span><span class="p">)</span><span class="o">/</span><span class="mf">10.</span><span class="p">)</span>
+					<span class="n">Y_row</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ylow</span> <span class="o">+</span> <span class="mi">9</span><span class="o">*</span><span class="n">yhigh</span><span class="p">)</span><span class="o">/</span><span class="mf">10.</span><span class="p">)</span>
+					<span class="n">z</span> <span class="o">=</span> <span class="n">Z1</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+					<span class="n">Z_row</span> <span class="o">+=</span> <span class="p">[</span><span class="n">z</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span>
+				<span class="c">#print len(X_row_low), len(X_row_high), len(yedges)</span>
+				<span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X_row_low</span><span class="p">)</span>
+				<span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">X_row_high</span><span class="p">)</span>
+				<span class="n">Y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Y_row</span><span class="p">)</span>
+				<span class="n">Y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Y_row</span><span class="p">)</span>
+				<span class="n">Z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Z_row</span><span class="p">)</span>
+				<span class="n">Z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Z_row</span><span class="p">)</span>
+			
+			<span class="n">X</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+			<span class="n">Y</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+			<span class="n">Z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span>
+			<span class="c">#print X.shape, Y.shape, Z.shape</span>
+			
+			<span class="n">ndim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+			
+			<span class="c"># order bins by value</span>
+			<span class="c">#print &#39;Z&#39;, Z</span>
+			<span class="n">z_sorted</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">Z1</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+			<span class="c">#print &#39;z_sorted&#39;, z_sorted</span>
+			<span class="c"># adding up largest bins first</span>
+			<span class="n">z_cum</span> <span class="o">=</span> <span class="n">z_sorted</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+			<span class="n">z_tot</span> <span class="o">=</span> <span class="n">z_sorted</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+			<span class="c">#print &#39;z_cum&#39;, z_cum</span>
+			
+			<span class="n">z_mins</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="n">contour_sigmas</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="n">colors</span> <span class="o">=</span> <span class="p">[]</span>
+			<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sigmas</span><span class="p">:</span>
+				<span class="n">limit</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">-</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">cdf</span><span class="p">(</span><span class="o">-</span><span class="n">s</span><span class="p">)</span>
+				<span class="n">badbins</span> <span class="o">=</span> <span class="n">z_cum</span> <span class="o">&gt;</span> <span class="n">limit</span> <span class="o">*</span> <span class="n">z_tot</span>
+				<span class="c"># find next-best</span>
+				<span class="c">#print &quot;limit for %f is %f: %d bins&quot; % (s, limit, badbins.sum())</span>
+				<span class="k">if</span> <span class="n">badbins</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+					<span class="n">z_min</span> <span class="o">=</span> <span class="n">z_sorted</span><span class="p">[</span><span class="n">badbins</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+					<span class="n">z_mins</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z_min</span><span class="p">)</span>
+					<span class="n">contour_sigmas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">u&#39;</span><span class="si">%.0f</span><span class="s"> sigma&#39;</span> <span class="o">%</span> <span class="n">s</span><span class="p">)</span>
+					<span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;#dddddd&quot;</span><span class="p">)</span>
+					<span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="n">colors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;#cccccc&quot;</span><span class="p">)</span>
+			
+			<span class="c">#print &#39;z_mins&#39;, z_mins</span>
+			<span class="n">CS</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">z_mins</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">contour_sigmas</span><span class="p">,</span> <span class="o">**</span><span class="n">contourargs</span><span class="p">)</span>
+			<span class="n">plt</span><span class="o">.</span><span class="n">clabel</span><span class="p">(</span><span class="n">CS</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">z_mins</span><span class="p">,</span> <span class="n">contour_sigmas</span><span class="p">)),</span> <span class="n">inline</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+			<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">z_mins</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+				<span class="c">#print [z_mins[-1], z_mins[0]]</span>
+				<span class="n">plt</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">z_mins</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">Z1</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+			
+			<span class="c">## 1, 3 and 5 sigma equivalents by FWHM</span>
+			<span class="c">##lines = 2 * (2 * ndim * numpy.log([1,3,5])**0.5</span>
+			<span class="c">#lines = numpy.exp(-1/2. * sigmas)</span>
+			<span class="c">#CS = plt.contour(X, Y, Z, lines, **contourargs)</span>
+		
 		<span class="bp">self</span><span class="o">.</span><span class="n">conditional_plot_after</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">values1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">values2</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">CS</span>
 	
 	<span class="k">def</span> <span class="nf">conditional_plot_before</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">values1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">values2</span><span class="p">):</span>
 		<span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="n">param1</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span><span class="n">param2</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
-		<span class="k">print</span> <span class="s">&quot;creating conditional plot of </span><span class="si">%s</span><span class="s"> vs </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">names</span>
+		<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&quot;visualization: creating conditional plot of </span><span class="si">%s</span><span class="s"> vs </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">names</span>
 		<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 		<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> vs </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">names</span><span class="p">)</span>
 	<span class="k">def</span> <span class="nf">conditional_plot_after</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">values1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">values2</span><span class="p">):</span>
 		<span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="n">param1</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span><span class="n">param2</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
-		<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span> <span class="o">+</span> <span class="s">&quot;conditional-</span><span class="si">%s</span><span class="s">-</span><span class="si">%s</span><span class="s">.pdf&quot;</span> <span class="o">%</span> <span class="n">names</span><span class="p">)</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span> <span class="o">+</span> <span class="s">&quot;chain0-</span><span class="si">%s</span><span class="s">-</span><span class="si">%s</span><span class="s">.pdf&quot;</span> <span class="o">%</span> <span class="n">names</span><span class="p">)</span>
 	
-	<span class="k">def</span> <span class="nf">marginal_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">marginal_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">marginal_plot_before</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
-		<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;gray&#39;</span><span class="p">)</span>
+		<span class="n">best</span> <span class="o">=</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+		<span class="n">good</span> <span class="o">=</span> <span class="n">probabilities</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">probabilities</span><span class="p">[</span><span class="n">best</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+		<span class="n">i</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">probabilities</span><span class="p">))</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="o">-</span><span class="n">good</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="n">good</span><span class="p">],</span> <span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;gray&#39;</span><span class="p">)</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="n">good</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="n">good</span><span class="p">],</span> <span class="s">&#39;x&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;#22FF22&#39;</span><span class="p">)</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="n">best</span><span class="p">]],</span> <span class="p">[</span><span class="n">values</span><span class="p">[</span><span class="n">best</span><span class="p">]],</span> <span class="s">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;red&#39;</span><span class="p">)</span>
+		
 		<span class="bp">self</span><span class="o">.</span><span class="n">marginal_plot_after</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
 	<span class="k">def</span> <span class="nf">marginal_plot_before</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
 		<span class="n">name</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
-		<span class="k">print</span> <span class="s">&quot;creating marginal plot of </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">name</span>
+		<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&quot;visualization: creating marginal plot of </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">name</span>
 		<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
 		<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
 	<span class="k">def</span> <span class="nf">marginal_plot_after</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
@@ -209,7 +400,12 @@
 		<span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="VisitedAllPlotter"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.VisitedAllPlotter">[docs]</a><span class="k">class</span> <span class="nc">VisitedAllPlotter</span><span class="p">(</span><span class="n">VisitedPlotter</span><span class="p">):</span>
-	<span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Extends VisitedPlotter to put all of those plots into one file (named chain0.pdf).</span>
+<span class="sd">	</span>
+<span class="sd">	@see VisitedPlotter</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span> <span class="nf">before_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">paramnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">nparams</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">plots</span> <span class="o">=</span> <span class="p">{}</span>
@@ -221,12 +417,19 @@
 				<span class="bp">self</span><span class="o">.</span><span class="n">choose_plot</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
 				<span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">p1</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]))</span>
 				<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> vs </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">names</span><span class="p">)</span>
-		
+			<span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">p2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">):</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">choose_plot</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+				<span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">p1</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">p2</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]))</span>
+				<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> vs </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">names</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">before_plot_newfigure</span><span class="p">()</span>
+	<span class="k">def</span> <span class="nf">before_plot_newfigure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nparams</span><span class="p">,</span><span class="mi">5</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nparams</span><span class="p">))</span>
-		<span class="n">VisitedPlotter</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-		<span class="k">print</span> <span class="s">&quot;saving output ...&quot;</span>
+	
+	<span class="k">def</span> <span class="nf">after_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&quot;visualization: saving output ...&quot;</span>
 		<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span> <span class="o">+</span> <span class="s">&quot;chain0.pdf&quot;</span><span class="p">)</span>
-		<span class="k">print</span> <span class="s">&quot;saving output done&quot;</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+		<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&quot;visualization: saving output done&quot;</span>
 	
 	<span class="k">def</span> <span class="nf">choose_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
 		<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nparams</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nparams</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nparams</span> <span class="o">*</span> <span class="n">j</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
@@ -236,9 +439,13 @@
 		<span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">paramnames</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">names</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">choose_plot</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
 		<span class="n">names</span> <span class="o">=</span> <span class="p">(</span><span class="n">param1</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span><span class="n">param2</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
-		<span class="k">print</span> <span class="s">&quot;creating conditional plot of </span><span class="si">%s</span><span class="s"> vs </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">names</span>
+		<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&quot;visualization: creating conditional plot of </span><span class="si">%s</span><span class="s"> vs </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">names</span>
 		<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">param1</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
 		<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">param2</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
+	<span class="k">def</span> <span class="nf">conditional_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">values1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">values2</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="n">VisitedPlotter</span><span class="o">.</span><span class="n">conditional_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">values1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">values2</span><span class="p">,</span> <span class="n">points</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">contours</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="n">probabilities</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+		<span class="n">VisitedPlotter</span><span class="o">.</span><span class="n">conditional_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">values2</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">values1</span><span class="p">,</span> <span class="n">points</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="n">contours</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="n">probabilities</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+	
 	<span class="k">def</span> <span class="nf">conditional_plot_after</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">values1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">values2</span><span class="p">):</span>
 		<span class="k">pass</span>
 	
@@ -246,7 +453,7 @@
 		<span class="n">name</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
 		<span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paramnames</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 		<span class="n">thisplot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">choose_plot</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-		<span class="k">print</span> <span class="s">&quot;creating marginal plot of </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">name</span>
+		<span class="k">if</span> <span class="n">verbose</span><span class="p">:</span> <span class="k">print</span> <span class="s">&quot;visualization: creating marginal plot of </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">name</span>
 		<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&quot;iteration&quot;</span><span class="p">)</span>
 		<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 	<span class="k">def</span> <span class="nf">marginal_plot_after</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
@@ -254,12 +461,20 @@
 	
 </div>
 <div class="viewcode-block" id="VisitedWindow"><a class="viewcode-back" href="../../pyapemost_analyse.html#pyapemost.analyse.VisitedWindow">[docs]</a><span class="k">class</span> <span class="nc">VisitedWindow</span><span class="p">(</span><span class="n">VisitedAnalyser</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Not implemented / tested yet.</span>
+<span class="sd">	</span>
+<span class="sd">	Should give a window to watch the progress of the Markov Chain,</span>
+<span class="sd">	similar to **VisitedAllPlotter** but continuously updating.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
 	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="n">VisitedAnalyser</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">clf</span><span class="p">()</span>
 		<span class="n">plt</span><span class="o">.</span><span class="n">ion</span><span class="p">()</span>
+		<span class="n">VisitedAnalyser</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">paramnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">nparams</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">plots</span> <span class="o">=</span> <span class="p">{}</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nparams</span><span class="p">,</span><span class="mi">3</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nparams</span><span class="p">))</span>
 		<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">p1</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nparams</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:{}}</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">choose_plot</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
@@ -272,33 +487,36 @@
 				<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> vs </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">names</span><span class="p">)</span>
 	
 	<span class="k">def</span> <span class="nf">choose_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
-		<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nparams</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nparams</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nparams</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nparams</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nparams</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nparams</span> <span class="o">*</span> <span class="n">j</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plots</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
 	<span class="k">def</span> <span class="nf">update_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plot</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
-		<span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">plot</span><span class="p">:</span>
-			<span class="n">plot</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+		<span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">plot</span> <span class="ow">or</span> <span class="bp">True</span><span class="p">:</span>
+			<span class="n">plot</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s">&#39;+&#39;</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">plot</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">set_xdata</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 			<span class="n">plot</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 	
 	<span class="k">def</span> <span class="nf">conditional_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param1</span><span class="p">,</span> <span class="n">values1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">values2</span><span class="p">):</span>
 		<span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">param1</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span><span class="n">param2</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]]</span>
 		<span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">paramnames</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">names</span><span class="p">)</span>
 		<span class="n">thisplot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">choose_plot</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
 		
-		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">500</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">(</span><span class="n">thisplot</span><span class="p">,</span> <span class="s">&quot;previous&quot;</span><span class="p">,</span> <span class="n">values1</span><span class="p">[:</span><span class="o">-</span><span class="mi">500</span><span class="p">],</span> <span class="n">values2</span><span class="p">[:</span><span class="o">-</span><span class="mi">500</span><span class="p">])</span>
-		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">(</span><span class="n">thisplot</span><span class="p">,</span> <span class="s">&quot;current&quot;</span><span class="p">,</span> <span class="n">values1</span><span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">:</span><span class="o">-</span><span class="mi">50</span><span class="p">],</span> <span class="n">values2</span><span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">:</span><span class="o">-</span><span class="mi">50</span><span class="p">])</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">(</span><span class="n">thisplot</span><span class="p">,</span> <span class="s">&quot;newest&quot;</span><span class="p">,</span> <span class="n">values1</span><span class="p">[</span><span class="o">-</span><span class="mi">50</span><span class="p">:],</span> <span class="n">values2</span><span class="p">[</span><span class="o">-</span><span class="mi">50</span><span class="p">:])</span>
-		<span class="n">plt</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">param1</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">param2</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
 		
 	<span class="k">def</span> <span class="nf">marginal_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
 		<span class="n">name</span> <span class="o">=</span> <span class="n">param</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
 		<span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">paramnames</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 		<span class="n">thisplot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">choose_plot</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">update_plot</span><span class="p">(</span><span class="n">thisplot</span><span class="p">,</span> <span class="s">&quot;progress&quot;</span><span class="p">,</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)),</span> <span class="n">values</span><span class="p">)</span>
-		</div>
+		<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s">&quot;iteration&quot;</span><span class="p">)</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+		
+	<span class="k">def</span> <span class="nf">after_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 </pre></div>
 
           </div>
@@ -309,7 +527,7 @@
 <div id="searchbox" style="display: none">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" size="18" />
+      <input type="text" name="q" />
       <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
@@ -332,13 +550,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pymultinest v0.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">pymultinest 0.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2012, Johannes Buchner.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
     </div>
   </body>
 </html>
