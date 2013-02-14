@@ -18,7 +18,8 @@ CC = mpicc
 FFLAGS += -DMPI
 CFLAGS += -DMPI
   ifndef MULTINEST_CALL
-     MULTINEST_CALL := __nested_nestrun
+     MULTINEST_CALL := __nested_MOD_nestrun
+     #__nested_nestrun
   endif
 endif
 else
@@ -46,7 +47,7 @@ libcnest.so: $(OBJFILES)
 	#     OSError: libcnest.so: undefined symbol: __nested_MOD_nestrun
 	#
 	# Checking if libnest3.so is in $$MULTINEST
-	test -e ${MULTINEST}/libnest3.so
+	@if [ ! -e ${MULTINEST}/libnest3.so ]; then echo -e "\nERROR:  libnest3.so not found in '$$MULTINEST'. \nERROR:  Set MULTINEST to the directory where MultiNest is, i.e. where you compiled libnest3.so.\nERROR:  manual: http://johannesbuchner.github.com/PyMultiNest/install.html\n"; exit 1; fi
 	# Found.
 	#
 	$(LINKLIB) $(CFLAGS) cnest.c -o libcnest.so $(LIBS)

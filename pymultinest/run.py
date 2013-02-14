@@ -1,6 +1,53 @@
 
 from ctypes import cdll
-lib = cdll.LoadLibrary('libcnest.so')
+try:
+	lib = cdll.LoadLibrary('libcnest.so')
+except OSError as e:
+	if e.message == 'libcnest.so: cannot open shared object file: No such file or directory':
+		print
+		print 'ERROR:   Could not load MultiNest Bridge library "libcnest.so"'
+		print 'ERROR:   You have to build it (from the multinest_bridge folder in pymultinest),'
+		print 'ERROR:   and point the LD_LIBRARY_PATH environment variable to it!'
+		print 'ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html'
+		print
+	if e.message == 'libnest3.so: cannot open shared object file: No such file or directory':
+		print
+		print 'ERROR:   Could not load MultiNest library "libnest3.so"'
+		print 'ERROR:   You have to build it (in MultiNest, run make libnest3.so WITHOUT_MPI=1),'
+		print 'ERROR:   and point the LD_LIBRARY_PATH environment variable to it!'
+		print 'ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html'
+		print
+	if 'undefined symbol: mpi_' in e.message:
+		print
+		print 'ERROR:   You did something stupid. You tried to compile MultiNest with MPI,'
+		print 'ERROR:   but the MultiNest bridge without MPI, or the other way around.'
+		print 'ERROR:   Decide on one consistent way (no MPI is safe). Either way, you currently'
+		print 'ERROR:   do not have MPI compiled into the library, and it fails to load!'
+		print 'ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html'
+		print
+	if 'libcnest.so: undefined symbol:' in e.message and 'nestrun' in e.message:
+		print
+		print 'ERROR:   Sorry.'
+		print 'ERROR:   The compiler decided to call the MultiNest routine differently than we expect.'
+		print 'ERROR:   You have to run $ readelf -s libnest3.so | grep nestrun'
+		print 'ERROR:   to find out how the nestrun routine is called (typically __nested_MOD_nestrun).'
+		print 'ERROR:   Then you have to compile the MultiNest bridge using'
+		print 'ERROR:   $ make clean libcnest.so MULTINEST_CALL=__nested_MOD_nestrun '
+		print 'ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html'
+		print
+	# the next if is useless because we can not catch symbol lookup errors (the executable crashes)
+	# but it is still there as documentation.
+	if 'symbol lookup error' in e.message and 'mpi' in e.message:
+		print
+		print 'ERROR:   You are trying to get MPI to run, but MPI failed to load.'
+		print 'ERROR:   Specifically, mpi symbols are missing in the executable.'
+		print 'ERROR:   Let me know if this is a problem of running python or a compilation problem.'
+		print 'ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html'
+		print
+	# what if built with MPI, but don't have MPI
+	print e
+	import sys
+	sys.exit(1)
 
 from ctypes import *
 

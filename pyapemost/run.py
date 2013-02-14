@@ -1,6 +1,18 @@
 
 from ctypes import *
-lib = cdll.LoadLibrary('libapemost.so')
+try:
+	lib = cdll.LoadLibrary('libapemost.so')
+except OSError as e:
+	if e.message == 'libapemost.so: cannot open shared object file: No such file or directory':
+		print
+		print 'ERROR:   Could not load apemost library "libapemost.so"'
+		print 'ERROR:   You have to build it (download APEMoST), and point '
+		print 'ERROR:   the LD_LIBRARY_PATH environment variable to it!'
+		print
+	print e
+	import sys
+	sys.exit(1)
+
 import ctypesGsl as gsl
 
 """
