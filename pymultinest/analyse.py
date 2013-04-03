@@ -2,6 +2,12 @@ import numpy
 from StringIO import StringIO
 import re
 
+def loadtxt2d(intext):
+	try:
+		return numpy.loadtxt(intext, ndmin=2)
+	except:
+		return numpy.loadtxt(intext)
+
 class Analyzer(object):
 	"""
 		Class for accessing the output of MultiNest.
@@ -49,14 +55,14 @@ class Analyzer(object):
 			fetches self.data_file
 		"""
 		if not hasattr(self, 'data'):
-			self.data = numpy.loadtxt(self.data_file, ndmin=2)
+			self.data = numpy.loadtxt(self.data_file)
 		return self.data
 	def get_equal_weighted_posterior(self):
 		"""
 			fetches self.data_file
 		"""
 		if not hasattr(self, 'equal_weighted_posterior'):
-			self.equal_weighted_posterior = numpy.loadtxt(self.equal_weighted_file, ndmin=2)
+			self.equal_weighted_posterior = loadtxt2d(self.equal_weighted_file)
 		return self.equal_weighted_posterior
 	
 	def _read_error_line(self, l):
@@ -75,7 +81,7 @@ class Analyzer(object):
 		else:
 			table = txt		
 		header, table = txt.split("\n", 1)
-		data = numpy.loadtxt(StringIO(table), ndmin=2)
+		data = loadtxt2d(StringIO(table))
 		if d is not None:
 			d[title.strip().lower()] = data
 		return data
@@ -94,23 +100,33 @@ class Analyzer(object):
 			sig3 = 0.5 + 0.9973 / 2.
 			sig2 = 0.5 + 0.95 / 2.
 			sig1 = 0.5 + 0.6826 / 2.
-			bi = lambda x: numpy.interp(x, b[:,0], b[:,1], left=b[0,1], right=b[-1,1])
-			
-			low1 = bi(1 - sig1)
-			high1 = bi(sig1)
-			low2 = bi(1 - sig2)
-			high2 = bi(sig2)
-			low3 = bi(1 - sig3)
-			high3 = bi(sig3)
-			low5 = bi(1 - sig5)
-			high5 = bi(sig5)
-			median = bi(0.5)
-			q1 = bi(0.75)
-			q3 = bi(0.25)
-			q99 = bi(0.99)
-			q01 = bi(0.01)
-			q90 = bi(0.9)
-			q10 = bi(0.1)
+			low1  = b[b[:,0] < 1 - sig1][-1][1]
+			high1 = b[b[:,0] > sig1][0][1]
+			low2  = b[b[:,0] < 1 - sig2][-1][1]
+			high2 = b[b[:,0] > sig2][0][1]
+			try:
+				low3  = b[b[:,0] <= 1 - sig3][-1][1]
+			except:
+				low3 = b[0][1]
+			try:
+				high3 = b[b[:,0] >= sig3][0][1]
+			except:
+				high3 = b[-1][1]
+			try:
+				low5  = b[b[:,0] <= 1 - sig5][-1][1]
+			except:
+				low5 = b[0][1]
+			try:
+				high5 = b[b[:,0] >= sig5][0][1]
+			except:
+				high5 = b[-1][1]
+			median = b[b[:,0] >= 0.5][0][1]
+			q1 = b[b[:,0] >= 0.75][0][1]
+			q3 = b[b[:,0] <= 0.25][-1][1]
+			q99 = b[b[:,0] >= 0.99][0][1]
+			q01 = b[b[:,0] <= 0.01][-1][1]
+			q90 = b[b[:,0] >= 0.9][0][1]
+			q10 = b[b[:,0] <= 0.1][-1][1]
 			
 			stats.append({
 				'median': median,
