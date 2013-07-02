@@ -59,7 +59,7 @@ def run(LogLikelihood,
 	multimodal = True, const_efficiency_mode = False, n_live_points = 1000,
 	evidence_tolerance = 0.5, sampling_efficiency = 0.8, 
 	n_iter_before_update = 100, null_log_evidence = -1e90,
-	max_modes = 100, mode_tolerance = 1e-90,
+	max_modes = 100, mode_tolerance = -1e90,
 	outputfiles_basename = "chains/1-", seed = -1, verbose = False,
 	resume = True, context = 0, write_output = True, log_zero = -1e100, 
 	max_iter = 0, init_MPI = True, dump_callback = None):
