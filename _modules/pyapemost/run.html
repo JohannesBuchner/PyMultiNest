@@ -48,8 +48,21 @@
           <div class="body">
             
   <h1>Source code for pyapemost.run</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span>
 <span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">lib</span> <span class="o">=</span> <span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="s">&#39;libapemost.so&#39;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+	<span class="n">lib</span> <span class="o">=</span> <span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="s">&#39;libapemost.so&#39;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+	<span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span> <span class="o">==</span> <span class="s">&#39;libapemost.so: cannot open shared object file: No such file or directory&#39;</span><span class="p">:</span>
+		<span class="k">print</span><span class="p">()</span>
+		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   Could not load apemost library &quot;libapemost.so&quot;&#39;</span><span class="p">)</span>
+		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   You have to build it (download APEMoST), and point &#39;</span><span class="p">)</span>
+		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   the LD_LIBRARY_PATH environment variable to it!&#39;</span><span class="p">)</span>
+		<span class="k">print</span><span class="p">()</span>
+	<span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+	<span class="kn">import</span> <span class="nn">sys</span>
+	<span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
 <span class="kn">import</span> <span class="nn">ctypesGsl</span> <span class="kn">as</span> <span class="nn">gsl</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -139,8 +152,8 @@
 	<span class="n">calibrate_other_chains</span><span class="p">()</span>
 
 	
-<span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">max_iterations</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">append</span> <span class="o">=</span> <span class="bp">True</span><span class="p">):</span>
-<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../pyapemost_run.html#pyapemost.run.run">[docs]</a>	<span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../pyapemost_run.html#pyapemost.run.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">max_iterations</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">append</span> <span class="o">=</span> <span class="bp">True</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Run the MCMC sampler.</span>
 <span class="sd">	</span>
 <span class="sd">	@param max_iterations: stop after this many iterations.</span>

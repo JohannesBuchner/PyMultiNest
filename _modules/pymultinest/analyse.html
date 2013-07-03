@@ -48,9 +48,16 @@
           <div class="body">
             
   <h1>Source code for pymultinest.analyse</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 <span class="kn">import</span> <span class="nn">re</span>
+
+<span class="k">def</span> <span class="nf">loadtxt2d</span><span class="p">(</span><span class="n">intext</span><span class="p">):</span>
+	<span class="k">try</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">intext</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+	<span class="k">except</span><span class="p">:</span>
+		<span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">intext</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Analyzer"><a class="viewcode-back" href="../../pymultinest_analyse.html#pymultinest.analyse.Analyzer">[docs]</a><span class="k">class</span> <span class="nc">Analyzer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
@@ -71,7 +78,7 @@
 <span class="sd">		likelihood &amp; normalized by the evidence.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">data_file</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.txt&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span>
-		<span class="k">print</span> <span class="s">&#39;  analysing data from </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_file</span>
+		<span class="k">print</span><span class="p">((</span><span class="s">&#39;  analysing data from </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_file</span><span class="p">))</span>
 
 		<span class="sd">&quot;&quot;&quot;[root]post_separate.dat</span>
 <span class="sd">		This file is only created if mmodal is set to T. Posterior </span>
@@ -99,20 +106,23 @@
 <span class="sd">			fetches self.data_file</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">):</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_file</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_file</span><span class="p">)</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></div>
 <div class="viewcode-block" id="Analyzer.get_equal_weighted_posterior"><a class="viewcode-back" href="../../pymultinest_analyse.html#pymultinest.analyse.Analyzer.get_equal_weighted_posterior">[docs]</a>	<span class="k">def</span> <span class="nf">get_equal_weighted_posterior</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">			fetches self.data_file</span>
 <span class="sd">		&quot;&quot;&quot;</span>
 		<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;equal_weighted_posterior&#39;</span><span class="p">):</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">equal_weighted_posterior</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">equal_weighted_file</span><span class="p">,</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">equal_weighted_posterior</span> <span class="o">=</span> <span class="n">loadtxt2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">equal_weighted_file</span><span class="p">)</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equal_weighted_posterior</span>
 	</div>
 	<span class="k">def</span> <span class="nf">_read_error_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
-		<span class="c">#print &#39;_read_error_line&#39;, l</span>
-		<span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;  &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+		<span class="c">#print(&#39;_read_error_line -&gt; line&gt;&#39;, l)</span>
+		<span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;    &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+		<span class="c">#print(&#39;_read_error_line -&gt; name&gt;&#39;, name)</span>
+		<span class="c">#print(&#39;_read_error_line -&gt; values&gt;&#39;, values)</span>
 		<span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;: &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+		<span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;: &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
 		<span class="n">v</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; +/- &quot;</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 	<span class="k">def</span> <span class="nf">_read_error_into_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
@@ -125,7 +135,7 @@
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">table</span> <span class="o">=</span> <span class="n">txt</span>		
 		<span class="n">header</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-		<span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">table</span><span class="p">),</span> <span class="n">ndmin</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+		<span class="n">data</span> <span class="o">=</span> <span class="n">loadtxt2d</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
 		<span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
 			<span class="n">d</span><span class="p">[</span><span class="n">title</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">data</span>
 		<span class="k">return</span> <span class="n">data</span>
@@ -136,7 +146,7 @@
 		<span class="n">stats</span> <span class="o">=</span> <span class="p">[]</span>
 		
 		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">posterior</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
-			<span class="n">b</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">posterior</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">posterior</span><span class="p">[:,</span><span class="n">i</span><span class="p">])</span>
+			<span class="n">b</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">posterior</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">posterior</span><span class="p">[:,</span><span class="n">i</span><span class="p">]))</span>
 			<span class="n">b</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 			<span class="n">b</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
 			<span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
@@ -144,33 +154,23 @@
 			<span class="n">sig3</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="mf">0.9973</span> <span class="o">/</span> <span class="mf">2.</span>
 			<span class="n">sig2</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="mf">0.95</span> <span class="o">/</span> <span class="mf">2.</span>
 			<span class="n">sig1</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="mf">0.6826</span> <span class="o">/</span> <span class="mf">2.</span>
-			<span class="n">low1</span>  <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">sig1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="n">high1</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">sig1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="n">low2</span>  <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">sig2</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="n">high2</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">sig2</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="k">try</span><span class="p">:</span>
-				<span class="n">low3</span>  <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">sig3</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="k">except</span><span class="p">:</span>
-				<span class="n">low3</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="k">try</span><span class="p">:</span>
-				<span class="n">high3</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">sig3</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="k">except</span><span class="p">:</span>
-				<span class="n">high3</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="k">try</span><span class="p">:</span>
-				<span class="n">low5</span>  <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">sig5</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="k">except</span><span class="p">:</span>
-				<span class="n">low5</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="k">try</span><span class="p">:</span>
-				<span class="n">high5</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">sig5</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="k">except</span><span class="p">:</span>
-				<span class="n">high5</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="n">median</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">0.5</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="n">q1</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">0.75</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="n">q3</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.25</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="n">q99</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">0.99</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="n">q01</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.01</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="n">q90</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mf">0.9</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-			<span class="n">q10</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">0.1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+			<span class="n">bi</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">b</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">left</span><span class="o">=</span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">right</span><span class="o">=</span><span class="n">b</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
+			
+			<span class="n">low1</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sig1</span><span class="p">)</span>
+			<span class="n">high1</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="n">sig1</span><span class="p">)</span>
+			<span class="n">low2</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sig2</span><span class="p">)</span>
+			<span class="n">high2</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="n">sig2</span><span class="p">)</span>
+			<span class="n">low3</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sig3</span><span class="p">)</span>
+			<span class="n">high3</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="n">sig3</span><span class="p">)</span>
+			<span class="n">low5</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">sig5</span><span class="p">)</span>
+			<span class="n">high5</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="n">sig5</span><span class="p">)</span>
+			<span class="n">median</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+			<span class="n">q1</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span>
+			<span class="n">q3</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+			<span class="n">q99</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="mf">0.99</span><span class="p">)</span>
+			<span class="n">q01</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+			<span class="n">q90</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="mf">0.9</span><span class="p">)</span>
+			<span class="n">q10</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
 			
 			<span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
 				<span class="s">&#39;median&#39;</span><span class="p">:</span> <span class="n">median</span><span class="p">,</span>
@@ -196,36 +196,68 @@
 <span class="sd">			information about the modes found:</span>
 <span class="sd">			mean, sigma, maximum a posterior in each dimension</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="n">lines</span> <span class="o">=</span> <span class="nb">file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stats_file</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-		<span class="n">text</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-		<span class="n">parts</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n\n\n</span><span class="s">&quot;</span><span class="p">)</span>
-		<span class="k">del</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-		<span class="n">stats</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;modes&#39;</span><span class="p">:[]}</span>
-		
+		<span class="c">#lines = file(self.stats_file).readlines()</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stats_file</span><span class="p">)</span> <span class="k">as</span> <span class="nb">file</span><span class="p">:</span>
+			<span class="n">lines</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
 		<span class="c"># Global Evidence</span>
+		<span class="n">stats</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;modes&#39;</span><span class="p">:[]}</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_read_error_into_dict</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">stats</span><span class="p">)</span>
-		<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-		<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
-			<span class="n">modelines</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="s">&#39;Nested Importance Sampling Global Log-Evidence&#39;</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+			<span class="c"># INS global evidence</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">_read_error_into_dict</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">stats</span><span class="p">)</span>
+			<span class="n">Z</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s">&#39;Nested Importance Sampling Global Log-Evidence&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+			<span class="n">Zerr</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s">&#39;Nested Importance Sampling Global Log-Evidence error&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+			<span class="c"># there is only one &#39;mode&#39;</span>
+			<span class="n">text</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+			
+			<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+			<span class="n">modelines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">)</span>
 			<span class="n">mode</span> <span class="o">=</span> <span class="p">{</span>
 				<span class="s">&#39;index&#39;</span><span class="p">:</span><span class="n">i</span>
 			<span class="p">}</span>
-			<span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
-			<span class="n">modelines1</span> <span class="o">=</span> <span class="n">modelines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+			<span class="c"># no preamble; construct it</span>
 			<span class="c"># Strictly local evidence</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_read_error_into_dict</span><span class="p">(</span><span class="n">modelines1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="p">)</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">_read_error_into_dict</span><span class="p">(</span><span class="n">modelines1</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">mode</span><span class="p">)</span>
-			<span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Parameters&quot;</span><span class="p">)</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;Strictly Local Log-Evidence&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Z</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;Strictly Local Log-Evidence error&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Zerr</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;Local Log-Evidence&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Z</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;Local Log-Evidence error&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Zerr</span>
+			<span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Parameters&quot;</span><span class="p">)</span>
 			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;maximum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;maximum a posterior&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;maximum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">2</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;maximum a posterior&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">2</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 			<span class="n">stats</span><span class="p">[</span><span class="s">&#39;modes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">text</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+			<span class="c"># without INS:</span>
+			<span class="n">parts</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n\n\n</span><span class="s">&quot;</span><span class="p">)</span>
+			<span class="k">del</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+		
+			<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+			<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
+				<span class="n">modelines</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">)</span>
+				<span class="n">mode</span> <span class="o">=</span> <span class="p">{</span>
+					<span class="s">&#39;index&#39;</span><span class="p">:</span><span class="n">i</span>
+				<span class="p">}</span>
+				<span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+				<span class="n">modelines1</span> <span class="o">=</span> <span class="n">modelines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+				<span class="c"># Strictly local evidence</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_read_error_into_dict</span><span class="p">(</span><span class="n">modelines1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="p">)</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_read_error_into_dict</span><span class="p">(</span><span class="n">modelines1</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">mode</span><span class="p">)</span>
+				<span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Parameters&quot;</span><span class="p">)</span>
+				<span class="n">mode</span><span class="p">[</span><span class="s">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+				<span class="n">mode</span><span class="p">[</span><span class="s">&#39;sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+				<span class="n">mode</span><span class="p">[</span><span class="s">&#39;maximum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+				<span class="n">mode</span><span class="p">[</span><span class="s">&#39;maximum a posterior&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+				<span class="n">stats</span><span class="p">[</span><span class="s">&#39;modes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">stats</span>
 </div>
 	<span class="k">def</span> <span class="nf">get_best_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="n">lastrow</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-		<span class="k">return</span> <span class="p">{</span><span class="s">&#39;log_likelihood&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">lastrow</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> 
+		<span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
+		<span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
+		<span class="n">lastrow</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+		<span class="k">return</span> <span class="p">{</span><span class="s">&#39;log_likelihood&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">lastrow</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
 			<span class="s">&#39;parameters&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">lastrow</span><span class="p">[</span><span class="mi">2</span><span class="p">:])}</span>
 </pre></div></div>
 

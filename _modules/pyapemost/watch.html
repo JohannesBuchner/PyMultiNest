@@ -51,9 +51,9 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Module for watching the progress of APEMoST</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">threading</span>
-<span class="kn">import</span> <span class="nn">analyse</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">analyse</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">shutil</span><span class="o">,</span> <span class="nn">os</span>
 
@@ -87,7 +87,7 @@
 			<span class="k">try</span><span class="p">:</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_plot_live</span><span class="p">()</span>
 			<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-				<span class="k">print</span> <span class="s">&#39;Plotting failed&#39;</span><span class="p">,</span> <span class="n">e</span>
+				<span class="k">print</span><span class="p">(</span><span class="s">&#39;Plotting failed&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
 				<span class="c">#import traceback</span>
 				<span class="c">#traceback.print_exc()</span>
 	
