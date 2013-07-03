@@ -1,3 +1,4 @@
+from __future__ import absolute_import, unicode_literals, print_function
 import scipy
 import numpy
 import math
@@ -81,15 +82,15 @@ if "analyse" in cmd:
 	i = 1
 	plt.clf()
 	plt.figure(figsize=(7, 4 * len(histograms)))
-	for k,(v,stats) in histograms.iteritems():
+	for k,(v,stats) in histograms.items():
 		plt.subplot(len(histograms), 1, i)
 		plt.plot(v[:,0], v[:,2], ls='steps--', label=k)
 		plt.legend()
-		print k, stats
+		print(k, stats)
 		i = i + 1
 	plt.savefig("marginals.pdf")
 	show("marginals.pdf")
 	
-	print pyapemost.model_probability()
+	print(pyapemost.model_probability())
 
 
