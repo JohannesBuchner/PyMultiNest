@@ -21,8 +21,13 @@ n_params = len(parameters)
 
 # run MultiNest
 pymultinest.run(myloglike, myprior, n_params, 
-	importance_nested_sampling = True, 
+	importance_nested_sampling = False, 
 	resume = True, verbose = True)
 
-# for code to analyse the results, and make plots, see full demo
+# run 
+# $ multinest_marginals.py chains/1-
+# which will produce pretty marginal pdf plots
+
+# for code to analyse the results, and make plots see full demo
+
 

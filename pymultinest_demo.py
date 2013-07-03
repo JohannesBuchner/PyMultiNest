@@ -31,7 +31,7 @@ parameters = ["x", "y"]
 n_params = len(parameters)
 
 # we want to see some output while it is running
-progress = pymultinest.ProgressPlotter(n_params = n_params, interval_ms = 2000); progress.start()
+progress = pymultinest.ProgressPlotter(n_params = n_params); progress.start()
 threading.Timer(2, show, ["chains/1-phys_live.points.pdf"]).start() # delayed opening
 # run MultiNest
 pymultinest.run(myloglike, myprior, n_params, importance_nested_sampling = False, resume = True, verbose = True, sampling_efficiency = 0.3)

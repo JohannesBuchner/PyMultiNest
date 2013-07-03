@@ -18,6 +18,7 @@ setup(
     license = "GPLv3",
     packages = ["pymultinest", "pyapemost", "pycuba"],
     provides = ["pymultinest", "pyapemost", "pycuba"],
-    requires = ["ctypesGsl", "numpy (>=1.5)", "matplotlib", "scipy"]
+    requires = ["ctypesGsl", "numpy (>=1.5)", "matplotlib", "scipy"],
+    scripts=['multinest_marginals.py'],
 )
 
