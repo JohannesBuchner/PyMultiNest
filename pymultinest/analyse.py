@@ -170,8 +170,10 @@ class Analyzer(object):
 		return stats
 
 	def get_best_fit(self):
-		lastrow = self.get_data()[-1]
-		return {'log_likelihood': float(-0.5 * lastrow[1]), 
+		data = self.get_data()
+		i = (-0.5 * data[:,1]).argmax()
+		lastrow = data[i]
+		return {'log_likelihood': float(-0.5 * lastrow[1]),
 			'parameters': list(lastrow[2:])}
 
 
