@@ -149,30 +149,58 @@ class Analyzer(object):
 		#lines = file(self.stats_file).readlines()
 		with open(self.stats_file) as file:
 			lines = file.readlines()
-		text = "".join(lines)
-		parts = text.split("\n\n\n")
-		del parts[0]
-		stats = {'modes':[]}
-		
 		# Global Evidence
+		stats = {'modes':[]}
 		self._read_error_into_dict(lines[0], stats)
-		i = 0
-		for p in parts:
-			modelines = p.split("\n\n")
+
+		if 'Nested Importance Sampling Global Log-Evidence' in lines[1]:
+			# INS global evidence
+			self._read_error_into_dict(lines[1], stats)
+			Z = stats['Nested Importance Sampling Global Log-Evidence'.lower()]
+			Zerr = stats['Nested Importance Sampling Global Log-Evidence error'.lower()]
+			# there is only one 'mode'
+			text = ''.join(lines[3:])
+			
+			i = 0
+			modelines = text.split("\n\n")
 			mode = {
 				'index':i
 			}
-			i = i + 1
-			modelines1 = modelines[0].split("\n")
+			# no preamble; construct it
 			# Strictly local evidence
-			self._read_error_into_dict(modelines1[1], mode)
-			self._read_error_into_dict(modelines1[2], mode)
-			t = self._read_table(modelines[1], title = "Parameters")
+			mode['Strictly Local Log-Evidence'.lower()] = Z
+			mode['Strictly Local Log-Evidence error'.lower()] = Zerr
+			mode['Local Log-Evidence'.lower()] = Z
+			mode['Local Log-Evidence error'.lower()] = Zerr
+			t = self._read_table(modelines[0], title = "Parameters")
 			mode['mean'] = t[:,1].tolist()
 			mode['sigma'] = t[:,2].tolist()
-			mode['maximum'] = self._read_table(modelines[1])[:,1].tolist()
-			mode['maximum a posterior'] = self._read_table(modelines[1])[:,1].tolist()
+			mode['maximum'] = self._read_table(modelines[2])[:,1].tolist()
+			mode['maximum a posterior'] = self._read_table(modelines[2])[:,1].tolist()
 			stats['modes'].append(mode)
+		else:
+			text = ''.join(lines)
+			# without INS:
+			parts = text.split("\n\n\n")
+			del parts[0]
+		
+			i = 0
+			for p in parts:
+				modelines = p.split("\n\n")
+				mode = {
+					'index':i
+				}
+				i = i + 1
+				modelines1 = modelines[0].split("\n")
+				# Strictly local evidence
+				self._read_error_into_dict(modelines1[1], mode)
+				self._read_error_into_dict(modelines1[2], mode)
+				t = self._read_table(modelines[1], title = "Parameters")
+				mode['mean'] = t[:,1].tolist()
+				mode['sigma'] = t[:,2].tolist()
+				mode['maximum'] = self._read_table(modelines[1])[:,1].tolist()
+				mode['maximum a posterior'] = self._read_table(modelines[1])[:,1].tolist()
+				stats['modes'].append(mode)
 		return stats
 
 	def get_best_fit(self):

@@ -53,6 +53,7 @@ class PlotMarginalModes(object):
 		stats = self.analyser.get_stats()
 		n_params = self.analyser.n_params
 		modes = stats['modes']
+		
 		# determining min/max
 		min1 = min([mode['mean'][dim1] - 3*mode['sigma'][dim1] for mode in modes])
 		max1 = max([mode['mean'][dim1] + 3*mode['sigma'][dim1] for mode in modes])

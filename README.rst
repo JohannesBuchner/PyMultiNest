@@ -1,5 +1,5 @@
-PyMultiNest -- Python interface for MultiNest v3
-=================================================
+PyMultiNest -- Python interface for MultiNest
+==============================================
 
 This library provides programmatic access to MultiNest.
 
@@ -9,14 +9,11 @@ What is MultiNest?
 MultiNest is a program and a sampling technique. As a Bayesian inference technique,
 it allows parameter estimation and model selection. (find out more in the 
 MultiNest paper, http://arxiv.org/abs/0809.3437, or in a classic MCMC sampler, 
-http://apemost.sf.net/ ).
+http://apemost.sf.net/ ). Recently, MultiNest added Importance Nested Sampling 
+(INS, see http://arxiv.org/abs/1306.2144) which is now also supported.
 
 The efficient Monte Carlo algorithm for sampling the parameter space is based 
 on nested sampling and the idea of disjoint multi-dimensional ellipse sampling.
-
-MultiNest v3.0 with Importance Nested Sampling (INS) implemented has been released. 
-Read http://arxiv.org/abs/1306.2144 for more details on INS. Please read the MultiNest
-README file before using the INS in MultiNest v3.0.
 
 For the scientific community, where Python is becoming the new lingua franca (luckily),
 I provide an interface to MultiNest.

@@ -1,5 +1,5 @@
 from __future__ import absolute_import, unicode_literals, print_function
-import pymultinest as pymn
+import pymultinest
 import math
 import os, threading, subprocess
 if not os.path.exists("chains"): os.mkdir("chains")
@@ -31,15 +31,15 @@ parameters = ["x", "y"]
 n_params = len(parameters)
 
 # we want to see some output while it is running
-progress = pymn.ProgressPlotter(n_params = n_params); progress.start()
+progress = pymultinest.ProgressPlotter(n_params = n_params); progress.start()
 threading.Timer(2, show, ["chains/1-phys_live.points.pdf"]).start() # delayed opening
 # run MultiNest
-pymn.run(myloglike, myprior, n_params, importance_nested_sampling = False, resume = True, verbose = True, sampling_efficiency = 0.3)
+pymultinest.run(myloglike, myprior, n_params, importance_nested_sampling = False, resume = True, verbose = True, sampling_efficiency = 0.3)
 # ok, done. Stop our progress watcher
 progress.stop()
 
 # lets analyse the results
-a = pymn.Analyzer(n_params = n_params)
+a = pymultinest.Analyzer(n_params = n_params)
 s = a.get_stats()
 
 import json
@@ -59,7 +59,7 @@ plt.clf()
 
 # Copy and edit this file, and play with it.
 
-p = pymn.PlotMarginalModes(a)
+p = pymultinest.PlotMarginalModes(a)
 plt.figure(figsize=(5*n_params, 5*n_params))
 #plt.subplots_adjust(wspace=0, hspace=0)
 for i in range(n_params):
@@ -77,6 +77,7 @@ for i in range(n_params):
 
 plt.savefig("chains/marginals_multinest.pdf") #, bbox_inches='tight')
 show("chains/marginals_multinest.pdf")
+
 for i in range(n_params):
 	outfile = '%s-mode-marginal-%d.pdf' % (a.outputfiles_basename,i)
 	p.plot_modes_marginal(i, with_ellipses = True, with_points = False)

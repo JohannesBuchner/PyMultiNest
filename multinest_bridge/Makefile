@@ -44,12 +44,12 @@ LIBS =  -L$(MULTINEST) -l$(MNESTLIBNAME) -llapack -lpthread
 # LIBS +=  -lcblas -lf77blas -latlas
 
 libcnest.so: $(OBJFILES)
-	# 
+	#
+	# MULTINEST (the library directory) is set to ${MULTINEST}.
+	#
 	# MNESTLIBNAME preset to '${MNESTLIBNAME}'. Change this according
 	#  to your MultiNest installation.
 	#
-	# MULTINEST set to ${MULTINEST}. 
-	# 
 	# If you didn't set this to the directory where MultiNest 
 	# is compiled, you will receive see this error later:
 	#     OSError: libcnest.so: undefined symbol: __nested_MOD_nestrun
@@ -63,3 +63,4 @@ libcnest.so: $(OBJFILES)
 
 clean:
 	rm -f *.so
+

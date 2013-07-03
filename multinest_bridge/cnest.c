@@ -159,7 +159,7 @@ void run(
 )
 {
 	/* filling root with spaces, because fortran likes that and not '\O'
-	   CAUTION: root should be a non-const or mutable array */
+	   for this, the root buffer must be writable */
 	for (int i = strlen(root); i < 100; i++) root[i] = ' ';
 	
 	if (p.LogLike == NULL) {
@@ -179,3 +179,4 @@ void run(
 		USE_LOGZERO(&logZero) USE_MAXITER(&maxIter)
 		, _LogLike USE_DUMPER(dumpfunc) USE_CONTEXT(&context));
 }
+
