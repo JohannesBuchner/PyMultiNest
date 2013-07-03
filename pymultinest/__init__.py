@@ -21,13 +21,14 @@ outputfiles_basename is the prefix used for the output files of MultiNest
 (default chains/1-).
 
 """
-from run import run
-from analyse import Analyzer
+from __future__ import absolute_import, unicode_literals, print_function
+from .run import run
+from .analyse import Analyzer
 try:            
-	from watch import ProgressWatcher, ProgressPrinter, ProgressPlotter
-	from plot import PlotMarginal, PlotMarginalModes
+	from .watch import ProgressWatcher, ProgressPrinter, ProgressPlotter
+	from .plot import PlotMarginal, PlotMarginalModes
 except ImportError as e:
-	print e
-	print 'WARNING: no plotting available -- check matplotlib installation and error above'
-	print 'Only MultiNest run capabilities enabled.'
+	print(e)
+	print('WARNING: no plotting available -- check matplotlib installation and error above')
+	print('Only MultiNest run capabilities enabled.')
 

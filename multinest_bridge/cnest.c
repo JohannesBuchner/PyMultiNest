@@ -3,9 +3,12 @@
 #include<string.h>
 
 #ifndef MULTINEST_VERSION
-#define MULTINEST_VERSION 217
+#define MULTINEST_VERSION 300
 #endif
 
+#if MULTINEST_VERSION < 300
+#define USE_INS(a)
+#endif
 #if MULTINEST_VERSION < 217
 #define USE_MAXITER(a)
 #endif
@@ -23,6 +26,9 @@
 #endif
 
 /* enable everything else */
+#ifndef USE_INS
+#define USE_INS(b) b,
+#endif
 #ifndef USE_OUTFILE
 #define USE_OUTFILE(a) ,a
 #endif
@@ -61,11 +67,11 @@
 		double *mean, double *std, double *best, double *map, \
 		double maxloglike, double logz, double logzerr)
 
-
 extern void MULTINEST_CALL(
+	USE_INS(int *IS)
 	int *mmodal, int *ceff, int *nlive, double *tol, double *efr, int *ndims,
 	int *nPar, int *nClsPar, int *maxModes, int *updInt, double *Ztol, 
-	char *root, int *seed, int *pWrap, int *fb, int *resume
+	char root[], int *seed, int *pWrap, int *fb, int *resume
 	USE_OUTFILE(int *outfile) USE_INITMPI(int *initMPI)
 	USE_LOGZERO(double *nestlogzero) USE_MAXITER(int *nestMaxIter)
 	, MULTINEST_CALLBACK(*Loglike)
@@ -145,16 +151,16 @@ void set_dumper(DUMPERTYPE(*Dumper)) {
 }
 
 void run(
+	int IS,
 	int mmodal, int ceff, int nlive, double tol, double efr, int ndims,
 	int nPar, int nClsPar, int maxModes, int updInt, double Ztol, 
-	char *rootstr, int seed, int * pWrap, int fb, int resume, int outfile, 
+	char root[], int seed, int * pWrap, int fb, int resume, int outfile, 
 	int initMPI, double logZero, int maxIter, int context
 )
 {
-	char root[100];
-	/* filling root with spaces, because fortran likes that */
-	strcpy(root, rootstr);
-	memset(root + strlen(root), ' ', 100 - strlen(root));
+	/* filling root with spaces, because fortran likes that and not '\O'
+	   CAUTION: root should be a non-const or mutable array */
+	for (int i = strlen(root); i < 100; i++) root[i] = ' ';
 	
 	if (p.LogLike == NULL) {
 		fprintf(stderr, "Need to call set_function(prior, loglike) first, to define callback functions!\n");
@@ -166,11 +172,10 @@ void run(
 	
 	
 	/* running MultiNest */
-	MULTINEST_CALL(&mmodal, &ceff, &nlive, &tol, &efr, &ndims, 
+	MULTINEST_CALL(USE_INS(&IS) &mmodal, &ceff, &nlive, &tol, &efr, &ndims, 
 		&nPar, &nClsPar, &maxModes, &updInt, &Ztol,
 		root, &seed, pWrap, &fb, &resume
 		USE_OUTFILE(&outfile) USE_INITMPI(&initMPI)
 		USE_LOGZERO(&logZero) USE_MAXITER(&maxIter)
 		, _LogLike USE_DUMPER(dumpfunc) USE_CONTEXT(&context));
 }
-

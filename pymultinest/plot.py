@@ -1,3 +1,4 @@
+from __future__ import absolute_import, unicode_literals, print_function
 import numpy
 import scipy
 import scipy.interpolate
@@ -86,7 +87,7 @@ class PlotMarginalModes(object):
 		maxvalue = values.max()
 		
 		# for each grid item, find the matching points and put them in.
-		for row, col in itertools.product(range(len(grid_x)), range(len(grid_y))):
+		for row, col in itertools.product(list(range(len(grid_x))), list(range(len(grid_y)))):
 			if dim2 is not None:
 				xc = grid_x[row,col]
 				here_x = numpy.abs(dim1_column - xc) < binsize1 / 2.
@@ -206,9 +207,9 @@ class PlotMarginalModes(object):
 			z = (x - u) / sigma
 			return 0.5 * (1 + scipy.special.erf(z / numpy.sqrt(2)))
 
-		pdff = lambda x: sum([m['strictly local evidence'] * norm(x,m['mean'][dim1],m['sigma'][dim1]) for m in modes])
+		pdff = lambda x: sum([m['strictly local log-evidence'] * norm(x,m['mean'][dim1],m['sigma'][dim1]) for m in modes])
 		pdf = numpy.vectorize(pdff)(x)
-		cdff = lambda x: sum([m['strictly local evidence'] * normcum(x,m['mean'][dim1],m['sigma'][dim1]) for m in modes])
+		cdff = lambda x: sum([m['strictly local log-evidence'] * normcum(x,m['mean'][dim1],m['sigma'][dim1]) for m in modes])
 		cdf = numpy.vectorize(cdff)(x)
 		
 		if cumulative:
@@ -229,7 +230,7 @@ class PlotMarginalModes(object):
 				break
 			el_xcenter = m['mean'][dim1]
 			el_xsize = 2 * m['sigma'][dim1]
-			el_ysize = m['strictly local evidence']
+			el_ysize = m['strictly local log-evidence']
 			if cumulative:
 				# set to cdf step size
 				y = cdff(el_xcenter)
@@ -299,7 +300,7 @@ class PlotMarginal(object):
 	def plot_marginal(self, dim1, **kwargs):
 		posterior = self.analyser.get_data()
 		
-		b = zip(posterior[:,0], posterior[:,2+dim1])
+		b = list(zip(posterior[:,0], posterior[:,2+dim1]))
 		b.sort(key=lambda x: x[1])
 		b = numpy.array(b)
 		b[:,0] = b[:,0].cumsum()

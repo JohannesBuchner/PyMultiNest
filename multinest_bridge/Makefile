@@ -1,4 +1,8 @@
 
+# Change next the right multinest library name
+# (tipical are: nest3, multinest, multinest_mpi, ...)
+MNESTLIBNAME := multinest
+# MNESTLIBNAME := nest3
 
 CC = gcc
 FC = gfortran
@@ -32,23 +36,27 @@ endif
 
 CFLAGS += -DMULTINEST_CALL=${MULTINEST_CALL}
 
-LINKLIB = ${FC} -shared
-LIBS =  -L$(MULTINEST) -lnest3 -llapack -lpthread
+#LINKLIB = ${FC} -shared
+LINKLIB = ${CC} -shared
+LIBS =  -L$(MULTINEST) -l$(MNESTLIBNAME) -llapack -lpthread
 # sometimes, this is needed:
 # LIBS +=  -lcblas -latlas
 # LIBS +=  -lcblas -lf77blas -latlas
 
 libcnest.so: $(OBJFILES)
 	# 
+	# MNESTLIBNAME preset to '${MNESTLIBNAME}'. Change this according
+	#  to your MultiNest installation.
+	#
 	# MULTINEST set to ${MULTINEST}. 
 	# 
 	# If you didn't set this to the directory where MultiNest 
 	# is compiled, you will receive see this error later:
 	#     OSError: libcnest.so: undefined symbol: __nested_MOD_nestrun
 	#
-	# Checking if libnest3.so is in $$MULTINEST
-	@if [ ! -e ${MULTINEST}/libnest3.so ]; then echo -e "\nERROR:  libnest3.so not found in '$$MULTINEST'. \nERROR:  Set MULTINEST to the directory where MultiNest is, i.e. where you compiled libnest3.so.\nERROR:  manual: http://johannesbuchner.github.com/PyMultiNest/install.html\n"; exit 1; fi
-	# Found.
+	# Checking if lib${MNESTLIBNAME}.so is in $$MULTINEST...
+	@if [ ! -e ${MULTINEST}/lib${MNESTLIBNAME}.so ]; then echo -e "\nERROR:  lib'$$MNESTLIBNAME'.so not found in '$$MULTINEST'. \nERROR:  Set MULTINEST to the directory where MultiNest is, i.e. where you compiled libmultinest.so.\nERROR:  manual: http://johannesbuchner.github.com/PyMultiNest/install.html\n"; exit 1; fi
+	# ...Found!
 	#
 	$(LINKLIB) $(CFLAGS) cnest.c -o libcnest.so $(LIBS)
 	# all done.

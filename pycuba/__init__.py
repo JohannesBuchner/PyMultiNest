@@ -1,3 +1,4 @@
+from __future__ import absolute_import, unicode_literals, print_function
 import ctypes
 from ctypes import POINTER, c_int, c_double, c_void_p, byref
 
@@ -347,15 +348,15 @@ def demo():
   KEY = 0
   
   def print_header(name):
-    print '-------------------- %s test -------------------' % name
+    print('-------------------- %s test -------------------' % name)
   def print_results(name, results):
     keys = ['nregions', 'neval', 'fail']
-    keys = filter(results.has_key, keys)
-    text = map(lambda k: "%s %d" % (k, results[k]), keys)
-    print "%s RESULT:\t" % name.upper() + "\t".join(text)
+    keys = list(filter(results.has_key, keys))
+    text = ["%s %d" % (k, results[k]) for k in keys]
+    print("%s RESULT:\t" % name.upper() + "\t".join(text))
     for comp in results['results']:
-      print "%s RESULT:\t" % name.upper() + \
-	"%(integral).8f +- %(error).8f\tp = %(prob).3f\n" % comp
+      print("%s RESULT:\t" % name.upper() + \
+	"%(integral).8f +- %(error).8f\tp = %(prob).3f\n" % comp)
   
   from os import environ as env
   verbose = 2
