@@ -31,7 +31,7 @@ parameters = ["x", "y"]
 n_params = len(parameters)
 
 # we want to see some output while it is running
-progress = pymultinest.ProgressPlotter(n_params = n_params); progress.start()
+progress = pymultinest.ProgressPlotter(n_params = n_params, interval_ms = 2000); progress.start()
 threading.Timer(2, show, ["chains/1-phys_live.points.pdf"]).start() # delayed opening
 # run MultiNest
 pymultinest.run(myloglike, myprior, n_params, importance_nested_sampling = False, resume = True, verbose = True, sampling_efficiency = 0.3)
@@ -43,12 +43,15 @@ a = pymultinest.Analyzer(n_params = n_params)
 s = a.get_stats()
 
 import json
-#json.dump(s, file('%s.json' % a.outputfiles_basename, 'w'), indent=2)
-with open('%s.json' % a.outputfiles_basename, mode='w') as file:
-	json.dump(s, file, indent=2)
-	print()
-	print("-" * 30, 'ANALYSIS', "-" * 30)
-	print("Global Evidence:\n\t%.15e +- %.15e" % ( s['nested sampling global log-evidence'], s['nested sampling global log-evidence error'] ))
+# store name of parameters, always useful
+with file('%sparams.json' % a.outputfiles_basename, 'w') as f:
+	json.dump(parameters, f, indent=2)
+# store derived stats
+with open('%sstats.json' % a.outputfiles_basename, mode='w') as f:
+	json.dump(s, f, indent=2)
+print()
+print("-" * 30, 'ANALYSIS', "-" * 30)
+print("Global Evidence:\n\t%.15e +- %.15e" % ( s['nested sampling global log-evidence'], s['nested sampling global log-evidence error'] ))
 
 import matplotlib.pyplot as plt
 plt.clf()
