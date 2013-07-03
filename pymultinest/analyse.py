@@ -1,5 +1,6 @@
+from __future__ import absolute_import, unicode_literals, print_function
 import numpy
-from StringIO import StringIO
+from io import StringIO
 import re
 
 def loadtxt2d(intext):
@@ -27,7 +28,7 @@ class Analyzer(object):
 		likelihood & normalized by the evidence.
 		"""
 		self.data_file = "%s.txt" % self.outputfiles_basename
-		print '  analysing data from %s' % self.data_file
+		print(('  analysing data from %s' % self.data_file))
 
 		"""[root]post_separate.dat
 		This file is only created if mmodal is set to T. Posterior 
@@ -66,9 +67,12 @@ class Analyzer(object):
 		return self.equal_weighted_posterior
 	
 	def _read_error_line(self, l):
-		#print '_read_error_line', l
-		name, values = l.split('  ', 1)
+		#print('_read_error_line -> line>', l)
+		name, values = l.split('    ', 1)
+		#print('_read_error_line -> name>', name)
+		#print('_read_error_line -> values>', values)
 		name = name.strip(': ').strip()
+		values = values.strip(': ').strip()
 		v, error = values.split(" +/- ")
 		return name, float(v), float(error)
 	def _read_error_into_dict(self, l, d):
@@ -92,7 +96,7 @@ class Analyzer(object):
 		stats = []
 		
 		for i in range(2, posterior.shape[1]):
-			b = zip(posterior[:,0], posterior[:,i])
+			b = list(zip(posterior[:,0], posterior[:,i]))
 			b.sort(key=lambda x: x[1])
 			b = numpy.array(b)
 			b[:,0] = b[:,0].cumsum()
@@ -142,7 +146,9 @@ class Analyzer(object):
 			information about the modes found:
 			mean, sigma, maximum a posterior in each dimension
 		"""
-		lines = file(self.stats_file).readlines()
+		#lines = file(self.stats_file).readlines()
+		with open(self.stats_file) as file:
+			lines = file.readlines()
 		text = "".join(lines)
 		parts = text.split("\n\n\n")
 		del parts[0]

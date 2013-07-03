@@ -1,3 +1,4 @@
+from __future__ import absolute_import, unicode_literals, print_function
 import threading
 
 class ProgressWatcher(threading.Thread):
@@ -46,10 +47,10 @@ class ProgressPrinter(ProgressWatcher):
 			if not self.running:
 				break
 			try:
-				print 'rejected points: ', len(file(self.rejected, 'r').readlines())
-				print 'alive points: ', len(file(self.live, 'r').readlines())
+				print(('rejected points: ', len(file(self.rejected, 'r').readlines())))
+				print(('alive points: ', len(file(self.live, 'r').readlines())))
 			except Exception as e:
-				print e
+				print(e)
 
 class ProgressPlotter(ProgressWatcher):
 	"""
@@ -65,7 +66,7 @@ class ProgressPlotter(ProgressWatcher):
 			try:
 				self._plot_live()
 			except Exception as e:
-				print e
+				print(e)
 	
 	def _plot_live(self):
 		import matplotlib.pyplot as plt

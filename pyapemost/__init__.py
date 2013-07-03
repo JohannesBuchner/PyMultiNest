@@ -15,9 +15,9 @@ relevant flags  (see the `API documentation <http://apemost.sourceforge.net/doc/
 
 """
 
-
-from run import set_function, MCMC, calibrate_first_chain, calibrate_other_chains, calibrate, run
-from analyse import create_histogram, create_histograms, print_model_probability, model_probability
-from watch import ProgressWatcher
+from __future__ import absolute_import
+from .run import set_function, MCMC, calibrate_first_chain, calibrate_other_chains, calibrate, run
+from .analyse import create_histogram, create_histograms, print_model_probability, model_probability
+from .watch import ProgressWatcher
 
 

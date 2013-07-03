@@ -1,5 +1,5 @@
-PyMultiNest -- Python interface for MultiNest
-==============================================
+PyMultiNest -- Python interface for MultiNest v3
+=================================================
 
 This library provides programmatic access to MultiNest.
 
@@ -13,6 +13,10 @@ http://apemost.sf.net/ ).
 
 The efficient Monte Carlo algorithm for sampling the parameter space is based 
 on nested sampling and the idea of disjoint multi-dimensional ellipse sampling.
+
+MultiNest v3.0 with Importance Nested Sampling (INS) implemented has been released. 
+Read http://arxiv.org/abs/1306.2144 for more details on INS. Please read the MultiNest
+README file before using the INS in MultiNest v3.0.
 
 For the scientific community, where Python is becoming the new lingua franca (luckily),
 I provide an interface to MultiNest.

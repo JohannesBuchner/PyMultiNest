@@ -1,51 +1,51 @@
-
+from __future__ import absolute_import, unicode_literals, print_function
 from ctypes import cdll
 try:
 	lib = cdll.LoadLibrary('libcnest.so')
 except OSError as e:
 	if e.message == 'libcnest.so: cannot open shared object file: No such file or directory':
-		print
-		print 'ERROR:   Could not load MultiNest Bridge library "libcnest.so"'
-		print 'ERROR:   You have to build it (from the multinest_bridge folder in pymultinest),'
-		print 'ERROR:   and point the LD_LIBRARY_PATH environment variable to it!'
-		print 'ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html'
-		print
+		print()
+		print('ERROR:   Could not load MultiNest Bridge library "libcnest.so"')
+		print('ERROR:   You have to build it (from the multinest_bridge folder in pymultinest),')
+		print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
+		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+		print()
 	if e.message == 'libnest3.so: cannot open shared object file: No such file or directory':
-		print
-		print 'ERROR:   Could not load MultiNest library "libnest3.so"'
-		print 'ERROR:   You have to build it (in MultiNest, run make libnest3.so WITHOUT_MPI=1),'
-		print 'ERROR:   and point the LD_LIBRARY_PATH environment variable to it!'
-		print 'ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html'
-		print
+		print()
+		print('ERROR:   Could not load MultiNest library "libnest3.so"')
+		print('ERROR:   You have to build it (in MultiNest, run make libnest3.so WITHOUT_MPI=1),')
+		print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
+		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+		print()
 	if 'undefined symbol: mpi_' in e.message:
-		print
-		print 'ERROR:   You did something stupid. You tried to compile MultiNest with MPI,'
-		print 'ERROR:   but the MultiNest bridge without MPI, or the other way around.'
-		print 'ERROR:   Decide on one consistent way (no MPI is safe). Either way, you currently'
-		print 'ERROR:   do not have MPI compiled into the library, and it fails to load!'
-		print 'ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html'
-		print
+		print()
+		print('ERROR:   You did something stupid. You tried to compile MultiNest with MPI,')
+		print('ERROR:   but the MultiNest bridge without MPI, or the other way around.')
+		print('ERROR:   Decide on one consistent way (no MPI is safe). Either way, you currently')
+		print('ERROR:   do not have MPI compiled into the library, and it fails to load!')
+		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+		print()
 	if 'libcnest.so: undefined symbol:' in e.message and 'nestrun' in e.message:
-		print
-		print 'ERROR:   Sorry.'
-		print 'ERROR:   The compiler decided to call the MultiNest routine differently than we expect.'
-		print 'ERROR:   You have to run $ readelf -s libnest3.so | grep nestrun'
-		print 'ERROR:   to find out how the nestrun routine is called (typically __nested_MOD_nestrun).'
-		print 'ERROR:   Then you have to compile the MultiNest bridge using'
-		print 'ERROR:   $ make clean libcnest.so MULTINEST_CALL=__nested_MOD_nestrun '
-		print 'ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html'
-		print
+		print()
+		print('ERROR:   Sorry.')
+		print('ERROR:   The compiler decided to call the MultiNest routine differently than we expect.')
+		print('ERROR:   You have to run $ readelf -s libnest3.so | grep nestrun')
+		print('ERROR:   to find out how the nestrun routine is called (typically __nested_MOD_nestrun).')
+		print('ERROR:   Then you have to compile the MultiNest bridge using')
+		print('ERROR:   $ make clean libcnest.so MULTINEST_CALL=__nested_MOD_nestrun ')
+		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+		print()
 	# the next if is useless because we can not catch symbol lookup errors (the executable crashes)
 	# but it is still there as documentation.
 	if 'symbol lookup error' in e.message and 'mpi' in e.message:
-		print
-		print 'ERROR:   You are trying to get MPI to run, but MPI failed to load.'
-		print 'ERROR:   Specifically, mpi symbols are missing in the executable.'
-		print 'ERROR:   Let me know if this is a problem of running python or a compilation problem.'
-		print 'ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html'
-		print
+		print()
+		print('ERROR:   You are trying to get MPI to run, but MPI failed to load.')
+		print('ERROR:   Specifically, mpi symbols are missing in the executable.')
+		print('ERROR:   Let me know if this is a problem of running python or a compilation problem.')
+		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+		print()
 	# what if built with MPI, but don't have MPI
-	print e
+	print(e)
 	import sys
 	sys.exit(1)
 
@@ -56,6 +56,7 @@ def run(LogLikelihood,
 	n_dims, 
 	n_params = None, 
 	n_clustering_params = None, wrapped_params = None, 
+	importance_nested_sampling = True,
 	multimodal = True, const_efficiency_mode = False, n_live_points = 1000,
 	evidence_tolerance = 0.5, sampling_efficiency = 0.8, 
 	n_iter_before_update = 100, null_log_evidence = -1e90,
@@ -89,6 +90,10 @@ def run(LogLikelihood,
 	
 	Some of the parameters are explained below. Otherwise consult the 
 	MultiNest documentation.
+	
+	@param importance_nested_sampling:
+		If True, Multinest will use Importance Nested Sampling (INS). Read http://arxiv.org/abs/1306.2144
+		for more details on INS. Please read the MultiNest README file before using the INS in MultiNest v3.0.
 	
 	@param n_params: 
 		Total no. of parameters, should be equal to ndims in most cases 
@@ -186,12 +191,13 @@ def run(LogLikelihood,
 	if dump_callback is not None:
 		lib.set_dumper(dumper_type(dump_wrapper))
 
-	lib.run(c_int(multimodal), c_int(const_efficiency_mode), 
+	lib.run(c_int(importance_nested_sampling),
+		c_int(multimodal), c_int(const_efficiency_mode), 
 		c_int(n_live_points), c_double(evidence_tolerance), 
 		c_double(sampling_efficiency), c_int(n_dims), c_int(n_params),
 		c_int(n_clustering_params), c_int(max_modes), 
 		c_int(n_iter_before_update), c_double(mode_tolerance), 
-		outputfiles_basename, c_int(seed), wraps,
+		create_string_buffer(outputfiles_basename.encode(),100), c_int(seed), wraps,
 		c_int(verbose), c_int(resume), 
 		c_int(write_output), c_int(init_MPI), 
 		c_double(log_zero), c_int(max_iter),

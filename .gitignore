@@ -3,10 +3,12 @@
 *.a
 *~
 *.pyc
+*.so
 eggbox
 gauss_shell
 obj_detect
-libnest3.so
+tmp
+chains
 build
 dist
 doc/_build

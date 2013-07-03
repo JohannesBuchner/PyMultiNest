@@ -4,6 +4,7 @@ Module for analysing the output of APEMoST
 The output files are in an easy-to-process format, so
 there is no requirement to use a specific set of tools.
 """
+from __future__ import absolute_import, unicode_literals, print_function
 import numpy
 import scipy, scipy.stats
 import numpy
@@ -97,8 +98,8 @@ def print_model_probability(logprob):
 		limits[i] = "%5.1f" % limits[i]
 		limits[i] = " " * (7 - len(limits[i])) + limits[i]
 	
-	print "Model probability ln(p(D|M, I)): [about 10^%.0f] %.5f" % (logprob / scipy.log(10), logprob)
-	print ("""
+	print("Model probability ln(p(D|M, I)): [about 10^%.0f] %.5f" % (logprob / scipy.log(10), logprob))
+	print(("""
 	Table to compare support against other models (Jeffrey):
 
 	   other model     |
@@ -112,7 +113,7 @@ def print_model_probability(logprob):
 		  <%%(very strong)%s   Decisive
 
 	be careful.
-	""" % tuple(['s']*10)) % limits
+	""" % tuple(['s']*10)) % limits)
 
 def model_probability(show=True):
 	"""
@@ -161,8 +162,8 @@ class VisitedAnalyser(object):
 	def load(self):
 		# load data
 		values = []
-		if verbose: print
-		if verbose: print "visualization: loading chains ..."
+		if verbose: print()
+		if verbose: print("visualization: loading chains ...")
 		f = "prob-chain0.dump"
 		if not os.path.exists(f):
 			raise Exception("visualization: chains not available yet.")
@@ -173,7 +174,7 @@ class VisitedAnalyser(object):
 			raise Exception("visualization: chains couldn't be loaded; perhaps no data yet: " + str(e))
 		for p in self.params:
 			f = "%s-chain-0.prob.dump" % p['name']
-			if verbose: print "	loading chain %s" % f
+			if verbose: print("	loading chain %s" % f)
 			if not os.path.exists(f):
 				raise Exception("visualization: chains not available yet.")
 			try:
@@ -182,8 +183,8 @@ class VisitedAnalyser(object):
 				raise Exception("visualization: chains couldn't be loaded; perhaps no data yet: " + str(e))
 			values.append(v)
 		nvalues = min(map(len, values))
-		if verbose: print "visualization: loading chains finished; %d values" % nvalues
-		self.values = map(lambda v: v[:nvalues][-self.nlast::nevery], values)
+		if verbose: print("visualization: loading chains finished; %d values" % nvalues)
+		self.values = [v[:nvalues][-self.nlast::nevery] for v in values]
 		self.probabilities = probabilities[:nvalues][-self.nlast::nevery]
 	
 	def plot_only(self):
@@ -301,7 +302,7 @@ class VisitedPlotter(VisitedAnalyser):
 				if badbins.sum() != 0:
 					z_min = z_sorted[badbins][0]
 					z_mins.append(z_min)
-					contour_sigmas.append(u'%.0f sigma' % s)
+					contour_sigmas.append('%.0f sigma' % s)
 					if s == 1: colors.append("#dddddd")
 					if s == 3: colors.append("#cccccc")
 			
@@ -322,7 +323,7 @@ class VisitedPlotter(VisitedAnalyser):
 	
 	def conditional_plot_before(self, param1, values1, param2, values2):
 		names = (param1['name'],param2['name'])
-		if verbose: print "visualization: creating conditional plot of %s vs %s" % names
+		if verbose: print("visualization: creating conditional plot of %s vs %s" % names)
 		plt.figure(figsize=(5,5))
 		plt.title("%s vs %s" % names)
 	def conditional_plot_after(self, param1, values1, param2, values2):
@@ -341,7 +342,7 @@ class VisitedPlotter(VisitedAnalyser):
 		self.marginal_plot_after(param, values)
 	def marginal_plot_before(self, param, values):
 		name = param['name']
-		if verbose: print "visualization: creating marginal plot of %s" % name
+		if verbose: print("visualization: creating marginal plot of %s" % name)
 		plt.figure(figsize=(5,5))
 		plt.title("%s" % name)
 	def marginal_plot_after(self, param, values):
@@ -376,10 +377,10 @@ class VisitedAllPlotter(VisitedPlotter):
 		plt.figure(figsize=(5*self.nparams,5*self.nparams))
 	
 	def after_plot(self):
-		if verbose: print "visualization: saving output ..."
+		if verbose: print("visualization: saving output ...")
 		plt.savefig(self.outputfiles_basename + "chain0.pdf")
 		plt.close()
-		if verbose: print "visualization: saving output done"
+		if verbose: print("visualization: saving output done")
 	
 	def choose_plot(self, i, j):
 		plt.subplot(self.nparams, self.nparams, self.nparams * j + i + 1)
@@ -389,7 +390,7 @@ class VisitedAllPlotter(VisitedPlotter):
 		i, j = map(self.paramnames.index, names)
 		self.choose_plot(i, j)
 		names = (param1['name'],param2['name'])
-		if verbose: print "visualization: creating conditional plot of %s vs %s" % names
+		if verbose: print("visualization: creating conditional plot of %s vs %s" % names)
 		plt.xlabel(param1['name'])
 		plt.ylabel(param2['name'])
 	def conditional_plot(self, param1, values1, param2, values2, probabilities, **kwargs):
@@ -403,7 +404,7 @@ class VisitedAllPlotter(VisitedPlotter):
 		name = param['name']
 		i = self.paramnames.index(name)
 		thisplot = self.choose_plot(i, i)
-		if verbose: print "visualization: creating marginal plot of %s" % name
+		if verbose: print("visualization: creating marginal plot of %s" % name)
 		plt.xlabel("iteration")
 		plt.ylabel(name)
 	def marginal_plot_after(self, param, values):
@@ -461,7 +462,7 @@ class VisitedWindow(VisitedAnalyser):
 		name = param['name']
 		i = self.paramnames.index(name)
 		thisplot = self.choose_plot(i, i)
-		self.update_plot(thisplot, "progress", xrange(len(values)), values)
+		self.update_plot(thisplot, "progress", range(len(values)), values)
 		plt.xlabel("iteration")
 		plt.ylabel(name)
 		

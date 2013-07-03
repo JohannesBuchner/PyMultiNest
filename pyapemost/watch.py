@@ -1,9 +1,9 @@
 """
 Module for watching the progress of APEMoST
 """
-
+from __future__ import absolute_import, unicode_literals, print_function
 import threading
-import analyse
+from . import analyse
 import matplotlib.pyplot as plt
 import shutil, os
 
@@ -37,7 +37,7 @@ class ProgressWatcher(threading.Thread):
 			try:
 				self._plot_live()
 			except Exception as e:
-				print 'Plotting failed', e
+				print('Plotting failed', e)
 				#import traceback
 				#traceback.print_exc()
 	
