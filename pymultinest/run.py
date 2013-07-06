@@ -17,6 +17,13 @@ except OSError as e:
 		print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
 		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
 		print()
+	if e.message.endswith('cannot open shared object file: No such file or directory'):
+		print()
+		print('ERROR:   Could not load MultiNest library: %s' % e.message.split(':')[0])
+		print('ERROR:   You have to build MultiNest,')
+		print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
+		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+		print()
 	if 'undefined symbol: mpi_' in e.message:
 		print()
 		print('ERROR:   You did something stupid. You tried to compile MultiNest with MPI,')
@@ -45,7 +52,7 @@ except OSError as e:
 		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
 		print()
 	# what if built with MPI, but don't have MPI
-	print(e)
+	print('problem:', e)
 	import sys
 	sys.exit(1)
 
@@ -56,7 +63,7 @@ def run(LogLikelihood,
 	n_dims, 
 	n_params = None, 
 	n_clustering_params = None, wrapped_params = None, 
-	importance_nested_sampling = True,
+	importance_nested_sampling = False,
 	multimodal = True, const_efficiency_mode = False, n_live_points = 1000,
 	evidence_tolerance = 0.5, sampling_efficiency = 0.8, 
 	n_iter_before_update = 100, null_log_evidence = -1e90,

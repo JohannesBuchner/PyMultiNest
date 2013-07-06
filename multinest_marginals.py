@@ -1,19 +1,29 @@
-"""
+__doc__ = """
 Script that does default visualizations (marginal plots, 1-d and 2-d).
+
+Author: Johannes Buchner (C) 2013
 """
 
 import numpy
 from numpy import exp, log
 import matplotlib.pyplot as plt
-
 import sys
+import json
+import pymultinest
+
+if len(sys.argv) != 2:
+	sys.stderr.write("""SYNOPSIS: %s <output-root> 
+
+	output-root: 	Where the output of a MultiNest run has been written to. 
+	            	Example: chains/1-
+%s""" % (sys.argv[0], __doc__))
+	sys.exit(1)
+
 prefix = sys.argv[1]
 
-import json
 parameters = json.load(file(prefix + 'params.json'))
 n_params = len(parameters)
 
-import pymultinest
 a = pymultinest.Analyzer(n_params = n_params, outputfiles_basename = prefix)
 s = a.get_stats()
 

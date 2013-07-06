@@ -22,9 +22,14 @@ outputfiles_basename is the prefix used for the output files of MultiNest
 
 """
 from __future__ import absolute_import, unicode_literals, print_function
-from .run import run
+try:
+	from .run import run
+except ImportError as e:
+	print(e)
+	print('WARNING: no running available -- check library and error above')
+	print('Only MultiNest analysing capabilities enabled.')
 from .analyse import Analyzer
-try:            
+try:
 	from .watch import ProgressWatcher, ProgressPrinter, ProgressPlotter
 	from .plot import PlotMarginal, PlotMarginalModes
 except ImportError as e:
