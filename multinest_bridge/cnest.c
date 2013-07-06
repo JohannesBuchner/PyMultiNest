@@ -124,7 +124,7 @@ MULTINEST_DUMPERTYPE(_DumperConverter)
 		printf("\tcalling client. \n");
 		printf("\tcalling %p\n", p.Dumper);
 		p.Dumper(*nsamples, *nlive, n, 
-			NULL, (double**)postdist, 
+			(double**)postdist, (double**)pLivePts,
 			mean, std, best, map, *maxloglike, *logz, *logzerr);
 	}
 #else

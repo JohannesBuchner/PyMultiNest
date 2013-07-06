@@ -6,8 +6,8 @@ MNESTLIBNAME := multinest
 
 CC = gcc
 FC = gfortran
-FFLAGS +=  -I. -O3 -w -fPIC
-CFLAGS +=  -I. -O3 -std=c99 -Wall -Wextra -fPIC
+FFLAGS +=  -I. -O3 -w -Wno-unused-parameter -fPIC
+CFLAGS +=  -I. -O3 -std=c99 -Wall -Wextra -Wno-unused-parameter -fPIC
 
 # If the MultiNest function is named 
 # differently; then do e.g.
