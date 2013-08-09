@@ -68,7 +68,7 @@ class Analyzer(object):
 	
 	def _read_error_line(self, l):
 		#print('_read_error_line -> line>', l)
-		name, values = l.split('    ', 1)
+		name, values = l.split('   ', 1)
 		#print('_read_error_line -> name>', name)
 		#print('_read_error_line -> values>', values)
 		name = name.strip(': ').strip()
@@ -152,6 +152,10 @@ class Analyzer(object):
 		# Global Evidence
 		stats = {'modes':[]}
 		self._read_error_into_dict(lines[0], stats)
+		
+		# backwards compability
+		stats['global evidence'] = stats['Nested Sampling Global Log-Evidence'.lower()]
+		stats['global evidence error'] = stats['Nested Sampling Global Log-Evidence error'.lower()]
 
 		if 'Nested Importance Sampling Global Log-Evidence' in lines[1]:
 			# INS global evidence
