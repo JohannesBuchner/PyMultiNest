@@ -1,7 +1,8 @@
 from __future__ import absolute_import, unicode_literals, print_function
 import pymultinest
 import math
-import os, threading, subprocess
+import os
+import threading, subprocess
 if not os.path.exists("chains"): os.mkdir("chains")
 def show(filepath): 
 	""" open the output (pdf) file for the user """
@@ -34,7 +35,7 @@ n_params = len(parameters)
 progress = pymultinest.ProgressPlotter(n_params = n_params); progress.start()
 threading.Timer(2, show, ["chains/1-phys_live.points.pdf"]).start() # delayed opening
 # run MultiNest
-pymultinest.run(myloglike, myprior, n_params, importance_nested_sampling = False, resume = True, verbose = True, sampling_efficiency = 0.3)
+pymultinest.run(myloglike, myprior, n_params, importance_nested_sampling = False, resume = True, verbose = True, sampling_efficiency = 'model', n_live_points = 1000)
 # ok, done. Stop our progress watcher
 progress.stop()
 
