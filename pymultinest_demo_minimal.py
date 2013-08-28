@@ -21,7 +21,6 @@ n_params = len(parameters)
 
 # run MultiNest
 pymultinest.run(myloglike, myprior, n_params, 
-	importance_nested_sampling = False, 
 	resume = True, verbose = True)
 
 # run 
