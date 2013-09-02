@@ -179,7 +179,7 @@ class Analyzer(object):
 			t = self._read_table(modelines[0], title = "Parameters")
 			mode['mean'] = t[:,1].tolist()
 			mode['sigma'] = t[:,2].tolist()
-			mode['maximum'] = self._read_table(modelines[2])[:,1].tolist()
+			mode['maximum'] = self._read_table(modelines[1])[:,1].tolist()
 			mode['maximum a posterior'] = self._read_table(modelines[2])[:,1].tolist()
 			stats['modes'].append(mode)
 		else:
@@ -202,8 +202,8 @@ class Analyzer(object):
 				t = self._read_table(modelines[1], title = "Parameters")
 				mode['mean'] = t[:,1].tolist()
 				mode['sigma'] = t[:,2].tolist()
-				mode['maximum'] = self._read_table(modelines[1])[:,1].tolist()
-				mode['maximum a posterior'] = self._read_table(modelines[1])[:,1].tolist()
+				mode['maximum'] = self._read_table(modelines[2])[:,1].tolist()
+				mode['maximum a posterior'] = self._read_table(modelines[3])[:,1].tolist()
 				stats['modes'].append(mode)
 		return stats
 
