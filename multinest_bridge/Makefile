@@ -1,7 +1,7 @@
 
 # Change next the right multinest library name
 # (tipical are: nest3, multinest, multinest_mpi, ...)
-MNESTLIBNAME := multinest
+MNESTLIBNAME ?= multinest
 # MNESTLIBNAME := nest3
 
 CC = gcc
@@ -38,6 +38,9 @@ CFLAGS += -DMULTINEST_CALL=${MULTINEST_CALL}
 
 #LINKLIB = ${FC} -shared
 LINKLIB = ${CC} -shared
+ifeq ($(UNAME_S),Darwin)
+  LINKLIB += -bundle -undefined dynamic_lookup
+endif
 LIBS =  -L$(MULTINEST) -l$(MNESTLIBNAME) -llapack -lpthread
 # sometimes, this is needed:
 # LIBS +=  -lcblas -latlas
@@ -47,7 +50,7 @@ libcnest.so: $(OBJFILES)
 	#
 	# MULTINEST (the library directory) is set to ${MULTINEST}.
 	#
-	# MNESTLIBNAME preset to '${MNESTLIBNAME}'. Change this according
+	# MNESTLIBNAME set to '${MNESTLIBNAME}'. Change this according
 	#  to your MultiNest installation.
 	#
 	# If you didn't set this to the directory where MultiNest 
