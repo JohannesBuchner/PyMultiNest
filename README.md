@@ -1,6 +1,8 @@
 PyMultiNest -- Python interface for MultiNest -- Michele's fork
 ===============================================================
 
+**Note: not completely committed yet... do not use for the moment!**
+
 [PyMultiNest](http://johannesbuchner.github.com/PyMultiNest) provides programmatic access to [MultiNest](http://ccpforge.cse.rl.ac.uk/gf/project/multinest) from Python. It does so by building a Python extension that contains a C wrapper (the "bridge") to MultiNest's Fortran. By contrast, my approach is write a C-compatible wrapper in Fortran (using the [iso_c_binding](http://fortran90.org/src/best-practices.html) interface, a Fortran 2003 feature supported by modern compilers), and include it among the MultiNest source files. PyMultiNest can then access MultiNest directly using `ctypes`.
 
 The C interface
