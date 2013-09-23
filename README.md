@@ -24,3 +24,12 @@ The single MultiNest procedure that is exposed to C (for MultiNest 3.2) is
     void dumper(int nSamples,int nlive,int nPar, \
                 double *physLive,double *posterior,double *paramConstr, \
                 double maxLogLike,double logZ,double logZerr,void *context);
+
+Installation
+------------
+
+The Fortran wrapper (`cwrapper.f90`) needs to be added to the MultiNest source directory. Then the MultiNest library `libnest3.so` needs to be rebuilt after changing the `Makefile` by editing the line that defines `NSOBJECTS`.
+
+    NSOBJECTS = utils.o utils1.o priors.o kmeans_clstr.o xmeans_clstr.o posterior.o nested.o cwrapper.o
+
+PyMultiNest is installed as usual with `setup.py`. Currently `pymultinest_demo_minimal.py` seems to work. The `dumper` interface may need more work.
