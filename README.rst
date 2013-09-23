@@ -1,68 +1,24 @@
-PyMultiNest -- Python interface for MultiNest
-==============================================
+PyMultiNest -- Python interface for MultiNest -- Michele's fork
+===============================================================
 
-This library provides programmatic access to MultiNest.
+[PyMultiNest](http://johannesbuchner.github.com/PyMultiNest) provides programmatic access to [MultiNest](http://ccpforge.cse.rl.ac.uk/gf/project/multinest) from Python. It does so by building a Python extension that contains a C wrapper (the "bridge") to MultiNest's Fortran. By contrast, my approach is write a C-compatible wrapper in Fortran (using the [iso_c_binding](http://fortran90.org/src/best-practices.html) interface, a Fortran 2003 feature supported by modern compilers), and include it among the MultiNest source files. PyMultiNest can then access MultiNest directly using `ctypes`.
 
-What is MultiNest?
--------------------
+The C interface
+---------------
 
-MultiNest is a program and a sampling technique. As a Bayesian inference technique,
-it allows parameter estimation and model selection. (find out more in the 
-MultiNest paper, http://arxiv.org/abs/0809.3437, or in a classic MCMC sampler, 
-http://apemost.sf.net/ ). Recently, MultiNest added Importance Nested Sampling 
-(INS, see http://arxiv.org/abs/1306.2144) which is now also supported.
+The single MultiNest procedure that is exposed to C (for MultiNest 3.2) is
 
-The efficient Monte Carlo algorithm for sampling the parameter space is based 
-on nested sampling and the idea of disjoint multi-dimensional ellipse sampling.
+    void run(bool nest_IS,bool nest_mmodal,bool nest_ceff, \
+             int nest_nlive,double nest_tol,double nest_ef,int nest_ndims,int nest_totPar,int nest_nCdims,int maxClst, \
+             int nest_updInt,double nest_Ztol,char nest_root[],int seed,int nest_pWrap[], \
+             bool nest_fb,bool nest_resume,bool nest_outfile,bool initMPI,double nest_logZero,int nest_maxIter, \
+             double (*loglike)(double *,int,int,void *context), \
+             void (*dumper)(int,int,int,double *,double *,double *,double,double,double,void *context),void *context);
 
-For the scientific community, where Python is becoming the new lingua franca (luckily),
-I provide an interface to MultiNest.
+(compare with the Fortran call as documented in the MultiNest `README`) and the two callbacks are
 
-What does PyMultiNest do?
---------------------------
+    double loglike(double *Cube,int n_dim,int nPar,void *context);
 
-PyMultiNest 
-
-  * provides an easy-to-use interface to MultiNest
-
-  * provides integration with your existing scientific Python code (numpy, scipy)
-
-  * allows you to write Prior & LogLikelihood functions in Python.
-
-PyMultiNest can 
-
-  * Plot and visualize MultiNests progress (watch.ProgressWatcher, watch.ProgressPlotter). This is still fairly basic, contributions and ideas are welcome)
-
-  * Easy plotting, visualization and summary of MultiNest results.
-
-The plotting can be run on existing MultiNest output, and when not using PyMultiNest for running MultiNest.
-
-Code contributions are welcome! Contact me (buchner.johannes [ät] gmx.at).
-
-How can I use MultiNest with Python?
---------------------------------------------
-Look at the documentation available at http://johannesbuchner.github.com/PyMultiNest/index.html
-
-What is PyAPEMoST?
---------------------------------------------
-Similarly to PyMultiNest, it is an access module for a Bayesian inference engine.
-However, APEMoST is a Markov Chain Monte Carlo engine. See the `documentation <http://johannesbuchner.github.com/PyMultiNest/pyapemost>`_.
-
-What is PyCuba?
---------------------------------------------
-Cuba (http://www.feynarts.de/cuba/, https://github.com/JohannesBuchner/cuba) is a multidimensional numerical integration library for low dimensions. PyCuba allows integration of Python functions, providing an advanced alternative to the basic functions provided in scipy.integrate.
-
-In the Bayesian sense, it is possible to use Cuba for model selection.
-
-Q: Python callback functions are too slow!
--------------------------------------------
-If you really identified that your callback functions are too slow, even
-when using the usual tricks (numpy, etc.), you can just program them into
-cnest.c, effectively making them part of the cnest library.
-
-You still have the neat python interface (default parameters, etc.), but
-achieve full execution speed, as only native code is executed while
-MultiNest runs.
-
-
-
+    void dumper(int nSamples,int nlive,int nPar, \
+                double *physLive,double *posterior,double *paramConstr, \
+                double maxLogLike,double logZ,double logZerr,void *context);
