@@ -211,8 +211,8 @@ def run(LogLikelihood,
 			c_int(n_iter_before_update),c_double(mode_tolerance),
 			create_string_buffer(outputfiles_basename.encode()),    # MV 20130923: need a regular C string
 			c_int(seed),wraps,
-			c_int(verbose),c_int(resume),
-			c_int(write_output),c_int(init_MPI),
+			c_bool(verbose),c_bool(resume),
+			c_bool(write_output),c_bool(init_MPI),
 			c_double(log_zero),c_int(max_iter),
 			loglike_type(loglike),dumper_type(dumper),
 			c_void_p(0))
