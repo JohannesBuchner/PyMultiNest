@@ -63,21 +63,11 @@
 </ul>
 </div>
 <span class="target" id="module-pymultinest"></span><p>PyMultiNest is a module to use the MultiNest sampling engine.</p>
-<p>To import this module, you must have</p>
-<ol class="arabic simple">
-<li><em>libcnest.so</em> (multinest_bridge) compiled and in your LD_LIBRARY_PATH</li>
-</ol>
+<p>To import this module, you must have <em>libmultinest.so</em> (MultiNest) compiled 
+and in your LD_LIBRARY_PATH.</p>
 <blockquote>
 <div><p>Otherwise you will get an error like this:</p>
-<div class="highlight-python"><pre>&gt; OSError: libcnest.so: cannot open shared object file: No such file or directory</pre>
-</div>
-</div></blockquote>
-<ol class="arabic simple" start="2">
-<li><em>libnest3.so</em> (MultiNest) compiled and in your LD_LIBRARY_PATH</li>
-</ol>
-<blockquote>
-<div><p>Otherwise you will get an error like this:</p>
-<div class="highlight-python"><pre>&gt; OSError: libnest3.so: cannot open shared object file: No such file or directory</pre>
+<div class="highlight-python"><pre>&gt; OSError: libmultinest.so: cannot open shared object file: No such file or directory</pre>
 </div>
 </div></blockquote>
 <p>Common parameters:</p>
