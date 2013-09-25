@@ -57,8 +57,8 @@ In the Bayesian sense, it is possible to use Cuba for model selection.
 Q: Python callback functions are too slow!
 -------------------------------------------
 If you really identified that your callback functions are too slow, even
-when using the usual tricks (numpy, etc.), you can just program them into
-cnest.c, effectively making them part of the cnest library.
+when using the usual tricks (numpy, etc.), you can implement and compile 
+them as C functions.
 
 You still have the neat python interface (default parameters, etc.), but
 achieve full execution speed, as only native code is executed while
