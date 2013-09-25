@@ -8,7 +8,7 @@ except:
 
 setup(
     name = "pymultinest",
-    version = "0.2",
+    version = "0.3",
     description = "Access modules for MultiNest and APEMoST",
     author = "Johannes Buchner",
     author_email = "johannes.buchner.acad [@t] gmx.com",
