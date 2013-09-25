@@ -1,19 +1,12 @@
 from __future__ import absolute_import, unicode_literals, print_function
 from ctypes import cdll
 try:
-	lib = cdll.LoadLibrary('libcnest.so')
+	lib = cdll.LoadLibrary('libmultinest.so')
 except OSError as e:
-	if e.message == 'libcnest.so: cannot open shared object file: No such file or directory':
+	if e.message == 'libmultinest.so: cannot open shared object file: No such file or directory':
 		print()
-		print('ERROR:   Could not load MultiNest Bridge library "libcnest.so"')
-		print('ERROR:   You have to build it (from the multinest_bridge folder in pymultinest),')
-		print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
-		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
-		print()
-	if e.message == 'libnest3.so: cannot open shared object file: No such file or directory':
-		print()
-		print('ERROR:   Could not load MultiNest library "libnest3.so"')
-		print('ERROR:   You have to build it (in MultiNest, run make libnest3.so WITHOUT_MPI=1),')
+		print('ERROR:   Could not load MultiNest library "libmultinest.so"')
+		print('ERROR:   You have to build it first,')
 		print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
 		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
 		print()
@@ -32,16 +25,6 @@ except OSError as e:
 		print('ERROR:   do not have MPI compiled into the library, and it fails to load!')
 		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
 		print()
-	if 'libcnest.so: undefined symbol:' in e.message and 'nestrun' in e.message:
-		print()
-		print('ERROR:   Sorry.')
-		print('ERROR:   The compiler decided to call the MultiNest routine differently than we expect.')
-		print('ERROR:   You have to run $ readelf -s libnest3.so | grep nestrun')
-		print('ERROR:   to find out how the nestrun routine is called (typically __nested_MOD_nestrun).')
-		print('ERROR:   Then you have to compile the MultiNest bridge using')
-		print('ERROR:   $ make clean libcnest.so MULTINEST_CALL=__nested_MOD_nestrun ')
-		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
-		print()
 	# the next if is useless because we can not catch symbol lookup errors (the executable crashes)
 	# but it is still there as documentation.
 	if 'symbol lookup error' in e.message and 'mpi' in e.message:
@@ -57,6 +40,7 @@ except OSError as e:
 	sys.exit(1)
 
 from ctypes import *
+from numpy.ctypeslib import as_array
 
 def run(LogLikelihood,
 	Prior,
@@ -176,38 +160,47 @@ def run(LogLikelihood,
 		sampling_efficiency = 0.8
 	if sampling_efficiency == 'model':
 		sampling_efficiency = 0.3
-	
-	lib.reset()
-	
-	prior_type = CFUNCTYPE(c_void_p, POINTER(c_double), c_int, c_int)
-	if Prior is not None:
-		c_Prior = prior_type(Prior)
-		lib.set_prior(c_Prior)
-	
-	loglike_type = CFUNCTYPE(c_double, POINTER(c_double), c_int, c_int)
-	c_LogLikelihood = loglike_type(LogLikelihood)
-	lib.set_function(c_LogLikelihood)
-	
-	dumper_type = CFUNCTYPE(c_void_p, 
-		c_int, c_int, c_int, POINTER(c_double))
-	""", 
-		POINTER(c_double), POINTER(c_double), POINTER(c_double), 
-		POINTER(c_double), POINTER(c_double), POINTER(c_double),
-		c_double, c_double, c_double)"""
-	
-	if dump_callback is not None:
-		lib.set_dumper(dumper_type(dump_wrapper))
 
-	lib.run(c_int(importance_nested_sampling),
-		c_int(multimodal), c_int(const_efficiency_mode), 
+	loglike_type = CFUNCTYPE(c_double, POINTER(c_double),
+		c_int,c_int,c_void_p)
+
+	dumper_type  = CFUNCTYPE(c_void_p, c_int,c_int, c_int,
+		POINTER(c_double),POINTER(c_double),POINTER(c_double),
+		c_double,c_double,c_double,c_void_p)
+	
+	def loglike(cube, ndim, nparams, nullcontext):
+		args = [cube,ndim,nparams]
+		if Prior:
+			Prior(*args)
+		return LogLikelihood(*args)
+	
+	def dumper(nSamples,nlive,nPar,
+			   physLive,posterior,paramConstr,
+			   maxLogLike,logZ,logZerr,nullcontext):
+		if dump_callback:
+			# It's not clear to me what the desired PyMultiNest dumper callback
+			# syntax is... but this should pass back the right numpy arrays,
+			# without copies. Untested!
+			pc =  as_array(paramConstr,shape=(nPar,4))
+			
+			dump_callback(nSamples,nlive,nPar,
+				as_array(physLive,shape=(nPar+1,nlive)).T,
+				as_array(posterior,shape=(nPar+2,nSamples)).T,
+				(pc[0,:],pc[1,:],pc[2,:],pc[3,:]), # (mean,std,bestfit,map)
+				maxLogLike,logZ,logZerr)
+	
+	lib.run(c_bool(importance_nested_sampling),
+		c_bool(multimodal), c_bool(const_efficiency_mode),
 		c_int(n_live_points), c_double(evidence_tolerance), 
 		c_double(sampling_efficiency), c_int(n_dims), c_int(n_params),
 		c_int(n_clustering_params), c_int(max_modes), 
 		c_int(n_iter_before_update), c_double(mode_tolerance), 
-		create_string_buffer(outputfiles_basename.encode(),100), c_int(seed), wraps,
-		c_int(verbose), c_int(resume), 
-		c_int(write_output), c_int(init_MPI), 
+		create_string_buffer(outputfiles_basename.encode(),100),
+		c_int(seed), wraps,
+		c_bool(verbose), c_bool(resume),
+		c_bool(write_output), c_bool(init_MPI),
 		c_double(log_zero), c_int(max_iter),
+		loglike_type(loglike),dumper_type(dumper),
 		c_int(context))
 
 
