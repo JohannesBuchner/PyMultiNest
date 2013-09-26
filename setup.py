@@ -6,6 +6,10 @@ try:
 except:
     from distutils.core import setup
 
+long_description = None
+with open('README.rst') as file:
+    long_description = file.read()
+
 setup(
     name = "pymultinest",
     version = "0.3",
@@ -20,5 +24,6 @@ setup(
     provides = ["pymultinest", "pyapemost", "pycuba"],
     requires = ["ctypesGsl", "numpy (>=1.5)", "matplotlib", "scipy"],
     scripts=['multinest_marginals.py'],
+    long_description=long_description,
 )
 
