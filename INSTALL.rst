@@ -31,7 +31,7 @@ Install on Linux
     	$ pip install ctypesGsl # a prerequisite
     	$ python setup.py install
     
-    If you only want to install locally, use 
+    If you only want to install locally, use::
     
     	$ pip install --user ctypesGsl # a prerequisite
     	$ python setup.py install --user
