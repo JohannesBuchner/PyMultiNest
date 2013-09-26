@@ -14,16 +14,19 @@ parameter estimation and model selection: pymultinest and pyapemost.
 
 * :doc:`PyMultiNest <pymultinest>` interacts with **MultiNest**, a Nested Sampling Monte Carlo library.
 * :doc:`PyAPEMoST <pyapemost>` interacts with **APEMoST**, a Markov Chain Monte Carlo inference engine.
+* *PyCuba* interacts with **cuba**, a library for various numerical integration methods.
 
 Get PyMultiNest
 -------------------------------
-#. using git::
+
+#. Follow the instructions in the :doc:`INSTALL.rst file <install>`.
+
+#. Alternatively, get the source through git::
   
      $ git clone git://github.com/JohannesBuchner/PyMultiNest
   
-#. Alternatively grab a zip or tar archive from `the code repository page <https://github.com/JohannesBuchner/PyMultiNest>`_ 
+#. Alternatively, grab a zip or tar archive from `the code repository page <https://github.com/JohannesBuchner/PyMultiNest>`_ 
   
-#. Follow the instructions in the :doc:`INSTALL.rst file <install>`.
 
 Documentation:
 -------------------------------
