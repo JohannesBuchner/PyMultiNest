@@ -2,13 +2,14 @@ from __future__ import absolute_import, unicode_literals, print_function
 import pymultinest
 import math
 import os
+import platform
 import threading, subprocess
 if not os.path.exists("chains"): os.mkdir("chains")
 def show(filepath): 
 	""" open the output (pdf) file for the user """
-	if os.name == 'mac': subprocess.call(('open', filepath))
-	elif os.name == 'nt': os.startfile(filepath)
-	elif os.name == 'posix': subprocess.call(('xdg-open', filepath))
+	if platform.system() == 'Darwin' or os.name == 'mac': subprocess.call(('open', filepath))
+	elif platform.system() == 'Windows' or os.name == 'nt': os.startfile(filepath)
+	elif platform.system() == 'Linux' or os.name == 'posix': subprocess.call(('xdg-open', filepath))
 
 # our probability functions
 # Taken from the eggbox problem.
