@@ -41,6 +41,11 @@ except OSError as e:
 
 from ctypes import *
 from numpy.ctypeslib import as_array
+import signal, sys
+
+def interrupt_handler(signal, frame):
+	sys.stderr.write('ERROR: Interrupt received: Terminating\n')
+	sys.exit(1)
 
 def run(LogLikelihood,
 	Prior,
@@ -188,6 +193,7 @@ def run(LogLikelihood,
 				as_array(posterior,shape=(nPar+2,nSamples)).T,
 				(pc[0,:],pc[1,:],pc[2,:],pc[3,:]), # (mean,std,bestfit,map)
 				maxLogLike,logZ,logZerr)
+	prev_handler = signal.signal(signal.SIGINT, interrupt_handler)
 	
 	lib.run(c_bool(importance_nested_sampling),
 		c_bool(multimodal), c_bool(const_efficiency_mode),
@@ -202,5 +208,6 @@ def run(LogLikelihood,
 		c_double(log_zero), c_int(max_iter),
 		loglike_type(loglike),dumper_type(dumper),
 		c_int(context))
+	signal.signal(signal.SIGINT, prev_handler)
 
 
