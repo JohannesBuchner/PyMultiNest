@@ -1,7 +1,10 @@
 from __future__ import absolute_import, unicode_literals, print_function
 from ctypes import cdll
 
+# this check only works with the cmake version of multinest
+
 libname = 'libmultinest.so'
+
 try: # detect if run through mpiexec/mpirun
 	from mpi4py import MPI
 	if MPI.COMM_WORLD.Get_size() > 1: # need parallel capabilities
