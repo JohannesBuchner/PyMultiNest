@@ -1,11 +1,20 @@
 from __future__ import absolute_import, unicode_literals, print_function
 from ctypes import cdll
+
+libname = 'libmultinest.so'
+try: # detect if run through mpiexec/mpirun
+	from mpi4py import MPI
+	if MPI.COMM_WORLD.Get_size() > 1: # need parallel capabilities
+		libname = 'libmultinest_mpi.so'
+except ImportError:
+	pass
+libname = 'libmultinest_mpi.so'
 try:
-	lib = cdll.LoadLibrary('libmultinest.so')
+	lib = cdll.LoadLibrary(libname)
 except OSError as e:
-	if e.message == 'libmultinest.so: cannot open shared object file: No such file or directory':
+	if e.message == '%s: cannot open shared object file: No such file or directory' % libname:
 		print()
-		print('ERROR:   Could not load MultiNest library "libmultinest.so"')
+		print('ERROR:   Could not load MultiNest library "%s"' % libname)
 		print('ERROR:   You have to build it first,')
 		print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
 		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
@@ -19,10 +28,9 @@ except OSError as e:
 		print()
 	if 'undefined symbol: mpi_' in e.message:
 		print()
-		print('ERROR:   You did something stupid. You tried to compile MultiNest with MPI,')
-		print('ERROR:   but the MultiNest bridge without MPI, or the other way around.')
-		print('ERROR:   Decide on one consistent way (no MPI is safe). Either way, you currently')
-		print('ERROR:   do not have MPI compiled into the library, and it fails to load!')
+		print('ERROR:   You tried to compile MultiNest linked with MPI,')
+		print('ERROR:   but now when running, MultiNest can not find the MPI linked libraries.')
+		print('ERROR:   See issue ')
 		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
 		print()
 	# the next if is useless because we can not catch symbol lookup errors (the executable crashes)
