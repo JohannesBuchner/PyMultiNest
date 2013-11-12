@@ -34,7 +34,7 @@ assert n_params == len(s['marginals'])
 modes = s['modes']
 
 dim2 = os.environ.get('D', '1' if n_params > 20 else '2') == '2'
-
+nbins = 100 if n_params < 3 else 20
 if dim2:
 	plt.figure(figsize=(5*n_params, 5*n_params))
 	for i in range(n_params):
@@ -45,7 +45,7 @@ if dim2:
 		plt.xlim(m['5sigma'])
 	
 		oldax = plt.gca()
-		x,w,patches = oldax.hist(values[:,i], bins=20, edgecolor='grey', color='grey', histtype='stepfilled', alpha=0.2)
+		x,w,patches = oldax.hist(values[:,i], bins=nbins, edgecolor='grey', color='grey', histtype='stepfilled', alpha=0.2)
 		oldax.set_ylim(0, x.max())
 	
 		newax = plt.gcf().add_axes(oldax.get_position(), sharex=oldax, frameon=False)

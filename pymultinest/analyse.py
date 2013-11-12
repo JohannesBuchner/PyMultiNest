@@ -88,6 +88,8 @@ class Analyzer(object):
 		data = loadtxt2d(StringIO(table))
 		if d is not None:
 			d[title.strip().lower()] = data
+		if len(data.shape) == 1:
+			data = data.reshape((1, -1))
 		return data
 	
 	def get_stats(self):
@@ -154,8 +156,9 @@ class Analyzer(object):
 		self._read_error_into_dict(lines[0], stats)
 		
 		# backwards compability
-		stats['global evidence'] = stats['Nested Sampling Global Log-Evidence'.lower()]
-		stats['global evidence error'] = stats['Nested Sampling Global Log-Evidence error'.lower()]
+		if 'global evidence' not in stats:
+			stats['global evidence'] = stats['Nested Sampling Global Log-Evidence'.lower()]
+			stats['global evidence error'] = stats['Nested Sampling Global Log-Evidence error'.lower()]
 
 		if 'Nested Importance Sampling Global Log-Evidence' in lines[1]:
 			# INS global evidence
