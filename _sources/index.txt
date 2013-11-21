@@ -19,7 +19,7 @@ parameter estimation and model selection: pymultinest and pyapemost.
 Get PyMultiNest
 -------------------------------
 
-#. Follow the instructions in the :doc:`INSTALL.rst file <install>`.
+#. Follow the instructions in the :doc:`installation guide <install>`.
 
 #. Alternatively, get the source through git::
   
