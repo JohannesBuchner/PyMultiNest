@@ -25,8 +25,9 @@ Install on Linux
 
   	$ pip install pymultinest
     
-    Alternatively, download the PyMultiNest source and install it locally by
-    running the following commands in the PyMultiNest directory::
+    However, to get the latest version, download the PyMultiNest source directly
+    from `the code repository <https://github.com/JohannesBuchner/PyMultiNest>`_) 
+    and install it locally by running the following commands in the PyMultiNest directory::
     
     	$ pip install ctypesGsl # a prerequisite
     	$ python setup.py install
