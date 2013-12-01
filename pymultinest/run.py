@@ -30,7 +30,6 @@ except OSError as e:
 		print()
 		print('ERROR:   You tried to compile MultiNest linked with MPI,')
 		print('ERROR:   but now when running, MultiNest can not find the MPI linked libraries.')
-		print('ERROR:   See issue ')
 		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
 		print()
 	# the next if is useless because we can not catch symbol lookup errors (the executable crashes)
