@@ -8,7 +8,7 @@ try: # detect if run through mpiexec/mpirun
 		libname = 'libmultinest_mpi.so'
 except ImportError:
 	pass
-libname = 'libmultinest_mpi.so'
+
 try:
 	lib = cdll.LoadLibrary(libname)
 except OSError as e:
