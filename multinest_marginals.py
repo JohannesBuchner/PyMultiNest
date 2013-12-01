@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 __doc__ = """
 Script that does default visualizations (marginal plots, 1-d and 2-d).
 

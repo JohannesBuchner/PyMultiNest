@@ -89,7 +89,7 @@ class Analyzer(object):
 		if d is not None:
 			d[title.strip().lower()] = data
 		if len(data.shape) == 1:
-			data = data.reshape((1, -1))
+			data = numpy.reshape(data, (1,-1))
 		return data
 	
 	def get_stats(self):
