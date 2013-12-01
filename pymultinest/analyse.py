@@ -155,17 +155,15 @@ class Analyzer(object):
 		stats = {'modes':[]}
 		self._read_error_into_dict(lines[0], stats)
 		
-		# backwards compability
-		if 'global evidence' not in stats:
-			stats['global evidence'] = stats['Nested Sampling Global Log-Evidence'.lower()]
-			stats['global evidence error'] = stats['Nested Sampling Global Log-Evidence error'.lower()]
-
 		if 'Nested Importance Sampling Global Log-Evidence' in lines[1]:
 			# INS global evidence
 			self._read_error_into_dict(lines[1], stats)
 			Z = stats['Nested Importance Sampling Global Log-Evidence'.lower()]
 			Zerr = stats['Nested Importance Sampling Global Log-Evidence error'.lower()]
-			# there is only one 'mode'
+			# use INS results in default name
+			stats['global evidence'] = Z
+			stats['global evidence error'] = Zerr
+			
 			text = ''.join(lines[3:])
 			
 			i = 0
