@@ -35,16 +35,19 @@ Define your integrand, like so:
 
 .. code-block:: python
 
-  def Integrand(ndim, xx, ncomp, ff, userdata):
-    x,y,z = [xx[i] for i in range(ndim.contents.value)]
-    result = math.sin(x)*math.cos(y)*math.exp(z)
-    ff[0] = result
-    return 0
+	def Integrand(ndim, xx, ncomp, ff, userdata):
+		# access the current parameters
+		x,y,z = [xx[i] for i in range(ndim.contents.value)]
+		# compute the result
+		result = math.sin(x)*math.cos(y)*math.exp(z)
+		# store the result (here only one component)
+		ff[0] = result
+		return 0
 
 It will be called with xx in the interval from 0 to 1 (so scale to your borders
 in this function).
 
-The demo in the pycuba source shows how to run all of the algorithms and access the results:
+The :py:func:`pycuba.demo` in the pycuba source shows how to run all of the algorithms and access the results:
 
 .. literalinclude:: ../pycuba/__init__.py
 	:language: python
