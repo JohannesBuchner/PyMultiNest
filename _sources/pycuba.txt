@@ -1,0 +1,59 @@
+PyCuba
+=======================================
+
+Cuba is a library for multidimensional numerical integration.
+The `manual <https://github.com/JohannesBuchner/cuba/raw/master/cuba.pdf>`_ 
+in `Cuba <http://www.feynarts.de/cuba/>`_ is helpful as a reference.
+In particular, avoid parallelization by setting CUBACORES=1.
+
+The algorithms available are
+
+* Cuhre
+* Divonne
+* Suave
+* Vegas
+
+The return value is always a dictionary:
+
+.. code-block:: python
+
+    { 'neval': number of evaluations, 
+      'fail': 0 or 1,
+      'comp': number of components, usually 1,
+      'nregions': number of regions used,
+      'results': [ # a list of results for each component
+         {
+           'integral': value of the integral, 
+           'error':  uncertainty, 
+           'prob': probability (see manual),
+         }, 
+         ... 
+      ]
+    }
+
+Define your integrand, like so:
+
+.. code-block:: python
+
+  def Integrand(ndim, xx, ncomp, ff, userdata):
+    x,y,z = [xx[i] for i in range(ndim.contents.value)]
+    result = math.sin(x)*math.cos(y)*math.exp(z)
+    ff[0] = result
+    return 0
+
+It will be called with xx in the interval from 0 to 1 (so scale to your borders
+in this function).
+
+The demo in the pycuba source shows how to run all of the algorithms and access the results:
+
+.. literalinclude:: ../pycuba/__init__.py
+	:language: python
+	:start-after: def demo():
+	:end-before: if __name__ == '__main__':
+
+API documentation
+------------------------
+
+.. automodule:: pycuba
+	:members:
+

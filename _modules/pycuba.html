@@ -1,0 +1,476 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pycuba &mdash; pymultinest 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="pymultinest 0.4 documentation" href="../index.html" />
+    <link rel="up" title="Module code" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">pymultinest 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for pycuba</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">ctypes</span>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">POINTER</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_double</span><span class="p">,</span> <span class="n">c_void_p</span><span class="p">,</span> <span class="n">byref</span>
+
+<span class="n">lib</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="s">&#39;libcuba.so&#39;</span><span class="p">)</span>
+
+<span class="n">NULL</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">POINTER</span><span class="p">(</span><span class="n">c_int</span><span class="p">)()</span>
+
+<span class="c"># defaults</span>
+<span class="n">EPSREL</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">EPSABS</span> <span class="o">=</span> <span class="mf">1e-12</span>
+<span class="n">LAST</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">MINEVAL</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">MAXEVAL</span> <span class="o">=</span> <span class="mi">50000</span>
+
+<span class="n">NSTART</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">NINCREASE</span> <span class="o">=</span> <span class="mi">500</span>
+<span class="n">NBATCH</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">GRIDNO</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">STATEFILE</span> <span class="o">=</span> <span class="n">NULL</span>
+
+<span class="k">class</span> <span class="nc">BOUNDS</span><span class="p">(</span><span class="n">ctypes</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
+  <span class="n">_fields_</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;lower&quot;</span><span class="p">,</span> <span class="n">c_double</span><span class="p">),</span> <span class="p">(</span><span class="s">&quot;upper&quot;</span><span class="p">,</span> <span class="n">c_double</span><span class="p">)</span>
+
+<span class="n">integrand_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_int</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_int</span><span class="p">),</span> 
+  <span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">),</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_int</span><span class="p">),</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">),</span> <span class="n">c_void_p</span><span class="p">)</span>
+<span class="n">peakfinder_type</span> <span class="o">=</span> <span class="n">ctypes</span><span class="o">.</span><span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_void_p</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_int</span><span class="p">),</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">BOUNDS</span><span class="p">),</span> 
+  <span class="n">POINTER</span><span class="p">(</span><span class="n">c_int</span><span class="p">),</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">))</span>
+  
+<div class="viewcode-block" id="Vegas"><a class="viewcode-back" href="../pycuba.html#pycuba.Vegas">[docs]</a><span class="k">def</span> <span class="nf">Vegas</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">userdata</span><span class="o">=</span><span class="n">NULL</span><span class="p">,</span> 
+    <span class="n">epsrel</span><span class="o">=</span><span class="n">EPSREL</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="n">EPSABS</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ncomp</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="n">mineval</span><span class="o">=</span><span class="n">MINEVAL</span><span class="p">,</span> <span class="n">maxeval</span><span class="o">=</span><span class="n">MAXEVAL</span><span class="p">,</span> <span class="n">nstart</span><span class="o">=</span><span class="n">NSTART</span><span class="p">,</span> 
+    <span class="n">nincrease</span><span class="o">=</span><span class="n">NINCREASE</span><span class="p">,</span> <span class="n">nbatch</span><span class="o">=</span><span class="n">NBATCH</span><span class="p">,</span>
+    <span class="n">gridno</span><span class="o">=</span><span class="n">GRIDNO</span><span class="p">,</span> <span class="n">statefile</span><span class="o">=</span><span class="n">NULL</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  *nstart*: the number of integrand evaluations per iteration to start</span>
+<span class="sd">with.</span>
+<span class="sd">  *nincrease*: the increase in the number of integrand evaluations per</span>
+<span class="sd">iteration.</span>
+<span class="sd">  *nbatch*: the batch size for sampling.</span>
+<span class="sd">    Vegas samples points not all at once, but in batches of size nbatch, to avoid exces-</span>
+<span class="sd">    sive memory consumption. 1000 is a reasonable value, though it should not affect</span>
+<span class="sd">    performance too much.</span>
+<span class="sd">  *gridno*: the slot in the internal grid table.</span>
+<span class="sd">    It may accelerate convergence to keep the grid accumulated during one integration for</span>
+<span class="sd">    the next one, if the integrands are reasonably similar to each other. Vegas maintains</span>
+<span class="sd">    an internal table with space for ten grids for this purpose. The slot in this grid is</span>
+<span class="sd">    specified by gridno.</span>
+<span class="sd">    If a grid number between 1 and 10 is selected, the grid is not discarded at the end of</span>
+<span class="sd">    the integration, but stored in the respective slot of the table for a future invocation.</span>
+<span class="sd">    The grid is only re-used if the dimension of the subsequent integration is the same</span>
+<span class="sd">    as the one it originates from.</span>
+<span class="sd">    In repeated invocations it may become necessary to flush a slot in memory, in which</span>
+<span class="sd">    case the negative of the grid number should be set.</span>
+<span class="sd">  *statefile*: a filename for storing the internal state.</span>
+<span class="sd">    Vegas can store its entire internal state (i.e. all the information to resume an inter-</span>
+<span class="sd">    rupted integration) in an external file. The state file is updated after every iteration.</span>
+<span class="sd">    If, on a subsequent invocation, Vegas finds a file of the specified name, it loads the</span>
+<span class="sd">    internal state and continues from the point it left off. Needless to say, using an ex-</span>
+<span class="sd">    isting state file with a different integrand generally leads to wrong results. Once the</span>
+<span class="sd">    integration finishes successfully, i.e. the prescribed accuracy is attained, the state file</span>
+<span class="sd">    is removed.</span>
+<span class="sd">    This feature is useful mainly to define &#39;check-points&#39; in long-running integrations</span>
+<span class="sd">    from which the calculation can be restarted.</span>
+<span class="sd">  </span>
+<span class="sd">  Vegas actually passes the integrand two more arguments, i.e. the integrand subroutine</span>
+<span class="sd">  is really declared as</span>
+<span class="sd">  </span>
+<span class="sd">  def integrand(ndim, x, ncomp, f, userdata, weight, iter):</span>
+<span class="sd">  </span>
+<span class="sd">  where weight contains the weight of the point being sampled and iter the current iteration</span>
+<span class="sd">  number. These extra arguments can safely be ignored, i.e. the integrand may be (and</span>
+<span class="sd">  usually is) defined with just five (or even four, if userdata is also ignored) arguments.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  
+  <span class="n">neval</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">fail</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">comp</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">ARR</span> <span class="o">=</span> <span class="n">c_double</span> <span class="o">*</span> <span class="n">ncomp</span>
+  <span class="n">integral</span> <span class="o">=</span> <span class="n">ARR</span><span class="p">()</span>
+  <span class="n">error</span> <span class="o">=</span> <span class="n">ARR</span><span class="p">()</span>
+  <span class="n">prob</span>  <span class="o">=</span> <span class="n">ARR</span><span class="p">()</span>
+  
+  <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">seed</span> <span class="o">=</span> <span class="mi">0</span>
+  
+  <span class="n">lib</span><span class="o">.</span><span class="n">Vegas</span><span class="p">(</span><span class="n">ndim</span><span class="p">,</span> <span class="n">ncomp</span><span class="p">,</span> <span class="n">integrand_type</span><span class="p">(</span><span class="n">integrand</span><span class="p">),</span> <span class="n">userdata</span><span class="p">,</span>
+    <span class="n">c_double</span><span class="p">(</span><span class="n">epsrel</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">epsabs</span><span class="p">),</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span>
+    <span class="n">mineval</span><span class="p">,</span> <span class="n">maxeval</span><span class="p">,</span> <span class="n">nstart</span><span class="p">,</span> <span class="n">nincrease</span><span class="p">,</span> <span class="n">nbatch</span><span class="p">,</span>
+    <span class="n">gridno</span><span class="p">,</span> <span class="n">statefile</span><span class="p">,</span>
+    <span class="n">byref</span><span class="p">(</span><span class="n">neval</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">fail</span><span class="p">),</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">prob</span><span class="p">)</span>
+  
+  <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">neval</span><span class="o">=</span><span class="n">neval</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">fail</span><span class="o">=</span><span class="n">fail</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">comp</span><span class="o">=</span><span class="n">comp</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+    <span class="n">results</span><span class="o">=</span><span class="p">[{</span>
+      <span class="s">&#39;integral&#39;</span><span class="p">:</span><span class="n">integral</span><span class="p">[</span><span class="n">comp</span><span class="p">],</span> 
+      <span class="s">&#39;error&#39;</span><span class="p">:</span><span class="n">error</span><span class="p">[</span><span class="n">comp</span><span class="p">],</span> 
+      <span class="s">&#39;prob&#39;</span><span class="p">:</span><span class="n">prob</span><span class="p">[</span><span class="n">comp</span><span class="p">]</span>
+      <span class="p">}</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncomp</span><span class="p">)])</span>
+</div>
+<div class="viewcode-block" id="Suave"><a class="viewcode-back" href="../pycuba.html#pycuba.Suave">[docs]</a><span class="k">def</span> <span class="nf">Suave</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nnew</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">flatness</span><span class="o">=</span><span class="mf">25.</span><span class="p">,</span> <span class="n">userdata</span><span class="o">=</span><span class="n">NULL</span><span class="p">,</span> 
+    <span class="n">epsrel</span><span class="o">=</span><span class="n">EPSREL</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="n">EPSABS</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ncomp</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="n">mineval</span><span class="o">=</span><span class="n">MINEVAL</span><span class="p">,</span> <span class="n">maxeval</span><span class="o">=</span><span class="n">MAXEVAL</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  *nnew*: the number of new integrand evaluations in each subdivision.</span>
+<span class="sd">  </span>
+<span class="sd">  *flatness*: the parameter p in Eq. (1), i.e. the type of norm</span>
+<span class="sd">  used to compute the fluctuation of a sample. This determines how prominently &#39;out-</span>
+<span class="sd">  liers,&#39; i.e. individual samples with a large fluctuation, figure in the total fluctuation,</span>
+<span class="sd">  which in turn determines how a region is split up. As suggested by its name, flatness</span>
+<span class="sd">  should be chosen large for &#39;flat&#39; integrands and small for &#39;volatile&#39; integrands with</span>
+<span class="sd">  high peaks. Note that since flatness appears in the exponent, one should not use</span>
+<span class="sd">  too large values (say, no more than a few hundred) lest terms be truncated internally</span>
+<span class="sd">  to prevent overflow.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  
+  <span class="n">neval</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">fail</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">comp</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">nregions</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">ARR</span> <span class="o">=</span> <span class="n">c_double</span> <span class="o">*</span> <span class="n">ncomp</span>
+  <span class="n">integral</span> <span class="o">=</span> <span class="n">ARR</span><span class="p">()</span>
+  <span class="n">error</span> <span class="o">=</span> <span class="n">ARR</span><span class="p">()</span>
+  <span class="n">prob</span>  <span class="o">=</span> <span class="n">ARR</span><span class="p">()</span>
+    
+  <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">seed</span> <span class="o">=</span> <span class="mi">0</span>
+  
+  <span class="n">lib</span><span class="o">.</span><span class="n">Suave</span><span class="p">(</span><span class="n">ndim</span><span class="p">,</span> <span class="n">ncomp</span><span class="p">,</span> <span class="n">integrand_type</span><span class="p">(</span><span class="n">integrand</span><span class="p">),</span> <span class="n">userdata</span><span class="p">,</span>
+    <span class="n">c_double</span><span class="p">(</span><span class="n">epsrel</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">epsabs</span><span class="p">),</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span>
+    <span class="n">mineval</span><span class="p">,</span> <span class="n">maxeval</span><span class="p">,</span> <span class="n">nnew</span><span class="p">,</span> <span class="n">c_double</span><span class="p">(</span><span class="n">flatness</span><span class="p">),</span>
+    <span class="n">byref</span><span class="p">(</span><span class="n">nregions</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">neval</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">fail</span><span class="p">),</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">prob</span><span class="p">)</span>
+  
+  <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">neval</span><span class="o">=</span><span class="n">neval</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">fail</span><span class="o">=</span><span class="n">fail</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">comp</span><span class="o">=</span><span class="n">comp</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">nregions</span><span class="o">=</span><span class="n">nregions</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+    <span class="n">results</span><span class="o">=</span><span class="p">[{</span>
+      <span class="s">&#39;integral&#39;</span><span class="p">:</span><span class="n">integral</span><span class="p">[</span><span class="n">comp</span><span class="p">],</span> 
+      <span class="s">&#39;error&#39;</span><span class="p">:</span><span class="n">error</span><span class="p">[</span><span class="n">comp</span><span class="p">],</span> 
+      <span class="s">&#39;prob&#39;</span><span class="p">:</span><span class="n">prob</span><span class="p">[</span><span class="n">comp</span><span class="p">]</span>
+      <span class="p">}</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncomp</span><span class="p">)])</span>
+  </div>
+<div class="viewcode-block" id="Divonne"><a class="viewcode-back" href="../pycuba.html#pycuba.Divonne">[docs]</a><span class="k">def</span> <span class="nf">Divonne</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> 
+    <span class="n">key1</span><span class="p">,</span> <span class="n">key2</span><span class="p">,</span> <span class="n">key3</span><span class="p">,</span> <span class="n">maxpass</span><span class="p">,</span> <span class="n">border</span><span class="p">,</span>
+    <span class="n">maxchisq</span><span class="p">,</span> <span class="n">mindeviation</span><span class="p">,</span>
+    <span class="n">mineval</span><span class="o">=</span><span class="n">MINEVAL</span><span class="p">,</span> <span class="n">maxeval</span><span class="o">=</span><span class="n">MAXEVAL</span><span class="p">,</span> <span class="n">ncomp</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">ldxgiven</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">xgiven</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nextra</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">peakfinder</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="n">userdata</span><span class="o">=</span><span class="n">NULL</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="n">epsrel</span><span class="o">=</span><span class="n">EPSREL</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="n">EPSABS</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  *key1*: determines sampling in the partitioning phase:</span>
+<span class="sd">    key1 = 7, 9, 11, 13 selects the cubature rule of degree key1. Note that the degree-11</span>
+<span class="sd">    rule is available only in 3 dimensions, the degree-13 rule only in 2 dimensions.</span>
+<span class="sd">    For other values of key1, a quasi-random sample of n1 = |key1| points is used, where</span>
+<span class="sd">    the sign of key1 determines the type of sample,</span>
+<span class="sd">    - key1 &gt; 0, use a Korobov quasi-random sample,</span>
+<span class="sd">    - key1 &lt; 0, use a &quot;standard&quot; sample (a Sobol quasi-random sample if seed = 0,</span>
+<span class="sd">    otherwise a pseudo-random sample).</span>
+<span class="sd">  </span>
+<span class="sd">  *key2*: determines sampling in the final integration phase:</span>
+<span class="sd">    key2 = 7, 9, 11, 13 selects the cubature rule of degree key2. Note that the degree-11</span>
+<span class="sd">    rule is available only in 3 dimensions, the degree-13 rule only in 2 dimensions.</span>
+<span class="sd">    For other values of key2, a quasi-random sample is used, where the sign of key2</span>
+<span class="sd">    determines the type of sample,</span>
+<span class="sd">    - key2 &gt; 0, use a Korobov quasi-random sample,</span>
+<span class="sd">    - key2 &lt; 0, use a &#39;standard&#39; sample (see description of key1 above),</span>
+<span class="sd">    and n2 = |key2| determines the number of points,</span>
+<span class="sd">    - n2 &gt;= 40, sample n2 points,</span>
+<span class="sd">    - n2 &lt; 40, sample n2 need points, where nneed is the number of points needed to</span>
+<span class="sd">    reach the prescribed accuracy, as estimated by Divonne from the results of the</span>
+<span class="sd">    partitioning phase.</span>
+<span class="sd">    </span>
+<span class="sd">  *key3* sets the strategy for the refinement phase:</span>
+<span class="sd">    key3 = 0, do not treat the subregion any further.</span>
+<span class="sd">    key3 = 1, split the subregion up once more.</span>
+<span class="sd">    Otherwise, the subregion is sampled a third time with key3 specifying the sampling</span>
+<span class="sd">    parameters exactly as key2 above.</span>
+<span class="sd">  </span>
+<span class="sd">  *maxpass*: controls the thoroughness of the partitioning phase: The</span>
+<span class="sd">    partitioning phase terminates when the estimated total number of integrand evalu-</span>
+<span class="sd">    ations (partitioning plus final integration) does not decrease for maxpass successive</span>
+<span class="sd">    iterations.</span>
+<span class="sd">    A decrease in points generally indicates that Divonne discovered new structures of</span>
+<span class="sd">    the integrand and was able to find a more effective partitioning. maxpass can be</span>
+<span class="sd">    understood as the number of &#39;safety&#39; iterations that are performed before the par-</span>
+<span class="sd">    tition is accepted as final and counting consequently restarts at zero whenever new</span>
+<span class="sd">    structures are found.</span>
+<span class="sd">    </span>
+<span class="sd">  *border*: the width of the border of the integration region.</span>
+<span class="sd">    Points falling into this border region will not be sampled directly, but will be extrap-</span>
+<span class="sd">    olated from two samples from the interior. Use a non-zero border if the integrand</span>
+<span class="sd">    subroutine cannot produce values directly on the integration boundary.</span>
+<span class="sd">  </span>
+<span class="sd">  *maxchisq*: the maximum chisquare value a single subregion is al-</span>
+<span class="sd">    lowed to have in the final integration phase. Regions which fail this chisquare test and whose</span>
+<span class="sd">    sample averages differ by more than mindeviation move on to the refinement phase.</span>
+<span class="sd"> </span>
+<span class="sd">  *mindeviation*: a bound, given as the fraction of the re-</span>
+<span class="sd">    quested error of the entire integral, which determines whether it is worthwhile fur-</span>
+<span class="sd">    ther examining a region that failed the chisquare test. Only if the two sampling averages</span>
+<span class="sd">    obtained for the region differ by more than this bound is the region further treated.</span>
+<span class="sd"> </span>
+<span class="sd"> *ldxgiven*: the leading dimension of xgiven, i.e. the offset between one</span>
+<span class="sd">    point and the next in memory.</span>
+<span class="sd"> </span>
+<span class="sd"> *xgiven(ldxgiven,ngiven)*: a list of points where the inte-</span>
+<span class="sd">    grand might have peaks. Divonne will consider these points when partitioning the</span>
+<span class="sd">    integration region. The idea here is to help the integrator find the extrema of the in-</span>
+<span class="sd">    tegrand in the presence of very narrow peaks. Even if only the approximate location</span>
+<span class="sd">    of such peaks is known, this can considerably speed up convergence.</span>
+<span class="sd"> </span>
+<span class="sd"> *nextra*: the maximum number of extra points the peak-finder subrou-</span>
+<span class="sd">    tine will return. If nextra is zero, peakfinder is not called and an arbitrary object</span>
+<span class="sd">    may be passed in its place, e.g. just 0.</span>
+<span class="sd">  </span>
+<span class="sd"> *peakfinder*: the peak-finder subroutine. This subroutine is called</span>
+<span class="sd">    whenever a region is up for subdivision and is supposed to point out possible peaks</span>
+<span class="sd">    lying in the region, thus acting as the dynamic counterpart of the static list of points</span>
+<span class="sd">    supplied in xgiven. It is expected to be declared as</span>
+<span class="sd">    def peakfinder(ndim, b, n, x):</span>
+<span class="sd">      The bounds of the subregion are passed in the array b, where b(1,d ) is the lower and</span>
+<span class="sd">      b(2,d ) the upper bound in dimension d . On entry, n specifies the maximum number</span>
+<span class="sd">      of points that may be written to x. On exit, n must contain the actual number of</span>
+<span class="sd">      points in x.</span>
+
+<span class="sd">  Divonne actually passes the integrand one more argument, i.e. the integrand subroutine is</span>
+<span class="sd">  really declared as</span>
+<span class="sd">  </span>
+<span class="sd">  def integrand(ndim, x, ncomp, f, phase):</span>
+<span class="sd">  </span>
+<span class="sd">  The fifth argument, phase, indicates the integration phase:</span>
+<span class="sd">   0, sampling of the points in xgiven,</span>
+<span class="sd">   1, partitioning phase,</span>
+<span class="sd">   2, final integration phase,</span>
+<span class="sd">   3, refinement phase.</span>
+<span class="sd">   </span>
+<span class="sd">  This information might be useful if the integrand takes long to compute and a sufficiently</span>
+<span class="sd">  accurate approximation of the integrand is available. The actual value of the integral is only</span>
+<span class="sd">  of minor importance in the partitioning phase, which is instead much more dependent on</span>
+<span class="sd">  the peak structure of the integrand to find an appropriate tessellation. An approximation</span>
+<span class="sd">  which reproduces the peak structure while leaving out the fine details might hence be a</span>
+<span class="sd">  perfectly viable and much faster substitute when phase &lt; 2.</span>
+<span class="sd">  </span>
+<span class="sd">  In all other instances, phase can be ignored and it is entirely admissible to define the</span>
+<span class="sd">  integrand with only five arguments.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  
+  <span class="n">neval</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">fail</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">comp</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">nregions</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">ARR</span> <span class="o">=</span> <span class="n">c_double</span> <span class="o">*</span> <span class="n">ncomp</span>
+  <span class="n">integral</span> <span class="o">=</span> <span class="n">ARR</span><span class="p">()</span>
+  <span class="n">error</span> <span class="o">=</span> <span class="n">ARR</span><span class="p">()</span>
+  <span class="n">prob</span>  <span class="o">=</span> <span class="n">ARR</span><span class="p">()</span>
+  <span class="k">if</span> <span class="n">ldxgiven</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">ldxgiven</span> <span class="o">=</span> <span class="n">ndim</span>
+  
+  <span class="k">if</span> <span class="n">xgiven</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">ngiven</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xgiven</span><span class="p">)</span>
+    <span class="n">xgiven</span> <span class="o">=</span> <span class="n">ARR</span><span class="p">(</span><span class="n">xgiven</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">ngiven</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">xgiven</span> <span class="o">=</span> <span class="n">NULL</span>
+  
+  <span class="k">if</span> <span class="n">peakfinder</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">peakfinder</span> <span class="o">=</span> <span class="n">NULL</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">peakfinder</span> <span class="o">=</span> <span class="n">peakfinder_type</span><span class="p">(</span><span class="n">peakfinder</span><span class="p">)</span>
+  
+  <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">seed</span> <span class="o">=</span> <span class="mi">0</span>
+
+  <span class="n">lib</span><span class="o">.</span><span class="n">Divonne</span><span class="p">(</span><span class="n">ndim</span><span class="p">,</span> <span class="n">ncomp</span><span class="p">,</span> <span class="n">integrand_type</span><span class="p">(</span><span class="n">integrand</span><span class="p">),</span> <span class="n">userdata</span><span class="p">,</span>
+    <span class="n">c_double</span><span class="p">(</span><span class="n">epsrel</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">epsabs</span><span class="p">),</span> <span class="n">verbose</span><span class="p">,</span> <span class="n">seed</span><span class="p">,</span>
+    <span class="n">mineval</span><span class="p">,</span> <span class="n">maxeval</span><span class="p">,</span> <span class="n">key1</span><span class="p">,</span> <span class="n">key2</span><span class="p">,</span> <span class="n">key3</span><span class="p">,</span> <span class="n">maxpass</span><span class="p">,</span> 
+    <span class="n">c_double</span><span class="p">(</span><span class="n">border</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">maxchisq</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">mindeviation</span><span class="p">),</span> 
+    <span class="n">ngiven</span><span class="p">,</span> <span class="n">ldxgiven</span><span class="p">,</span> <span class="n">xgiven</span><span class="p">,</span> <span class="n">nextra</span><span class="p">,</span> <span class="n">peakfinder</span><span class="p">,</span> 
+    <span class="n">byref</span><span class="p">(</span><span class="n">nregions</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">neval</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">fail</span><span class="p">),</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">prob</span><span class="p">)</span>
+  
+  <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">neval</span><span class="o">=</span><span class="n">neval</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">fail</span><span class="o">=</span><span class="n">fail</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">comp</span><span class="o">=</span><span class="n">comp</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">nregions</span><span class="o">=</span><span class="n">nregions</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+    <span class="n">results</span><span class="o">=</span><span class="p">[{</span>
+      <span class="s">&#39;integral&#39;</span><span class="p">:</span><span class="n">integral</span><span class="p">[</span><span class="n">comp</span><span class="p">],</span> 
+      <span class="s">&#39;error&#39;</span><span class="p">:</span><span class="n">error</span><span class="p">[</span><span class="n">comp</span><span class="p">],</span> 
+      <span class="s">&#39;prob&#39;</span><span class="p">:</span><span class="n">prob</span><span class="p">[</span><span class="n">comp</span><span class="p">]</span>
+      <span class="p">}</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncomp</span><span class="p">)])</span>
+</div>
+<div class="viewcode-block" id="Cuhre"><a class="viewcode-back" href="../pycuba.html#pycuba.Cuhre">[docs]</a><span class="k">def</span> <span class="nf">Cuhre</span><span class="p">(</span><span class="n">integrand</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> 
+    <span class="n">key</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mineval</span><span class="o">=</span><span class="n">MINEVAL</span><span class="p">,</span> <span class="n">maxeval</span><span class="o">=</span><span class="n">MAXEVAL</span><span class="p">,</span> <span class="n">ncomp</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">userdata</span><span class="o">=</span><span class="n">NULL</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="n">epsrel</span><span class="o">=</span><span class="n">EPSREL</span><span class="p">,</span> <span class="n">epsabs</span><span class="o">=</span><span class="n">EPSABS</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  *key* chooses the basic integration rule:</span>
+<span class="sd">    key = 7, 9, 11, 13 selects the cubature rule of degree key. Note that the degree-11</span>
+<span class="sd">    rule is available only in 3 dimensions, the degree-13 rule only in 2 dimensions.</span>
+<span class="sd">    For other values, the default rule is taken, which is the degree-13 rule in 2 dimensions,</span>
+<span class="sd">    the degree-11 rule in 3 dimensions, and the degree-9 rule otherwise.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  
+  <span class="n">neval</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">fail</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">comp</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">nregions</span> <span class="o">=</span> <span class="n">c_int</span><span class="p">()</span>
+  <span class="n">ARR</span> <span class="o">=</span> <span class="n">c_double</span> <span class="o">*</span> <span class="n">ncomp</span>
+  <span class="n">integral</span> <span class="o">=</span> <span class="n">ARR</span><span class="p">()</span>
+  <span class="n">error</span> <span class="o">=</span> <span class="n">ARR</span><span class="p">()</span>
+  <span class="n">prob</span>  <span class="o">=</span> <span class="n">ARR</span><span class="p">()</span>
+  
+  <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">seed</span> <span class="o">=</span> <span class="mi">0</span>
+
+  <span class="n">lib</span><span class="o">.</span><span class="n">Cuhre</span><span class="p">(</span><span class="n">ndim</span><span class="p">,</span> <span class="n">ncomp</span><span class="p">,</span> <span class="n">integrand_type</span><span class="p">(</span><span class="n">integrand</span><span class="p">),</span> <span class="n">userdata</span><span class="p">,</span>
+    <span class="n">c_double</span><span class="p">(</span><span class="n">epsrel</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">epsabs</span><span class="p">),</span> <span class="n">verbose</span><span class="p">,</span>
+    <span class="n">mineval</span><span class="p">,</span> <span class="n">maxeval</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> 
+    <span class="n">byref</span><span class="p">(</span><span class="n">nregions</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">neval</span><span class="p">),</span> <span class="n">byref</span><span class="p">(</span><span class="n">fail</span><span class="p">),</span> <span class="n">integral</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">prob</span><span class="p">)</span>
+  
+  <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">neval</span><span class="o">=</span><span class="n">neval</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">fail</span><span class="o">=</span><span class="n">fail</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">comp</span><span class="o">=</span><span class="n">comp</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">nregions</span><span class="o">=</span><span class="n">nregions</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+    <span class="n">results</span><span class="o">=</span><span class="p">[{</span>
+      <span class="s">&#39;integral&#39;</span><span class="p">:</span><span class="n">integral</span><span class="p">[</span><span class="n">comp</span><span class="p">],</span> 
+      <span class="s">&#39;error&#39;</span><span class="p">:</span><span class="n">error</span><span class="p">[</span><span class="n">comp</span><span class="p">],</span> 
+      <span class="s">&#39;prob&#39;</span><span class="p">:</span><span class="n">prob</span><span class="p">[</span><span class="n">comp</span><span class="p">]</span>
+      <span class="p">}</span> <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ncomp</span><span class="p">)])</span>
+</div>
+<span class="k">def</span> <span class="nf">demo</span><span class="p">():</span>
+  <span class="kn">import</span> <span class="nn">math</span>
+
+  <span class="k">def</span> <span class="nf">Integrand</span><span class="p">(</span><span class="n">ndim</span><span class="p">,</span> <span class="n">xx</span><span class="p">,</span> <span class="n">ncomp</span><span class="p">,</span> <span class="n">ff</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">xx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">value</span><span class="p">)]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">ff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
+    <span class="k">return</span> <span class="mi">0</span>
+    
+
+  <span class="n">NDIM</span> <span class="o">=</span> <span class="mi">3</span>
+  <span class="n">NCOMP</span> <span class="o">=</span> <span class="mi">1</span>
+
+  <span class="n">NNEW</span> <span class="o">=</span> <span class="mi">1000</span>
+  <span class="n">FLATNESS</span> <span class="o">=</span> <span class="mf">25.</span>
+
+  <span class="n">KEY1</span> <span class="o">=</span> <span class="mi">47</span>
+  <span class="n">KEY2</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="n">KEY3</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="n">MAXPASS</span> <span class="o">=</span> <span class="mi">5</span>
+  <span class="n">BORDER</span> <span class="o">=</span> <span class="mf">0.</span>
+  <span class="n">MAXCHISQ</span> <span class="o">=</span> <span class="mf">10.</span>
+  <span class="n">MINDEVIATION</span> <span class="o">=</span> <span class="o">.</span><span class="mi">25</span>
+  <span class="n">NGIVEN</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">LDXGIVEN</span> <span class="o">=</span> <span class="n">NDIM</span>
+  <span class="n">NEXTRA</span> <span class="o">=</span> <span class="mi">0</span>
+
+  <span class="n">KEY</span> <span class="o">=</span> <span class="mi">0</span>
+  
+  <span class="k">def</span> <span class="nf">print_header</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&#39;-------------------- </span><span class="si">%s</span><span class="s"> test -------------------&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;nregions&#39;</span><span class="p">,</span> <span class="s">&#39;neval&#39;</span><span class="p">,</span> <span class="s">&#39;fail&#39;</span><span class="p">]</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">has_key</span><span class="p">,</span> <span class="n">keys</span><span class="p">))</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> RESULT:</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s">&#39;results&#39;</span><span class="p">]:</span>
+      <span class="k">print</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> RESULT:</span><span class="se">\t</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> \
+	<span class="s">&quot;</span><span class="si">%(integral).8f</span><span class="s"> +- </span><span class="si">%(error).8f</span><span class="se">\t</span><span class="s">p = </span><span class="si">%(prob).3f</span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">comp</span><span class="p">)</span>
+  
+  <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">environ</span> <span class="k">as</span> <span class="n">env</span>
+  <span class="n">verbose</span> <span class="o">=</span> <span class="mi">2</span>
+  <span class="k">if</span> <span class="s">&#39;CUBAVERBOSE&#39;</span> <span class="ow">in</span> <span class="n">env</span><span class="p">:</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">env</span><span class="p">[</span><span class="s">&#39;CUBAVERBOSE&#39;</span><span class="p">])</span>
+  
+  <span class="n">print_header</span><span class="p">(</span><span class="s">&#39;Vegas&#39;</span><span class="p">)</span>
+  <span class="n">print_results</span><span class="p">(</span><span class="s">&#39;Vegas&#39;</span><span class="p">,</span> <span class="n">Vegas</span><span class="p">(</span><span class="n">Integrand</span><span class="p">,</span> <span class="n">NDIM</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+  
+  <span class="n">print_header</span><span class="p">(</span><span class="s">&#39;Suave&#39;</span><span class="p">)</span>
+  <span class="n">print_results</span><span class="p">(</span><span class="s">&#39;Suave&#39;</span><span class="p">,</span> <span class="n">Suave</span><span class="p">(</span><span class="n">Integrand</span><span class="p">,</span> <span class="n">NDIM</span><span class="p">,</span> <span class="n">NNEW</span><span class="p">,</span> <span class="n">FLATNESS</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span> <span class="o">|</span> <span class="mi">4</span><span class="p">))</span>
+  
+  <span class="n">print_header</span><span class="p">(</span><span class="s">&#39;Divonne&#39;</span><span class="p">)</span>
+  <span class="n">print_results</span><span class="p">(</span><span class="s">&#39;Divonne&#39;</span><span class="p">,</span> <span class="n">Divonne</span><span class="p">(</span><span class="n">Integrand</span><span class="p">,</span> <span class="n">NDIM</span><span class="p">,</span> 
+    <span class="n">mineval</span><span class="o">=</span><span class="n">MINEVAL</span><span class="p">,</span> <span class="n">maxeval</span><span class="o">=</span><span class="n">MAXEVAL</span><span class="p">,</span>
+    <span class="n">key1</span><span class="o">=</span><span class="n">KEY1</span><span class="p">,</span> <span class="n">key2</span><span class="o">=</span><span class="n">KEY2</span><span class="p">,</span> <span class="n">key3</span><span class="o">=</span><span class="n">KEY3</span><span class="p">,</span> <span class="n">maxpass</span><span class="o">=</span><span class="n">MAXPASS</span><span class="p">,</span>
+    <span class="n">border</span><span class="o">=</span><span class="n">BORDER</span><span class="p">,</span> <span class="n">maxchisq</span><span class="o">=</span><span class="n">MAXCHISQ</span><span class="p">,</span> <span class="n">mindeviation</span><span class="o">=</span><span class="n">MINDEVIATION</span><span class="p">,</span>
+    <span class="n">ldxgiven</span><span class="o">=</span><span class="n">LDXGIVEN</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+  
+  <span class="n">print_header</span><span class="p">(</span><span class="s">&#39;Cuhre&#39;</span><span class="p">)</span>
+  <span class="n">print_results</span><span class="p">(</span><span class="s">&#39;Cuhre&#39;</span><span class="p">,</span> <span class="n">Cuhre</span><span class="p">(</span><span class="n">Integrand</span><span class="p">,</span> <span class="n">NDIM</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">KEY</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">2</span> <span class="o">|</span> <span class="mi">4</span><span class="p">))</span>
+  
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+  <span class="n">demo</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../index.html">pymultinest 0.4 documentation</a> &raquo;</li>
+          <li><a href="index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Johannes Buchner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

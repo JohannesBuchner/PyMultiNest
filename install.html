@@ -59,86 +59,103 @@
 <p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#installing-pymultinest-and-pyapemost" id="id1">Installing PyMultiNest and PyAPEMoST</a><ul>
-<li><a class="reference internal" href="#install-on-linux" id="id2">Install on Linux</a></li>
-<li><a class="reference internal" href="#running-some-code" id="id3">Running some code</a></li>
-<li><a class="reference internal" href="#getting-help" id="id4">Getting help</a></li>
-<li><a class="reference internal" href="#generating-the-documentation" id="id5">Generating the documentation</a></li>
-<li><a class="reference internal" href="#install-on-mac" id="id6">Install on Mac</a></li>
+<li><a class="reference internal" href="#installing-the-python-module" id="id2">1. Installing the Python Module</a></li>
+<li><a class="reference internal" href="#installing-the-libraries-on-linux" id="id3">2. Installing the libraries on Linux</a></li>
+<li><a class="reference internal" href="#running-some-code" id="id4">Running some code</a></li>
+<li><a class="reference internal" href="#getting-help" id="id5">Getting help</a></li>
+<li><a class="reference internal" href="#generating-the-documentation" id="id6">Generating the documentation</a></li>
+<li><a class="reference internal" href="#install-on-mac" id="id7">Install on Mac</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<p>To use PyMultiNest or PyAPEMoST, follow these installation steps.
-If you only want to use one of them, skip steps according.</p>
-<div class="section" id="install-on-linux">
-<h2><a class="toc-backref" href="#id2">Install on Linux</a><a class="headerlink" href="#install-on-linux" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><ul>
-<li><p class="first">If you want to use PyMultiNest:
+<p>You need to install the python module and put the libraries it uses
+into your library path.</p>
+<div class="section" id="installing-the-python-module">
+<h2><a class="toc-backref" href="#id2">1. Installing the Python Module</a><a class="headerlink" href="#installing-the-python-module" title="Permalink to this headline">¶</a></h2>
+<p>Installing the python module from PyPI is easy:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>pip install pymultinest
+</pre></div>
+</div>
+<p>On older systems, you may need to use easy_install instead of &#8220;pip install&#8221;
+Use the &#8220;&#8211;user&#8221; switch if you only want to install the software locally</p>
+<p>To get the latest version, download the source directly from the
+<a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest/">Code repository</a>
+and install it locally:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>git clone https://github.com/JohannesBuchner/PyMultiNest/
+<span class="nv">$ </span><span class="nb">cd </span>PyMultiNest
+<span class="nv">$ </span>python setup.py install
+</pre></div>
+</div>
+</div>
+<div class="section" id="installing-the-libraries-on-linux">
+<h2><a class="toc-backref" href="#id3">2. Installing the libraries on Linux</a><a class="headerlink" href="#installing-the-libraries-on-linux" title="Permalink to this headline">¶</a></h2>
+<p>To use PyMultiNest, PyAPEMoST, and PyCuba, you need to install the relevant
+libraries. If you only want to use one of them, skip the others according.</p>
+<ul class="simple">
+<li>Prerequisites: <em>numpy</em>, <em>scipy</em>, <em>matplotlib</em>, c and fortran compilers (e.g. <em>gcc</em>, <em>gfortran</em>)</li>
+<li>Prerequisites for MultiNest: <em>cmake</em>, <em>blas</em>, <em>lapack</em>, <em>atlas</em> (and their development versions)</li>
+<li>Recommended: <em>git</em></li>
+</ul>
+<p>On Ubuntu, install with:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>sudo apt-get install python-<span class="o">{</span>scipy,numpy,matplotlib,progressbar<span class="o">}</span> ipython libblas<span class="o">{</span>3,-dev<span class="o">}</span> liblapack<span class="o">{</span>3,-dev<span class="o">}</span> libatlas<span class="o">{</span>3-base,-dev<span class="o">}</span> cmake build-essential git gfortran
+</pre></div>
+</div>
+<ul class="simple">
+<li>If you want to use <a class="reference internal" href="pymultinest.html"><em>PyMultiNest</em></a>:
 Get and compile MultiNest (use the cmake version from <a class="reference external" href="https://github.com/JohannesBuchner/MultiNest">here</a>). You will have a lib/libmultinest.so.
-Include the containing directory in your LD_LIBRARY_PATH.</p>
-</li>
-<li><p class="first">If you want to use PyAPEMoST:
-Get and compile <a class="reference external" href="http://apemost.sourceforge.net/doc/">APEMoST</a>. You will have a libapemost.so file.
-Include the containing directory your LD_LIBRARY_PATH.</p>
-</li>
-<li><p class="first">If you want to use PyCuba:
+Include the lib/ directory in your LD_LIBRARY_PATH.
+More detailed install instructions for MultiNest are available in the <a class="reference external" href="http://johannesbuchner.github.io/pymultinest-tutorial/install.html#on-your-own-computer">tutorial</a>.</li>
+<li>If you want to use <a class="reference internal" href="pycuba.html"><em>PyCuba</em></a>:
 Get and compile <a class="reference external" href="http://www.feynarts.de/cuba/">Cuba</a>. You will have a libcuba.so file.
-Include the containing directory your LD_LIBRARY_PATH.</p>
-</li>
-<li><p class="first">Install the python library from PyPI:</p>
-<div class="highlight-python"><pre>$ pip install pymultinest</pre>
-</div>
-<p>However, to get the latest version, download the PyMultiNest source directly
-from <a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest">the code repository</a>)
-and install it locally by running the following commands in the PyMultiNest directory:</p>
-<div class="highlight-python"><pre>$ pip install ctypesGsl # a prerequisite
-$ python setup.py install</pre>
-</div>
-<p>If you only want to install locally, use:</p>
-<div class="highlight-python"><pre>$ pip install --user ctypesGsl # a prerequisite
-$ python setup.py install --user</pre>
-</div>
-</li>
+Include the containing directory your LD_LIBRARY_PATH.</li>
+<li>If you want to use <a class="reference internal" href="pyapemost.html"><em>PyAPEMoST</em></a>:
+Get and compile <a class="reference external" href="http://apemost.sourceforge.net/doc/">APEMoST</a>. You will have a libapemost.so file.
+Include the containing directory your LD_LIBRARY_PATH.</li>
 </ul>
-</div></blockquote>
 </div>
 <div class="section" id="running-some-code">
-<h2><a class="toc-backref" href="#id3">Running some code</a><a class="headerlink" href="#running-some-code" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id4">Running some code</a><a class="headerlink" href="#running-some-code" title="Permalink to this headline">¶</a></h2>
 <p>PyMultiNest, PyAPEMoST and PyCuba have to be able to find the corresponding
 libraries. So put the three directories in the dynamic library load path:</p>
-<div class="highlight-python"><pre>$ export LD_LIBRARY_PATH=/my/multinest/directory/lib:/my/cuba/directory/:/my/apemost/directory/:$LD_LIBRARY_PATH</pre>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">export </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span>/my/multinest/directory/lib:/my/cuba/directory/:/my/apemost/directory/:<span class="nv">$LD_LIBRARY_PATH</span>
+</pre></div>
 </div>
+<p>Consider putting this line into your shell startup script (e.g. ~/.bashrc).</p>
 <p>Test importing the libraries:</p>
-<div class="highlight-python"><pre>$ python -c 'import pymultinest'
-$ python -c 'import pyapemost'</pre>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>python -c <span class="s1">&#39;import pymultinest&#39;</span>
+<span class="nv">$ </span>python -c <span class="s1">&#39;import pyapemost&#39;</span>
+</pre></div>
 </div>
 <p>Try out the demo programs distributed in the package. They produce a lot of output, so lets create a temporary directory:</p>
-<div class="highlight-python"><pre>$ mkdir /tmp/demo_output
-$ cd /tmp/demo_output
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>mkdir /tmp/demo_output
+<span class="nv">$ </span><span class="nb">cd</span> /tmp/demo_output
 
-$ python $OLDPWD/pymultinest_demo.py
+<span class="nv">$ </span>python <span class="nv">$OLDPWD</span>/pymultinest_demo.py
 
-$ python $OLDPWD/pyapemost_demo.py</pre>
+<span class="nv">$ </span>python <span class="nv">$OLDPWD</span>/pyapemost_demo.py
+</pre></div>
 </div>
 <p>Congratulations! You are now ready to run your own code. Copy the demo files as starting points, play with the functions and analysis, and integrate it to your own code. The documentation should help you.</p>
 </div>
 <div class="section" id="getting-help">
-<h2><a class="toc-backref" href="#id4">Getting help</a><a class="headerlink" href="#getting-help" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id5">Getting help</a><a class="headerlink" href="#getting-help" title="Permalink to this headline">¶</a></h2>
 <p>Try searching the error message. Look at the <a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest/issues?state=open">Open issues</a>.</p>
 </div>
 <div class="section" id="generating-the-documentation">
-<h2><a class="toc-backref" href="#id5">Generating the documentation</a><a class="headerlink" href="#generating-the-documentation" title="Permalink to this headline">¶</a></h2>
-<p>Go into doc and run make:</p>
-<div class="highlight-python"><pre>$ cd doc &amp;&amp; make html</pre>
+<h2><a class="toc-backref" href="#id6">Generating the documentation</a><a class="headerlink" href="#generating-the-documentation" title="Permalink to this headline">¶</a></h2>
+<p>Go in the doc directory and run make:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd </span>doc <span class="o">&amp;&amp;</span> make html
+</pre></div>
 </div>
 <p>Point your web browser to _build/html/index.html in doc.</p>
 </div>
 <div class="section" id="install-on-mac">
-<h2><a class="toc-backref" href="#id6">Install on Mac</a><a class="headerlink" href="#install-on-mac" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id7">Install on Mac</a><a class="headerlink" href="#install-on-mac" title="Permalink to this headline">¶</a></h2>
 <p>Follow the above instructions. Use DYLD_LIBRARY_PATH instead of LD_LIBRARY_PATH.
-rename the resulting .dylib libraries to the expected names (.so). For example</p>
-<div class="highlight-python"><pre>$ ln -s libmultinest_mpi.dylib libmultinest_mpi.so</pre>
+rename the resulting .dylib libraries to the expected names (.so). For example:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nv">$ </span>ln -s libmultinest_mpi.dylib libmultinest_mpi.so
+</pre></div>
 </div>
 <p>A discussion on installing on Mac can be found in <a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest/issues/10">https://github.com/JohannesBuchner/PyMultiNest/issues/10</a>.</p>
 </div>
@@ -153,7 +170,8 @@ rename the resulting .dylib libraries to the expected names (.so). For example</
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installing PyMultiNest and PyAPEMoST</a><ul>
-<li><a class="reference internal" href="#install-on-linux">Install on Linux</a></li>
+<li><a class="reference internal" href="#installing-the-python-module">1. Installing the Python Module</a></li>
+<li><a class="reference internal" href="#installing-the-libraries-on-linux">2. Installing the libraries on Linux</a></li>
 <li><a class="reference internal" href="#running-some-code">Running some code</a></li>
 <li><a class="reference internal" href="#getting-help">Getting help</a></li>
 <li><a class="reference internal" href="#generating-the-documentation">Generating the documentation</a></li>
