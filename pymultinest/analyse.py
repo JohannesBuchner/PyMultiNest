@@ -154,6 +154,10 @@ class Analyzer(object):
 		# Global Evidence
 		stats = {'modes':[]}
 		self._read_error_into_dict(lines[0], stats)
+
+		if 'Nested Sampling Global Log-Evidence'.lower() in stats:
+			stats['global evidence'] = stats['Nested Sampling Global Log-Evidence'.lower()]
+			stats['global evidence error'] = stats['Nested Sampling Global Log-Evidence error'.lower()]
 		
 		if 'Nested Importance Sampling Global Log-Evidence' in lines[1]:
 			# INS global evidence
