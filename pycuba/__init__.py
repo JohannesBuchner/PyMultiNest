@@ -1,8 +1,14 @@
 from __future__ import absolute_import, unicode_literals, print_function
 import ctypes
 from ctypes import POINTER, c_int, c_double, c_void_p, byref
+import os.path
+import re
 
-lib = ctypes.cdll.LoadLibrary('libcuba.so')
+# libfile = os.path.abspath(os.path.join(os.path.dirname(__file__), 'libcuba.so'))
+libfile = os.path.realpath('libcuba.so')
+lib = ctypes.cdll.LoadLibrary(libfile)
+try: libversion = re.match(r'.*\.so\.(.*)',libfile).group(1)
+except AttributeError: libversion = 'zzz' # cannot detect version, default to most recent one
 
 NULL = ctypes.POINTER(c_int)()
 
@@ -84,11 +90,13 @@ iteration.
   if seed is None:
     seed = 0
   
-  lib.Vegas(ndim, ncomp, integrand_type(integrand), userdata,
-    c_double(epsrel), c_double(epsabs), verbose, seed,
-    mineval, maxeval, nstart, nincrease, nbatch,
-    gridno, statefile,
-    byref(neval), byref(fail), integral, error, prob)
+  args = [ndim, ncomp, integrand_type(integrand), userdata]
+  if libversion >= '3.3': args += [c_int(1)]  # nvec (v3.3+)
+  args += [c_double(epsrel), c_double(epsabs), verbose, seed,
+           mineval, maxeval, nstart, nincrease, nbatch,
+           gridno, statefile,
+           byref(neval), byref(fail), integral, error, prob]
+  lib.Vegas(*args)
   
   return dict(neval=neval.value, fail=fail.value, comp=comp.value,
     results=[{
@@ -125,10 +133,13 @@ def Suave(integrand, ndim, nnew=1000, flatness=25., userdata=NULL,
   if seed is None:
     seed = 0
   
-  lib.Suave(ndim, ncomp, integrand_type(integrand), userdata,
-    c_double(epsrel), c_double(epsabs), verbose, seed,
-    mineval, maxeval, nnew, c_double(flatness),
-    byref(nregions), byref(neval), byref(fail), integral, error, prob)
+  args = [ndim, ncomp, integrand_type(integrand), userdata]
+  if libversion >= '3.3': args += [c_int(1)] # nvec (v3.3+)
+  args += [c_double(epsrel), c_double(epsabs), verbose, seed,
+           mineval, maxeval, nnew, c_double(flatness)]
+  if libversion >= '3.1': args += [NULL] # statefile (v3.1+)
+  args += [byref(nregions), byref(neval), byref(fail), integral, error, prob]
+  lib.Suave(*args)
   
   return dict(neval=neval.value, fail=fail.value, comp=comp.value, nregions=nregions.value,
     results=[{
@@ -268,12 +279,15 @@ def Divonne(integrand, ndim,
   if seed is None:
     seed = 0
 
-  lib.Divonne(ndim, ncomp, integrand_type(integrand), userdata,
-    c_double(epsrel), c_double(epsabs), verbose, seed,
-    mineval, maxeval, key1, key2, key3, maxpass, 
-    c_double(border), c_double(maxchisq), c_double(mindeviation), 
-    ngiven, ldxgiven, xgiven, nextra, peakfinder, 
-    byref(nregions), byref(neval), byref(fail), integral, error, prob)
+  args = [ndim, ncomp, integrand_type(integrand), userdata]
+  if libversion >= '3.3': args += [c_int(1)] # nvec (v3.3+)
+  args += [c_double(epsrel), c_double(epsabs), verbose, seed,
+           mineval, maxeval, key1, key2, key3, maxpass, 
+           c_double(border), c_double(maxchisq), c_double(mindeviation), 
+           ngiven, ldxgiven, xgiven, nextra, peakfinder]
+  if libversion >= '3.1': args += [NULL] # statefile (v3.1+)
+  args += [byref(nregions), byref(neval), byref(fail), integral, error, prob]
+  lib.Divonne(*args)
   
   return dict(neval=neval.value, fail=fail.value, comp=comp.value, nregions=nregions.value,
     results=[{
@@ -306,10 +320,13 @@ def Cuhre(integrand, ndim,
   if seed is None:
     seed = 0
 
-  lib.Cuhre(ndim, ncomp, integrand_type(integrand), userdata,
-    c_double(epsrel), c_double(epsabs), verbose,
-    mineval, maxeval, key, 
-    byref(nregions), byref(neval), byref(fail), integral, error, prob)
+  args = [ndim, ncomp, integrand_type(integrand), userdata]
+  if libversion >= '3.3': args += [c_int(1)] # nvec (v3.3+)
+  args += [c_double(epsrel), c_double(epsabs), verbose,
+           mineval, maxeval, key]
+  if libversion >= '3.1': args += [NULL] # statefile (v.3.1+)
+  args += [byref(nregions), byref(neval), byref(fail), integral, error, prob]
+  lib.Cuhre(*args)
   
   return dict(neval=neval.value, fail=fail.value, comp=comp.value, nregions=nregions.value,
     results=[{
