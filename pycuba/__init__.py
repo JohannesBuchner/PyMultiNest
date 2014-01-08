@@ -31,7 +31,7 @@ def Vegas(integrand, ndim, userdata=NULL,
     epsrel=EPSREL, epsabs=EPSABS, verbose=0, ncomp=1, seed=None,
     mineval=MINEVAL, maxeval=MAXEVAL, nstart=NSTART, 
     nincrease=NINCREASE, nbatch=NBATCH,
-    gridno=GRIDNO, statefile=NULL):
+    gridno=GRIDNO, statefile=NULL, nvec=1):
   """
   *nstart*: the number of integrand evaluations per iteration to start
 with.
@@ -85,7 +85,7 @@ iteration.
     seed = 0
   
   lib.Vegas(ndim, ncomp, integrand_type(integrand), userdata,
-    c_double(epsrel), c_double(epsabs), verbose, seed,
+    c_int(nvec), c_double(epsrel), c_double(epsabs), verbose, seed,
     mineval, maxeval, nstart, nincrease, nbatch,
     gridno, statefile,
     byref(neval), byref(fail), integral, error, prob)
@@ -99,7 +99,7 @@ iteration.
 
 def Suave(integrand, ndim, nnew=1000, flatness=25., userdata=NULL, 
     epsrel=EPSREL, epsabs=EPSABS, verbose=0, ncomp=1, seed=None,
-    mineval=MINEVAL, maxeval=MAXEVAL):
+    mineval=MINEVAL, maxeval=MAXEVAL, statefile=NULL, nvec=1):
   """
   *nnew*: the number of new integrand evaluations in each subdivision.
   
@@ -126,8 +126,8 @@ def Suave(integrand, ndim, nnew=1000, flatness=25., userdata=NULL,
     seed = 0
   
   lib.Suave(ndim, ncomp, integrand_type(integrand), userdata,
-    c_double(epsrel), c_double(epsabs), verbose, seed,
-    mineval, maxeval, nnew, c_double(flatness),
+    c_int(nvec), c_double(epsrel), c_double(epsabs), verbose, seed,
+    mineval, maxeval, nnew, c_double(flatness), statefile,
     byref(nregions), byref(neval), byref(fail), integral, error, prob)
   
   return dict(neval=neval.value, fail=fail.value, comp=comp.value, nregions=nregions.value,
@@ -143,7 +143,7 @@ def Divonne(integrand, ndim,
     mineval=MINEVAL, maxeval=MAXEVAL, ncomp=1,
     ldxgiven=None, xgiven=None, nextra=0, peakfinder=None,
     userdata=NULL, seed=None,
-    epsrel=EPSREL, epsabs=EPSABS, verbose=0):
+    epsrel=EPSREL, epsabs=EPSABS, verbose=0, statefile=NULL, nvec=1):
   """
   *key1*: determines sampling in the partitioning phase:
     key1 = 7, 9, 11, 13 selects the cubature rule of degree key1. Note that the degree-11
@@ -269,10 +269,10 @@ def Divonne(integrand, ndim,
     seed = 0
 
   lib.Divonne(ndim, ncomp, integrand_type(integrand), userdata,
-    c_double(epsrel), c_double(epsabs), verbose, seed,
+    c_int(nvec), c_double(epsrel), c_double(epsabs), verbose, seed,
     mineval, maxeval, key1, key2, key3, maxpass, 
     c_double(border), c_double(maxchisq), c_double(mindeviation), 
-    ngiven, ldxgiven, xgiven, nextra, peakfinder, 
+    ngiven, ldxgiven, xgiven, nextra, peakfinder, statefile,
     byref(nregions), byref(neval), byref(fail), integral, error, prob)
   
   return dict(neval=neval.value, fail=fail.value, comp=comp.value, nregions=nregions.value,
@@ -285,7 +285,7 @@ def Divonne(integrand, ndim,
 def Cuhre(integrand, ndim, 
     key=0, mineval=MINEVAL, maxeval=MAXEVAL, ncomp=1,
     userdata=NULL, seed=None,
-    epsrel=EPSREL, epsabs=EPSABS, verbose=0):
+    epsrel=EPSREL, epsabs=EPSABS, verbose=0, statefile=NULL, nvec=1):
   """
   *key* chooses the basic integration rule:
     key = 7, 9, 11, 13 selects the cubature rule of degree key. Note that the degree-11
@@ -307,8 +307,8 @@ def Cuhre(integrand, ndim,
     seed = 0
 
   lib.Cuhre(ndim, ncomp, integrand_type(integrand), userdata,
-    c_double(epsrel), c_double(epsabs), verbose,
-    mineval, maxeval, key, 
+    c_int(nvec), c_double(epsrel), c_double(epsabs), verbose,
+    mineval, maxeval, key, statefile,
     byref(nregions), byref(neval), byref(fail), integral, error, prob)
   
   return dict(neval=neval.value, fail=fail.value, comp=comp.value, nregions=nregions.value,
