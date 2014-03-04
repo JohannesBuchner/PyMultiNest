@@ -33,11 +33,13 @@ n_params = len(parameters)
 
 # we want to see some output while it is running
 progress = pymultinest.ProgressPlotter(n_params = n_params); progress.start()
+logger = pymultinest.backUp(); logger.start()
 threading.Timer(2, show, ["chains/1-phys_live.points.pdf"]).start() # delayed opening
 # run MultiNest
 pymultinest.run(myloglike, myprior, n_params, importance_nested_sampling = False, resume = True, verbose = True, sampling_efficiency = 'model', n_live_points = 1000)
 # ok, done. Stop our progress watcher
 progress.stop()
+logger.stop()
 
 # lets analyse the results
 a = pymultinest.Analyzer(n_params = n_params)
