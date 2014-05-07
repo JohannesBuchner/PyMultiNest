@@ -47,8 +47,8 @@ class ProgressPrinter(ProgressWatcher):
 			if not self.running:
 				break
 			try:
-				print(('rejected points: ', len(file(self.rejected, 'r').readlines())))
-				print(('alive points: ', len(file(self.live, 'r').readlines())))
+				print(('rejected points: ', len(open(self.rejected, 'r').readlines())))
+				print(('alive points: ', len(open(self.live, 'r').readlines())))
 			except Exception as e:
 				print(e)
 
