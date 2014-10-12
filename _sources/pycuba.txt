@@ -4,7 +4,7 @@ PyCuba
 Cuba is a library for multidimensional numerical integration.
 The `manual <https://github.com/JohannesBuchner/cuba/raw/master/cuba.pdf>`_ 
 in `Cuba <http://www.feynarts.de/cuba/>`_ is helpful as a reference.
-In particular, avoid parallelization by setting CUBACORES=1.
+In particular, avoid parallelization by setting the environment variable CUBACORES=1.
 
 The algorithms available are
 

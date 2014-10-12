@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -50,39 +49,36 @@
   <h1>Source code for pymultinest.run</h1><div class="highlight"><pre>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span>
 <span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">cdll</span>
+
+<span class="n">libname</span> <span class="o">=</span> <span class="s">&#39;libmultinest.so&#39;</span>
+<span class="k">try</span><span class="p">:</span> <span class="c"># detect if run through mpiexec/mpirun</span>
+	<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
+	<span class="k">if</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span> <span class="c"># need parallel capabilities</span>
+		<span class="n">libname</span> <span class="o">=</span> <span class="s">&#39;libmultinest_mpi.so&#39;</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+	<span class="k">pass</span>
+
 <span class="k">try</span><span class="p">:</span>
-	<span class="n">lib</span> <span class="o">=</span> <span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="s">&#39;libcnest.so&#39;</span><span class="p">)</span>
+	<span class="n">lib</span> <span class="o">=</span> <span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="n">libname</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-	<span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span> <span class="o">==</span> <span class="s">&#39;libcnest.so: cannot open shared object file: No such file or directory&#39;</span><span class="p">:</span>
+	<span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span> <span class="o">==</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">: cannot open shared object file: No such file or directory&#39;</span> <span class="o">%</span> <span class="n">libname</span><span class="p">:</span>
 		<span class="k">print</span><span class="p">()</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   Could not load MultiNest Bridge library &quot;libcnest.so&quot;&#39;</span><span class="p">)</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   You have to build it (from the multinest_bridge folder in pymultinest),&#39;</span><span class="p">)</span>
+		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   Could not load MultiNest library &quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">libname</span><span class="p">)</span>
+		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   You have to build it first,&#39;</span><span class="p">)</span>
 		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   and point the LD_LIBRARY_PATH environment variable to it!&#39;</span><span class="p">)</span>
 		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html&#39;</span><span class="p">)</span>
 		<span class="k">print</span><span class="p">()</span>
-	<span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span> <span class="o">==</span> <span class="s">&#39;libnest3.so: cannot open shared object file: No such file or directory&#39;</span><span class="p">:</span>
+	<span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;cannot open shared object file: No such file or directory&#39;</span><span class="p">):</span>
 		<span class="k">print</span><span class="p">()</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   Could not load MultiNest library &quot;libnest3.so&quot;&#39;</span><span class="p">)</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   You have to build it (in MultiNest, run make libnest3.so WITHOUT_MPI=1),&#39;</span><span class="p">)</span>
+		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   Could not load MultiNest library: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   You have to build MultiNest,&#39;</span><span class="p">)</span>
 		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   and point the LD_LIBRARY_PATH environment variable to it!&#39;</span><span class="p">)</span>
 		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html&#39;</span><span class="p">)</span>
 		<span class="k">print</span><span class="p">()</span>
 	<span class="k">if</span> <span class="s">&#39;undefined symbol: mpi_&#39;</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">:</span>
 		<span class="k">print</span><span class="p">()</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   You did something stupid. You tried to compile MultiNest with MPI,&#39;</span><span class="p">)</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   but the MultiNest bridge without MPI, or the other way around.&#39;</span><span class="p">)</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   Decide on one consistent way (no MPI is safe). Either way, you currently&#39;</span><span class="p">)</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   do not have MPI compiled into the library, and it fails to load!&#39;</span><span class="p">)</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html&#39;</span><span class="p">)</span>
-		<span class="k">print</span><span class="p">()</span>
-	<span class="k">if</span> <span class="s">&#39;libcnest.so: undefined symbol:&#39;</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span> <span class="ow">and</span> <span class="s">&#39;nestrun&#39;</span> <span class="ow">in</span> <span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">:</span>
-		<span class="k">print</span><span class="p">()</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   Sorry.&#39;</span><span class="p">)</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   The compiler decided to call the MultiNest routine differently than we expect.&#39;</span><span class="p">)</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   You have to run $ readelf -s libnest3.so | grep nestrun&#39;</span><span class="p">)</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   to find out how the nestrun routine is called (typically __nested_MOD_nestrun).&#39;</span><span class="p">)</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   Then you have to compile the MultiNest bridge using&#39;</span><span class="p">)</span>
-		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   $ make clean libcnest.so MULTINEST_CALL=__nested_MOD_nestrun &#39;</span><span class="p">)</span>
+		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   You tried to compile MultiNest linked with MPI,&#39;</span><span class="p">)</span>
+		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   but now when running, MultiNest can not find the MPI linked libraries.&#39;</span><span class="p">)</span>
 		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html&#39;</span><span class="p">)</span>
 		<span class="k">print</span><span class="p">()</span>
 	<span class="c"># the next if is useless because we can not catch symbol lookup errors (the executable crashes)</span>
@@ -95,11 +91,18 @@
 		<span class="k">print</span><span class="p">(</span><span class="s">&#39;ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html&#39;</span><span class="p">)</span>
 		<span class="k">print</span><span class="p">()</span>
 	<span class="c"># what if built with MPI, but don&#39;t have MPI</span>
-	<span class="k">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+	<span class="k">print</span><span class="p">(</span><span class="s">&#39;problem:&#39;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
 	<span class="kn">import</span> <span class="nn">sys</span>
 	<span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">numpy.ctypeslib</span> <span class="kn">import</span> <span class="n">as_array</span>
+<span class="kn">import</span> <span class="nn">signal</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+
+<span class="k">def</span> <span class="nf">interrupt_handler</span><span class="p">(</span><span class="n">signal</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+	<span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;ERROR: Interrupt received: Terminating</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+	<span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
 <div class="viewcode-block" id="run"><a class="viewcode-back" href="../../pymultinest_run.html#pymultinest.run.run">[docs]</a><span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">,</span>
 	<span class="n">Prior</span><span class="p">,</span>
@@ -107,7 +110,7 @@
 	<span class="n">n_params</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> 
 	<span class="n">n_clustering_params</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">wrapped_params</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> 
 	<span class="n">importance_nested_sampling</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
-	<span class="n">multimodal</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">const_efficiency_mode</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="n">n_live_points</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">,</span>
+	<span class="n">multimodal</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">const_efficiency_mode</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="n">n_live_points</span> <span class="o">=</span> <span class="mi">400</span><span class="p">,</span>
 	<span class="n">evidence_tolerance</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">sampling_efficiency</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> 
 	<span class="n">n_iter_before_update</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">null_log_evidence</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e90</span><span class="p">,</span>
 	<span class="n">max_modes</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">mode_tolerance</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e90</span><span class="p">,</span>
@@ -131,7 +134,7 @@
 <span class="sd">	return the logarithm of the likelihood.</span>
 <span class="sd">	Here is the example for the eggbox problem::</span>
 <span class="sd">	</span>
-<span class="sd">		def Loglike(cube, ndim, nparams):</span>
+<span class="sd">		def Loglike(cube, ndim, nparams, lnew):</span>
 <span class="sd">			chi = 1.</span>
 <span class="sd">			</span>
 <span class="sd">			for i in range(ndim):</span>
@@ -219,39 +222,62 @@
 		<span class="n">sampling_efficiency</span> <span class="o">=</span> <span class="mf">0.8</span>
 	<span class="k">if</span> <span class="n">sampling_efficiency</span> <span class="o">==</span> <span class="s">&#39;model&#39;</span><span class="p">:</span>
 		<span class="n">sampling_efficiency</span> <span class="o">=</span> <span class="mf">0.3</span>
-	
-	<span class="n">lib</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-	
-	<span class="n">prior_type</span> <span class="o">=</span> <span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_void_p</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">),</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">)</span>
-	<span class="k">if</span> <span class="n">Prior</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-		<span class="n">c_Prior</span> <span class="o">=</span> <span class="n">prior_type</span><span class="p">(</span><span class="n">Prior</span><span class="p">)</span>
-		<span class="n">lib</span><span class="o">.</span><span class="n">set_prior</span><span class="p">(</span><span class="n">c_Prior</span><span class="p">)</span>
-	
-	<span class="n">loglike_type</span> <span class="o">=</span> <span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_double</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">),</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">)</span>
-	<span class="n">c_LogLikelihood</span> <span class="o">=</span> <span class="n">loglike_type</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">)</span>
-	<span class="n">lib</span><span class="o">.</span><span class="n">set_function</span><span class="p">(</span><span class="n">c_LogLikelihood</span><span class="p">)</span>
-	
-	<span class="n">dumper_type</span> <span class="o">=</span> <span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_void_p</span><span class="p">,</span> 
-		<span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">))</span>
-	<span class="sd">&quot;&quot;&quot;, </span>
-<span class="sd">		POINTER(c_double), POINTER(c_double), POINTER(c_double), </span>
-<span class="sd">		POINTER(c_double), POINTER(c_double), POINTER(c_double),</span>
-<span class="sd">		c_double, c_double, c_double)&quot;&quot;&quot;</span>
-	
-	<span class="k">if</span> <span class="n">dump_callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-		<span class="n">lib</span><span class="o">.</span><span class="n">set_dumper</span><span class="p">(</span><span class="n">dumper_type</span><span class="p">(</span><span class="n">dump_wrapper</span><span class="p">))</span>
 
-	<span class="n">lib</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">c_int</span><span class="p">(</span><span class="n">importance_nested_sampling</span><span class="p">),</span>
-		<span class="n">c_int</span><span class="p">(</span><span class="n">multimodal</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">const_efficiency_mode</span><span class="p">),</span> 
+	<span class="n">loglike_type</span> <span class="o">=</span> <span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_double</span><span class="p">,</span> <span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">),</span>
+		<span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_double</span><span class="p">,</span> <span class="n">c_void_p</span><span class="p">)</span>
+
+	<span class="n">dumper_type</span>  <span class="o">=</span> <span class="n">CFUNCTYPE</span><span class="p">(</span><span class="n">c_void_p</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span> <span class="n">c_int</span><span class="p">,</span>
+		<span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">),</span><span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">),</span><span class="n">POINTER</span><span class="p">(</span><span class="n">c_double</span><span class="p">),</span>
+		<span class="n">c_double</span><span class="p">,</span><span class="n">c_double</span><span class="p">,</span><span class="n">c_double</span><span class="p">,</span><span class="n">c_void_p</span><span class="p">)</span>
+	
+	<span class="c"># check if lnew is supported by user function</span>
+	<span class="n">nargs</span> <span class="o">=</span> <span class="mi">3</span>
+	<span class="k">try</span><span class="p">:</span>
+		<span class="n">nargs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">)</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+	<span class="k">except</span><span class="p">:</span>
+		<span class="k">pass</span>
+	
+	<span class="k">if</span> <span class="n">nargs</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+		<span class="k">def</span> <span class="nf">loglike</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">,</span> <span class="n">lnew</span><span class="p">,</span> <span class="n">nullcontext</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">Prior</span><span class="p">:</span>
+				<span class="n">Prior</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">LogLikelihood</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">,</span> <span class="n">lnew</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span>
+		<span class="k">def</span> <span class="nf">loglike</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">,</span> <span class="n">lnew</span><span class="p">,</span> <span class="n">nullcontext</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">Prior</span><span class="p">:</span>
+				<span class="n">Prior</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">)</span>
+			<span class="k">return</span> <span class="n">LogLikelihood</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">)</span>
+	
+	<span class="k">def</span> <span class="nf">dumper</span><span class="p">(</span><span class="n">nSamples</span><span class="p">,</span><span class="n">nlive</span><span class="p">,</span><span class="n">nPar</span><span class="p">,</span>
+			   <span class="n">physLive</span><span class="p">,</span><span class="n">posterior</span><span class="p">,</span><span class="n">paramConstr</span><span class="p">,</span>
+			   <span class="n">maxLogLike</span><span class="p">,</span><span class="n">logZ</span><span class="p">,</span><span class="n">logZerr</span><span class="p">,</span><span class="n">nullcontext</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">dump_callback</span><span class="p">:</span>
+			<span class="c"># It&#39;s not clear to me what the desired PyMultiNest dumper callback</span>
+			<span class="c"># syntax is... but this should pass back the right numpy arrays,</span>
+			<span class="c"># without copies. Untested!</span>
+			<span class="n">pc</span> <span class="o">=</span>  <span class="n">as_array</span><span class="p">(</span><span class="n">paramConstr</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">nPar</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+			
+			<span class="n">dump_callback</span><span class="p">(</span><span class="n">nSamples</span><span class="p">,</span><span class="n">nlive</span><span class="p">,</span><span class="n">nPar</span><span class="p">,</span>
+				<span class="n">as_array</span><span class="p">(</span><span class="n">physLive</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">nPar</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">nlive</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+				<span class="n">as_array</span><span class="p">(</span><span class="n">posterior</span><span class="p">,</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">nPar</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="n">nSamples</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">,</span>
+				<span class="p">(</span><span class="n">pc</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span><span class="n">pc</span><span class="p">[</span><span class="mi">1</span><span class="p">,:],</span><span class="n">pc</span><span class="p">[</span><span class="mi">2</span><span class="p">,:],</span><span class="n">pc</span><span class="p">[</span><span class="mi">3</span><span class="p">,:]),</span> <span class="c"># (mean,std,bestfit,map)</span>
+				<span class="n">maxLogLike</span><span class="p">,</span><span class="n">logZ</span><span class="p">,</span><span class="n">logZerr</span><span class="p">)</span>
+	<span class="n">prev_handler</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">interrupt_handler</span><span class="p">)</span>
+	
+	<span class="n">lib</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">c_bool</span><span class="p">(</span><span class="n">importance_nested_sampling</span><span class="p">),</span>
+		<span class="n">c_bool</span><span class="p">(</span><span class="n">multimodal</span><span class="p">),</span> <span class="n">c_bool</span><span class="p">(</span><span class="n">const_efficiency_mode</span><span class="p">),</span>
 		<span class="n">c_int</span><span class="p">(</span><span class="n">n_live_points</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">evidence_tolerance</span><span class="p">),</span> 
 		<span class="n">c_double</span><span class="p">(</span><span class="n">sampling_efficiency</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">n_dims</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">n_params</span><span class="p">),</span>
 		<span class="n">c_int</span><span class="p">(</span><span class="n">n_clustering_params</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">max_modes</span><span class="p">),</span> 
 		<span class="n">c_int</span><span class="p">(</span><span class="n">n_iter_before_update</span><span class="p">),</span> <span class="n">c_double</span><span class="p">(</span><span class="n">mode_tolerance</span><span class="p">),</span> 
-		<span class="n">create_string_buffer</span><span class="p">(</span><span class="n">outputfiles_basename</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span><span class="mi">100</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">seed</span><span class="p">),</span> <span class="n">wraps</span><span class="p">,</span>
-		<span class="n">c_int</span><span class="p">(</span><span class="n">verbose</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">resume</span><span class="p">),</span> 
-		<span class="n">c_int</span><span class="p">(</span><span class="n">write_output</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">init_MPI</span><span class="p">),</span> 
+		<span class="n">create_string_buffer</span><span class="p">(</span><span class="n">outputfiles_basename</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span><span class="mi">100</span><span class="p">),</span>
+		<span class="n">c_int</span><span class="p">(</span><span class="n">seed</span><span class="p">),</span> <span class="n">wraps</span><span class="p">,</span>
+		<span class="n">c_bool</span><span class="p">(</span><span class="n">verbose</span><span class="p">),</span> <span class="n">c_bool</span><span class="p">(</span><span class="n">resume</span><span class="p">),</span>
+		<span class="n">c_bool</span><span class="p">(</span><span class="n">write_output</span><span class="p">),</span> <span class="n">c_bool</span><span class="p">(</span><span class="n">init_MPI</span><span class="p">),</span>
 		<span class="n">c_double</span><span class="p">(</span><span class="n">log_zero</span><span class="p">),</span> <span class="n">c_int</span><span class="p">(</span><span class="n">max_iter</span><span class="p">),</span>
+		<span class="n">loglike_type</span><span class="p">(</span><span class="n">loglike</span><span class="p">),</span><span class="n">dumper_type</span><span class="p">(</span><span class="n">dumper</span><span class="p">),</span>
 		<span class="n">c_int</span><span class="p">(</span><span class="n">context</span><span class="p">))</span>
+	<span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">prev_handler</span><span class="p">)</span>
 </pre></div></div>
 
           </div>
@@ -291,7 +317,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2013, Johannes Buchner.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

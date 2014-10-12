@@ -23,6 +23,21 @@ Follow the instructions in the :doc:`installation guide <install>`.
 
 You can download the source code from the `code repository <https://github.com/JohannesBuchner/PyMultiNest>`_.
 
+Citing PyMultiNest
+-------------------------------
+
+Please cite `MultiNest <pymultinest>` and `Cuba <pycuba>` accordingly, 
+depending on which algorithm you connect your Python program to using this package.
+
+If you find PyMultiNest enables your research, please consider citing my 
+publication to give back for the time I invested:
+
+`Buchner et al. 2014, A&A <http://www.aanda.org/articles/aa/abs/2014/04/aa22971-13/aa22971-13.html>`_ (BibTex there)
+
+In this paper, I introduce the software package officially, and apply the methodology of applying MultiNest
+to `X-ray spectral analysis <https://github.com/JohannesBuchner/BXA>`_.
+
+
 Documentation:
 -------------------------------
 

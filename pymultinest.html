@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -14,7 +13,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '0.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -67,7 +66,8 @@
 and in your LD_LIBRARY_PATH.</p>
 <blockquote>
 <div><p>Otherwise you will get an error like this:</p>
-<div class="highlight-python"><pre>&gt; OSError: libmultinest.so: cannot open shared object file: No such file or directory</pre>
+<div class="highlight-python"><div class="highlight"><pre>&gt; OSError: libmultinest.so: cannot open shared object file: No such file or directory
+</pre></div>
 </div>
 </div></blockquote>
 <p>Common parameters:</p>
@@ -75,12 +75,23 @@ and in your LD_LIBRARY_PATH.</p>
 (default chains/1-).</p>
 <div class="section" id="demo-program-for-pymultinest">
 <h2>Demo program for PyMultiNest<a class="headerlink" href="#demo-program-for-pymultinest" title="Permalink to this headline">¶</a></h2>
-<p>Take a look at, and run <a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo.py">pymultinest_demo.py</a></p>
+<p>Take a look at, and run <a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo.py">pymultinest_demo.py</a>.</p>
+<p>There is also a <a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo_minimal.py">minimalistic demo pymultinest_demo_minimal.py</a>.</p>
 </div>
 <div class="section" id="tutorial">
 <h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
 <p>A <a class="reference external" href="http://johannesbuchner.github.io/pymultinest-tutorial/">guided tutorial</a>
 was created for a workshop on Monte Carlo methods.</p>
+</div>
+<div class="section" id="citing-pymultinest">
+<h2>Citing PyMultiNest<a class="headerlink" href="#citing-pymultinest" title="Permalink to this headline">¶</a></h2>
+<p>Please cite <a class="reference external" href="http://ccpforge.cse.rl.ac.uk/gf/project/multinest/">MultiNest</a>, the
+algorithm used for computation.</p>
+<p>If you find PyMultiNest enables your research, please consider citing my
+publication to give back for the time I invested:</p>
+<p><a class="reference external" href="http://www.aanda.org/articles/aa/abs/2014/04/aa22971-13/aa22971-13.html">Buchner et al. 2014, A&amp;A</a> (BibTex there)</p>
+<p>In this paper, I introduce the software package officially, and apply the methodology of applying MultiNest
+to <a class="reference external" href="https://github.com/JohannesBuchner/BXA">X-ray spectral analysis</a>.</p>
 </div>
 </div>
 
@@ -95,6 +106,7 @@ was created for a workshop on Monte Carlo methods.</p>
 <li><a class="reference internal" href="#">PyMultiNest</a><ul>
 <li><a class="reference internal" href="#demo-program-for-pymultinest">Demo program for PyMultiNest</a></li>
 <li><a class="reference internal" href="#tutorial">Tutorial</a></li>
+<li><a class="reference internal" href="#citing-pymultinest">Citing PyMultiNest</a></li>
 </ul>
 </li>
 </ul>
@@ -147,7 +159,7 @@ was created for a workshop on Monte Carlo methods.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2013, Johannes Buchner.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>
