@@ -49,6 +49,7 @@ except OSError as e:
 from ctypes import *
 from numpy.ctypeslib import as_array
 import signal, sys
+import inspect
 
 def interrupt_handler(signal, frame):
 	sys.stderr.write('ERROR: Interrupt received: Terminating\n')
@@ -84,7 +85,7 @@ def run(LogLikelihood,
 	return the logarithm of the likelihood.
 	Here is the example for the eggbox problem::
 	
-		def Loglike(cube, ndim, nparams):
+		def Loglike(cube, ndim, nparams, lnew):
 			chi = 1.
 			
 			for i in range(ndim):
@@ -174,17 +175,29 @@ def run(LogLikelihood,
 		sampling_efficiency = 0.3
 
 	loglike_type = CFUNCTYPE(c_double, POINTER(c_double),
-		c_int,c_int,c_void_p)
+		c_int, c_int, c_double, c_void_p)
 
-	dumper_type  = CFUNCTYPE(c_void_p, c_int,c_int, c_int,
+	dumper_type  = CFUNCTYPE(c_void_p, c_int, c_int, c_int,
 		POINTER(c_double),POINTER(c_double),POINTER(c_double),
 		c_double,c_double,c_double,c_void_p)
 	
-	def loglike(cube, ndim, nparams, nullcontext):
-		args = [cube,ndim,nparams]
-		if Prior:
-			Prior(*args)
-		return LogLikelihood(*args)
+	# check if lnew is supported by user function
+	nargs = 3
+	try:
+		nargs = len(inspect.getargspec(LogLikelihood).args)
+	except:
+		pass
+	
+	if nargs == 4:
+		def loglike(cube, ndim, nparams, lnew, nullcontext):
+			if Prior:
+				Prior(cube, ndim, nparams)
+			return LogLikelihood(cube, ndim, nparams, lnew)
+	else:
+		def loglike(cube, ndim, nparams, lnew, nullcontext):
+			if Prior:
+				Prior(cube, ndim, nparams)
+			return LogLikelihood(cube, ndim, nparams)
 	
 	def dumper(nSamples,nlive,nPar,
 			   physLive,posterior,paramConstr,
