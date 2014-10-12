@@ -43,6 +43,10 @@ How can I use MultiNest with Python?
 --------------------------------------------
 Look at the documentation available at http://johannesbuchner.github.com/PyMultiNest/index.html
 
+Citing PyMultiNest
+--------------------------------------------
+See the documentation at http://johannesbuchner.github.com/PyMultiNest/index.html
+
 What is PyAPEMoST?
 --------------------------------------------
 Similarly to PyMultiNest, it is an access module for a Bayesian inference engine.
