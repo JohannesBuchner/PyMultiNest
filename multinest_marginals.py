@@ -89,14 +89,18 @@ else:
 	pp = PdfPages(prefix + 'marg1d.pdf')
 	
 	for i in range(n_params):
-		plt.figure(figsize=(5, 5))
+		plt.figure(figsize=(3, 3))
 		plt.xlabel(parameters[i])
+		plt.locator_params(nbins=5)
 		
 		m = s['marginals'][i]
-		plt.xlim(m['5sigma'])
+		iqr = m['q99%'] - m['q01%']
+		xlim = m['q01%'] - 0.3 * iqr, m['q99%'] + 0.3 * iqr
+		#xlim = m['5sigma']
+		plt.xlim(xlim)
 	
 		oldax = plt.gca()
-		x,w,patches = oldax.hist(values[:,i], bins=20, edgecolor='grey', color='grey', histtype='stepfilled', alpha=0.2)
+		x,w,patches = oldax.hist(values[:,i], bins=numpy.linspace(xlim[0], xlim[1], 20), edgecolor='grey', color='grey', histtype='stepfilled', alpha=0.2)
 		oldax.set_ylim(0, x.max())
 	
 		newax = plt.gcf().add_axes(oldax.get_position(), sharex=oldax, frameon=False)
@@ -114,8 +118,8 @@ else:
 		oldax.set_yticks([])
 		newax.set_ylabel("Probability")
 		ylim = oldax.get_ylim()
-		newax.set_xlim(m['5sigma'])
-		oldax.set_xlim(m['5sigma'])
+		newax.set_xlim(xlim)
+		oldax.set_xlim(xlim)
 		plt.savefig(pp, format='pdf', bbox_inches='tight')
 		plt.close()
 	pp.close()
