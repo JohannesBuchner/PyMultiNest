@@ -1,7 +1,7 @@
 PyMultiNest -- Python interface for MultiNest
 ==============================================
 
-This library provides programmatic access to MultiNest.
+This library provides programmatic access to MultiNest and PyCuba.
 
 What is MultiNest?
 -------------------

@@ -1,7 +1,14 @@
 from __future__ import absolute_import, unicode_literals, print_function
+import os
 import ctypes
 from ctypes import POINTER, c_int, c_double, c_void_p, byref
 
+"""
+Parallelisation within cuba is not supported, because python does not know
+that the call is in parallel and writes to the same memory location, causing
+overrides. This could be overcome by using locks.
+"""
+os.environ['CUBACORES'] = '1'
 lib = ctypes.cdll.LoadLibrary('libcuba.so')
 
 NULL = ctypes.POINTER(c_int)()
