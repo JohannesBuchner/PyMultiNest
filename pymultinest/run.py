@@ -67,7 +67,7 @@ def run(LogLikelihood,
 	max_modes = 100, mode_tolerance = -1e90,
 	outputfiles_basename = "chains/1-", seed = -1, verbose = False,
 	resume = True, context = 0, write_output = True, log_zero = -1e100, 
-	max_iter = 0, init_MPI = True, dump_callback = None):
+	max_iter = 0, init_MPI = False, dump_callback = None):
 	"""
 	Runs MultiNest
 	
@@ -144,6 +144,10 @@ def run(LogLikelihood,
 		
 	@param init_MPI:
 		initialize MPI routines?, relevant only if compiling with MPI
+		To run pymultinest with MPI, you need mpi4py installed. Then,
+		the libmultinest_mpi library is loaded when you run with mpiexec
+		or similar. init_MPI should be set to False, because importing
+		mpi4py initialises MPI already.
 	
 	@param log_zero: 
 		points with loglike < logZero will be ignored by MultiNest
