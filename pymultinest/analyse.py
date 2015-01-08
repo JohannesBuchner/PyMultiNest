@@ -83,8 +83,9 @@ class Analyzer(object):
 		if title is None:
 			title, table = txt.split("\n", 1)
 		else:
-			table = txt		
-		header, table = txt.split("\n", 1)
+			table = txt
+		header, table = table.split("\n", 1)
+		print('header, table:', header, table)
 		data = loadtxt2d(StringIO(table))
 		if d is not None:
 			d[title.strip().lower()] = data
