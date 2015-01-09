@@ -8,7 +8,7 @@ Parallelisation within cuba is not supported, because python does not know
 that the call is in parallel and writes to the same memory location, causing
 overrides. This could be overcome by using locks.
 """
-os.environ['CUBACORES'] = '1'
+os.environ['CUBACORES'] = '0'
 lib = ctypes.cdll.LoadLibrary('libcuba.so')
 
 NULL = ctypes.POINTER(c_int)()
@@ -25,6 +25,7 @@ NINCREASE = 500
 NBATCH = 1000
 GRIDNO = 0
 STATEFILE = NULL
+spin = NULL
 
 class BOUNDS(ctypes.Structure):
   _fields_ = ("lower", c_double), ("upper", c_double)
@@ -94,9 +95,13 @@ iteration.
   lib.Vegas(ndim, ncomp, integrand_type(integrand), userdata,
     c_int(nvec), c_double(epsrel), c_double(epsabs), verbose, seed,
     mineval, maxeval, nstart, nincrease, nbatch,
-    gridno, statefile,
+    gridno, statefile, spin,
     byref(neval), byref(fail), integral, error, prob)
   
+  print ("looking at return values...")
+  print ("neval", neval.value)
+  print ("fail", fail.value)
+  print ("comp", comp.value)
   return dict(neval=neval.value, fail=fail.value, comp=comp.value,
     results=[{
       'integral':integral[comp], 
@@ -104,11 +109,15 @@ iteration.
       'prob':prob[comp]
       } for comp in range(ncomp)])
 
-def Suave(integrand, ndim, nnew=1000, flatness=25., userdata=NULL, 
+def Suave(integrand, ndim, nnew=1000, nmin=2, flatness=50., userdata=NULL, 
     epsrel=EPSREL, epsabs=EPSABS, verbose=0, ncomp=1, seed=None,
     mineval=MINEVAL, maxeval=MAXEVAL, statefile=NULL, nvec=1):
   """
   *nnew*: the number of new integrand evaluations in each subdivision.
+  
+  *nmin*: the minimum number of samples a former pass must contribute
+  to a subregion to be considered in that region's compound integral value. Increasing
+  nmin may reduce jumps in the chi^2 value.
   
   *flatness*: the parameter p in Eq. (1), i.e. the type of norm
   used to compute the fluctuation of a sample. This determines how prominently 'out-
@@ -134,7 +143,7 @@ def Suave(integrand, ndim, nnew=1000, flatness=25., userdata=NULL,
   
   lib.Suave(ndim, ncomp, integrand_type(integrand), userdata,
     c_int(nvec), c_double(epsrel), c_double(epsabs), verbose, seed,
-    mineval, maxeval, nnew, c_double(flatness), statefile,
+    mineval, maxeval, nnew, nmin, c_double(flatness), statefile, spin,
     byref(nregions), byref(neval), byref(fail), integral, error, prob)
   
   return dict(neval=neval.value, fail=fail.value, comp=comp.value, nregions=nregions.value,
@@ -279,7 +288,7 @@ def Divonne(integrand, ndim,
     c_int(nvec), c_double(epsrel), c_double(epsabs), verbose, seed,
     mineval, maxeval, key1, key2, key3, maxpass, 
     c_double(border), c_double(maxchisq), c_double(mindeviation), 
-    ngiven, ldxgiven, xgiven, nextra, peakfinder, statefile,
+    ngiven, ldxgiven, xgiven, nextra, peakfinder, statefile, spin,
     byref(nregions), byref(neval), byref(fail), integral, error, prob)
   
   return dict(neval=neval.value, fail=fail.value, comp=comp.value, nregions=nregions.value,
@@ -315,7 +324,7 @@ def Cuhre(integrand, ndim,
 
   lib.Cuhre(ndim, ncomp, integrand_type(integrand), userdata,
     c_int(nvec), c_double(epsrel), c_double(epsabs), verbose,
-    mineval, maxeval, key, statefile,
+    mineval, maxeval, key, statefile, spin,
     byref(nregions), byref(neval), byref(fail), integral, error, prob)
   
   return dict(neval=neval.value, fail=fail.value, comp=comp.value, nregions=nregions.value,
@@ -329,9 +338,11 @@ def demo():
   import math
 
   def Integrand(ndim, xx, ncomp, ff, userdata):
+    print("integrand called")
     x,y,z = [xx[i] for i in range(ndim.contents.value)]
     result = math.sin(x)*math.cos(y)*math.exp(z)
     ff[0] = result
+    print("integrand returning")
     return 0
     
 
