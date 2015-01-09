@@ -116,7 +116,7 @@
 	<span class="n">max_modes</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">mode_tolerance</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e90</span><span class="p">,</span>
 	<span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s">&quot;chains/1-&quot;</span><span class="p">,</span> <span class="n">seed</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
 	<span class="n">resume</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">context</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">write_output</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">log_zero</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1e100</span><span class="p">,</span> 
-	<span class="n">max_iter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">init_MPI</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span> <span class="n">dump_callback</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+	<span class="n">max_iter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">init_MPI</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span> <span class="n">dump_callback</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Runs MultiNest</span>
 <span class="sd">	</span>
@@ -193,6 +193,10 @@
 <span class="sd">		</span>
 <span class="sd">	@param init_MPI:</span>
 <span class="sd">		initialize MPI routines?, relevant only if compiling with MPI</span>
+<span class="sd">		To run pymultinest with MPI, you need mpi4py installed. Then,</span>
+<span class="sd">		the libmultinest_mpi library is loaded when you run with mpiexec</span>
+<span class="sd">		or similar. init_MPI should be set to False, because importing</span>
+<span class="sd">		mpi4py initialises MPI already.</span>
 <span class="sd">	</span>
 <span class="sd">	@param log_zero: </span>
 <span class="sd">		points with loglike &lt; logZero will be ignored by MultiNest</span>
@@ -233,7 +237,7 @@
 	<span class="c"># check if lnew is supported by user function</span>
 	<span class="n">nargs</span> <span class="o">=</span> <span class="mi">3</span>
 	<span class="k">try</span><span class="p">:</span>
-		<span class="n">nargs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">)</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+		<span class="n">nargs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">)</span><span class="o">.</span><span class="n">args</span><span class="p">)</span> <span class="o">-</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">(</span><span class="n">LogLikelihood</span><span class="p">)</span>
 	<span class="k">except</span><span class="p">:</span>
 		<span class="k">pass</span>
 	

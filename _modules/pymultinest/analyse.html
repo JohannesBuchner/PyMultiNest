@@ -132,8 +132,8 @@
 		<span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
 			<span class="n">title</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="n">table</span> <span class="o">=</span> <span class="n">txt</span>		
-		<span class="n">header</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+			<span class="n">table</span> <span class="o">=</span> <span class="n">txt</span>
+		<span class="n">header</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 		<span class="n">data</span> <span class="o">=</span> <span class="n">loadtxt2d</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
 		<span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
 			<span class="n">d</span><span class="p">[</span><span class="n">title</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">data</span>

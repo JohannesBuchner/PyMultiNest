@@ -93,6 +93,18 @@ publication to give back for the time I invested:</p>
 <p>In this paper, I introduce the software package officially, and apply the methodology of applying MultiNest
 to <a class="reference external" href="https://github.com/JohannesBuchner/BXA">X-ray spectral analysis</a>.</p>
 </div>
+<div class="section" id="using-pymultinest-with-mpi">
+<h2>Using PyMultiNest with MPI<a class="headerlink" href="#using-pymultinest-with-mpi" title="Permalink to this headline">¶</a></h2>
+<p>Install the <a class="reference external" href="http://mpi4py.scipy.org/">mpi4py</a> python library.
+You can obtain it via your package manager
+or via the python installer (pip or the older easy_install).</p>
+<p>Once installed, run your python program with:</p>
+<div class="highlight-python"><div class="highlight"><pre>mpiexec -n 4 python myprogram.py
+</pre></div>
+</div>
+<p>PyMultiNest detects that it is run with multiple cores and will load
+the &#8220;libmultinest_mpi&#8221; library instead. No further modifications are necessary.</p>
+</div>
 </div>
 
 
@@ -107,6 +119,7 @@ to <a class="reference external" href="https://github.com/JohannesBuchner/BXA">X
 <li><a class="reference internal" href="#demo-program-for-pymultinest">Demo program for PyMultiNest</a></li>
 <li><a class="reference internal" href="#tutorial">Tutorial</a></li>
 <li><a class="reference internal" href="#citing-pymultinest">Citing PyMultiNest</a></li>
+<li><a class="reference internal" href="#using-pymultinest-with-mpi">Using PyMultiNest with MPI</a></li>
 </ul>
 </li>
 </ul>

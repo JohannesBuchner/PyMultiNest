@@ -58,7 +58,7 @@
 <span id="running-the-sampler"></span><h1>Running the sampler<a class="headerlink" href="#module-pymultinest.run" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="pymultinest.run.run">
-<tt class="descclassname">pymultinest.run.</tt><tt class="descname">run</tt><big>(</big><em>LogLikelihood</em>, <em>Prior</em>, <em>n_dims</em>, <em>n_params=None</em>, <em>n_clustering_params=None</em>, <em>wrapped_params=None</em>, <em>importance_nested_sampling=True</em>, <em>multimodal=True</em>, <em>const_efficiency_mode=False</em>, <em>n_live_points=400</em>, <em>evidence_tolerance=0.5</em>, <em>sampling_efficiency=0.8</em>, <em>n_iter_before_update=100</em>, <em>null_log_evidence=-1e+90</em>, <em>max_modes=100</em>, <em>mode_tolerance=-1e+90</em>, <em>outputfiles_basename=u'chains/1-'</em>, <em>seed=-1</em>, <em>verbose=False</em>, <em>resume=True</em>, <em>context=0</em>, <em>write_output=True</em>, <em>log_zero=-1e+100</em>, <em>max_iter=0</em>, <em>init_MPI=True</em>, <em>dump_callback=None</em><big>)</big><a class="reference internal" href="_modules/pymultinest/run.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.run.run" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">pymultinest.run.</tt><tt class="descname">run</tt><big>(</big><em>LogLikelihood</em>, <em>Prior</em>, <em>n_dims</em>, <em>n_params=None</em>, <em>n_clustering_params=None</em>, <em>wrapped_params=None</em>, <em>importance_nested_sampling=True</em>, <em>multimodal=True</em>, <em>const_efficiency_mode=False</em>, <em>n_live_points=400</em>, <em>evidence_tolerance=0.5</em>, <em>sampling_efficiency=0.8</em>, <em>n_iter_before_update=100</em>, <em>null_log_evidence=-1e+90</em>, <em>max_modes=100</em>, <em>mode_tolerance=-1e+90</em>, <em>outputfiles_basename=u'chains/1-'</em>, <em>seed=-1</em>, <em>verbose=False</em>, <em>resume=True</em>, <em>context=0</em>, <em>write_output=True</em>, <em>log_zero=-1e+100</em>, <em>max_iter=0</em>, <em>init_MPI=False</em>, <em>dump_callback=None</em><big>)</big><a class="reference internal" href="_modules/pymultinest/run.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.run.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs MultiNest</p>
 <p>The most important parameters are the two log-probability functions Prior 
 and LogLikelihood. They are called by MultiNest.</p>
@@ -124,7 +124,11 @@ value. If there isn&#8217;t any particulrly interesting
 nullZ value, then nullZ should be set to a very large negative 
 number (e.g. -1.d90).</dd>
 <dt>&#64;param init_MPI:</dt>
-<dd>initialize MPI routines?, relevant only if compiling with MPI</dd>
+<dd>initialize MPI routines?, relevant only if compiling with MPI
+To run pymultinest with MPI, you need mpi4py installed. Then,
+the libmultinest_mpi library is loaded when you run with mpiexec
+or similar. init_MPI should be set to False, because importing
+mpi4py initialises MPI already.</dd>
 <dt>&#64;param log_zero: </dt>
 <dd>points with loglike &lt; logZero will be ignored by MultiNest</dd>
 <dt>&#64;param max_iter: </dt>

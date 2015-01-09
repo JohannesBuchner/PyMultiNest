@@ -35,3 +35,19 @@ publication to give back for the time I invested:
 In this paper, I introduce the software package officially, and apply the methodology of applying MultiNest
 to `X-ray spectral analysis <https://github.com/JohannesBuchner/BXA>`_.
 
+Using PyMultiNest with MPI
+----------------------------
+
+Install the `mpi4py <http://mpi4py.scipy.org/>`_ python library. 
+You can obtain it via your package manager
+or via the python installer (pip or the older easy_install).
+
+Once installed, run your python program with::
+
+	mpiexec -n 4 python myprogram.py
+
+PyMultiNest detects that it is run with multiple cores and will load
+the "libmultinest_mpi" library instead. No further modifications are necessary.
+
+
+
