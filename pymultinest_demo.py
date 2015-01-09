@@ -45,7 +45,7 @@ s = a.get_stats()
 
 import json
 # store name of parameters, always useful
-with file('%sparams.json' % a.outputfiles_basename, 'w') as f:
+with open('%sparams.json' % a.outputfiles_basename, 'w') as f:
 	json.dump(parameters, f, indent=2)
 # store derived stats
 with open('%sstats.json' % a.outputfiles_basename, mode='w') as f:

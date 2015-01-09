@@ -148,7 +148,6 @@ class Analyzer(object):
 			information about the modes found:
 			mean, sigma, maximum a posterior in each dimension
 		"""
-		#lines = file(self.stats_file).readlines()
 		with open(self.stats_file) as file:
 			lines = file.readlines()
 		# Global Evidence

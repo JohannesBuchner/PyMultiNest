@@ -1,3 +1,4 @@
+from __future__ import absolute_import, unicode_literals, print_function
 from pymultinest.solve import solve
 import numpy
 from numpy import pi, cos
@@ -21,10 +22,10 @@ n_params = len(parameters)
 result = solve(LogLikelihood=myloglike, Prior=myprior, 
 	n_dims=n_params, outputfiles_basename="chains/3-")
 
-print 
-print 'evidence: %(logZ).1f +- %(logZerr).1f' % result
-print 
-print 'parameter values:'
+print()
+print('evidence: %(logZ).1f +- %(logZerr).1f' % result)
+print()
+print('parameter values:')
 for name, col in zip(parameters, result['samples'].transpose()):
-	print '%15s : %.3f +- %.3f' % (name, col.mean(), col.std())
+	print('%15s : %.3f +- %.3f' % (name, col.mean(), col.std()))
 

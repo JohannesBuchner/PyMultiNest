@@ -33,7 +33,7 @@ plt.savefig("data.pdf")
 plt.clf()
 show("data.pdf")
 
-f = file("params",'w')
+f = open("params",'w')
 f.write("0	0	10	amplitude	-1\n")
 f.write("0	0	40	frequency	-1\n")
 f.write("0	0	1	phase    	-1\n")

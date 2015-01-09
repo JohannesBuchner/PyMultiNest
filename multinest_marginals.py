@@ -4,7 +4,7 @@ Script that does default visualizations (marginal plots, 1-d and 2-d).
 
 Author: Johannes Buchner (C) 2013
 """
-
+from __future__ import absolute_import, unicode_literals, print_function
 import numpy
 from numpy import exp, log
 import matplotlib.pyplot as plt
@@ -22,7 +22,7 @@ if len(sys.argv) != 2:
 
 prefix = sys.argv[1]
 
-parameters = json.load(file(prefix + 'params.json'))
+parameters = json.load(open(prefix + 'params.json'))
 n_params = len(parameters)
 
 a = pymultinest.Analyzer(n_params = n_params, outputfiles_basename = prefix)
@@ -57,7 +57,7 @@ if dim2:
 		y = ylim[0] + 0.05*(ylim[1] - ylim[0])
 		center = m['median']
 		low1, high1 = m['1sigma']
-		print center, low1, high1
+		#print(center, low1, high1)
 		newax.errorbar(x=center, y=y,
 			xerr=numpy.transpose([[center - low1, high1 - center]]), 
 			color='blue', linewidth=2, marker='s')
@@ -84,8 +84,8 @@ if dim2:
 	plt.close()
 else:
 	from matplotlib.backends.backend_pdf import PdfPages
-	print '1dimensional only. Set the D environment variable D=2 to force'
-	print '2d marginal plots.'
+	sys.stderr.write('1dimensional only. Set the D environment variable \n')
+	sys.stderr.write('to D=2 to force 2d marginal plots.\n')
 	pp = PdfPages(prefix + 'marg1d.pdf')
 	
 	for i in range(n_params):
@@ -111,7 +111,7 @@ else:
 		y = ylim[0] + 0.05*(ylim[1] - ylim[0])
 		center = m['median']
 		low1, high1 = m['1sigma']
-		print center, low1, high1
+		#print center, low1, high1
 		newax.errorbar(x=center, y=y,
 			xerr=numpy.transpose([[center - low1, high1 - center]]), 
 			color='blue', linewidth=2, marker='s')
