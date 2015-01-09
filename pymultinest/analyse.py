@@ -85,7 +85,6 @@ class Analyzer(object):
 		else:
 			table = txt
 		header, table = table.split("\n", 1)
-		print('header, table:', header, table)
 		data = loadtxt2d(StringIO(table))
 		if d is not None:
 			d[title.strip().lower()] = data
