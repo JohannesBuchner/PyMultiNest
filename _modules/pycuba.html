@@ -387,11 +387,9 @@
   <span class="kn">import</span> <span class="nn">math</span>
 
   <span class="k">def</span> <span class="nf">Integrand</span><span class="p">(</span><span class="n">ndim</span><span class="p">,</span> <span class="n">xx</span><span class="p">,</span> <span class="n">ncomp</span><span class="p">,</span> <span class="n">ff</span><span class="p">,</span> <span class="n">userdata</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;integrand called&quot;</span><span class="p">)</span>
     <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="n">xx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="o">.</span><span class="n">contents</span><span class="o">.</span><span class="n">value</span><span class="p">)]</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
     <span class="n">ff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;integrand returning&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="mi">0</span>
     
 
@@ -399,7 +397,8 @@
   <span class="n">NCOMP</span> <span class="o">=</span> <span class="mi">1</span>
 
   <span class="n">NNEW</span> <span class="o">=</span> <span class="mi">1000</span>
-  <span class="n">FLATNESS</span> <span class="o">=</span> <span class="mf">25.</span>
+  <span class="n">NMIN</span> <span class="o">=</span> <span class="mi">2</span>
+  <span class="n">FLATNESS</span> <span class="o">=</span> <span class="mf">50.</span>
 
   <span class="n">KEY1</span> <span class="o">=</span> <span class="mi">47</span>
   <span class="n">KEY2</span> <span class="o">=</span> <span class="mi">1</span>
@@ -411,6 +410,9 @@
   <span class="n">NGIVEN</span> <span class="o">=</span> <span class="mi">0</span>
   <span class="n">LDXGIVEN</span> <span class="o">=</span> <span class="n">NDIM</span>
   <span class="n">NEXTRA</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">MINEVAL</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">MAXEVAL</span> <span class="o">=</span> <span class="mi">50000</span>
+
 
   <span class="n">KEY</span> <span class="o">=</span> <span class="mi">0</span>
   
