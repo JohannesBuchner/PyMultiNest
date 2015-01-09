@@ -65,5 +65,5 @@ if __name__ == '__main__':
     ldxgiven=LDXGIVEN, verbose=2))
   
   print_header('Cuhre')
-  print_results('Cuhre', Cuhre(Integrand, NDIM, key=KEY, verbose=2 | 4))
+  print_results('Cuhre', pycuba.Cuhre(Integrand, NDIM, key=KEY, verbose=2 | 4))
 
