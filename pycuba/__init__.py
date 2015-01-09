@@ -338,11 +338,9 @@ def demo():
   import math
 
   def Integrand(ndim, xx, ncomp, ff, userdata):
-    print("integrand called")
     x,y,z = [xx[i] for i in range(ndim.contents.value)]
     result = math.sin(x)*math.cos(y)*math.exp(z)
     ff[0] = result
-    print("integrand returning")
     return 0
     
 
@@ -350,7 +348,8 @@ def demo():
   NCOMP = 1
 
   NNEW = 1000
-  FLATNESS = 25.
+  NMIN = 2
+  FLATNESS = 50.
 
   KEY1 = 47
   KEY2 = 1
@@ -362,6 +361,9 @@ def demo():
   NGIVEN = 0
   LDXGIVEN = NDIM
   NEXTRA = 0
+  MINEVAL = 0
+  MAXEVAL = 50000
+
 
   KEY = 0
   

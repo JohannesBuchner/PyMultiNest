@@ -5,11 +5,9 @@ if __name__ == '__main__':
   import math
 
   def Integrand(ndim, xx, ncomp, ff, userdata):
-    #print("integrand called")
     x,y,z = [xx[i] for i in range(ndim.contents.value)]
     result = math.sin(x)*math.cos(y)*math.exp(z)
     ff[0] = result
-    #print("integrand returning")
     return 0
     
 
@@ -65,4 +63,6 @@ if __name__ == '__main__':
     border=BORDER, maxchisq=MAXCHISQ, mindeviation=MINDEVIATION,
     ldxgiven=LDXGIVEN, verbose=2))
   
+  print_header('Cuhre')
+  print_results('Cuhre', Cuhre(Integrand, NDIM, key=KEY, verbose=2 | 4))
 
