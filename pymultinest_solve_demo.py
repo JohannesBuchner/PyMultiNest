@@ -1,7 +1,7 @@
 from __future__ import absolute_import, unicode_literals, print_function
-from pymultinest.solve import solve
 import numpy
 from numpy import pi, cos
+from pymultinest.solve import solve
 import os
 if not os.path.exists("chains"): os.mkdir("chains")
 
@@ -28,4 +28,5 @@ print()
 print('parameter values:')
 for name, col in zip(parameters, result['samples'].transpose()):
 	print('%15s : %.3f +- %.3f' % (name, col.mean(), col.std()))
+
 

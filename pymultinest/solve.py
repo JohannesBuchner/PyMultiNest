@@ -71,5 +71,22 @@ def solve(LogLikelihood, Prior, **kwargs):
 		samples = analyzer.get_equal_weighted_posterior()[:,:-1],
 		)
 
-	
+class Solver(object):
+	def __init__(self, **kwargs):
+		self.n_dims = kwargs['n_dims']
+		self.outputfiles_basename = kwargs['outputfiles_basename']
+		results = solve(self.LogLikelihood, self.Prior, **kwargs)
+		for k, v in results.iteritems():
+			setattr(self, k, v)
+	def __str__(self):
+		s = 'Model in "%s"' % self.outputfiles_basename
+		s += ' (%d dimensions)\n' % self.n_dims
+		s += 'Evidence ln Z = %.1f +- %.1f\n' % (self.logZ, self.logZerr)
+		s += 'Parameter values:\n'
+		for i, col in enumerate(self.samples.transpose()):
+			s += '   Parameter %2d : %.3f +- %.3f\n' % (i + 1, col.mean(), col.std())
+		return s.rstrip()
+	def __repr__(self):
+		return 'Solver(n_dims=%d, outputfiles_basename="%s")' % (self.n_dims, self.outputfiles_basename)
+
 
