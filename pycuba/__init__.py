@@ -98,10 +98,6 @@ iteration.
     gridno, statefile, spin,
     byref(neval), byref(fail), integral, error, prob)
   
-  print ("looking at return values...")
-  print ("neval", neval.value)
-  print ("fail", fail.value)
-  print ("comp", comp.value)
   return dict(neval=neval.value, fail=fail.value, comp=comp.value,
     results=[{
       'integral':integral[comp], 
