@@ -7,6 +7,8 @@ from __future__ import absolute_import, unicode_literals, print_function
 from .run import run
 from .analyse import Analyzer
 import numpy
+import tempfile
+import shutil
 
 """
 A pythonic interface to MultiNest. The arguments are the same as in 
@@ -30,6 +32,11 @@ convenience.
 """
 def solve(LogLikelihood, Prior, **kwargs):
 	n_dims = kwargs['n_dims']
+	files_temporary = False
+	if 'outputfiles_basename' not in kwargs:
+		files_temporary = True
+		tempdir = tempfile.mkdtemp('pymultinest')
+		kwargs['outputfiles_basename'] = tempdir + '/'
 	outputfiles_basename = kwargs['outputfiles_basename']
 	def SafePrior(cube, ndim, nparams):
 		try:
@@ -65,16 +72,23 @@ def solve(LogLikelihood, Prior, **kwargs):
 	
 	analyzer = Analyzer(n_dims, outputfiles_basename = outputfiles_basename)
 	stats = analyzer.get_stats()
+	samples = analyzer.get_equal_weighted_posterior()[:,:-1]
+	
+	if files_temporary:
+		shutil.rmtree(tempdir, ignore_errors=True)
 	
 	return dict(logZ=stats['nested sampling global log-evidence'],
 		logZerr=stats['nested sampling global log-evidence error'],
-		samples = analyzer.get_equal_weighted_posterior()[:,:-1],
+		samples = samples,
 		)
 
 class Solver(object):
 	def __init__(self, **kwargs):
 		self.n_dims = kwargs['n_dims']
-		self.outputfiles_basename = kwargs['outputfiles_basename']
+		if 'outputfiles_basename' in kwargs:
+			self.outputfiles_basename = kwargs['outputfiles_basename']
+		else:
+			self.outputfiles_basename = '(temporary directory)'
 		results = solve(self.LogLikelihood, self.Prior, **kwargs)
 		for k, v in results.iteritems():
 			setattr(self, k, v)

@@ -1,9 +1,6 @@
-from __future__ import absolute_import, unicode_literals, print_function
+#!/usr/bin/env python
 from pymultinest.solve import Solver
-import numpy
 from numpy import pi, cos
-import os
-if not os.path.exists("chains"): os.mkdir("chains")
 
 class EggboxProblem(Solver):
 	def Prior(self, cube):
@@ -12,7 +9,7 @@ class EggboxProblem(Solver):
 		chi = (cos(cube / 2.)).prod()
 		return (2. + chi)**5
 
-solution = EggboxProblem(n_dims = 2, outputfiles_basename="chains/4-")
+solution = EggboxProblem(n_dims = 2)
 
 print(solution)
 """ prints:
