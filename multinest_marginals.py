@@ -1,10 +1,10 @@
 #!/usr/bin/env python
+from __future__ import absolute_import, unicode_literals, print_function
 __doc__ = """
 Script that does default visualizations (marginal plots, 1-d and 2-d).
 
 Author: Johannes Buchner (C) 2013
 """
-from __future__ import absolute_import, unicode_literals, print_function
 import numpy
 from numpy import exp, log
 import matplotlib.pyplot as plt
@@ -21,7 +21,7 @@ if len(sys.argv) != 2:
 	sys.exit(1)
 
 prefix = sys.argv[1]
-
+print('model "%s"' % prefix)
 parameters = json.load(open(prefix + 'params.json'))
 n_params = len(parameters)
 
@@ -123,6 +123,22 @@ else:
 		plt.savefig(pp, format='pdf', bbox_inches='tight')
 		plt.close()
 	pp.close()
+
+json.dump(s, open(prefix + 'stats.json', 'w'), indent=4)
+
+print('  marginal likelihood:')
+print('    ln Z = %.1f +- %.1f' % (s['global evidence'], s['global evidence error']))
+print('  parameters:')
+for p, m in zip(parameters, s['marginals']):
+	lo, hi = m['1sigma']
+	med = m['median']
+	sigma = (hi - lo) / 2
+	i = max(0, int(-numpy.floor(numpy.log10(sigma))) + 1)
+	fmt = '%%.%df' % i
+	fmts = '\t'.join(['    %-15s' + fmt + " +- " + fmt])
+	print(fmts % (p, med, sigma))
+
+
 
 
 
