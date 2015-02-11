@@ -46,7 +46,7 @@ def solve(LogLikelihood, Prior, **kwargs):
 				cube[i] = b[i]
 		except Exception as e:
 			import sys
-			sys.stderr.write('ERROR in prior: %s' % e)
+			sys.stderr.write('ERROR in prior: %s\n' % e)
 			sys.exit(1)
 	
 	def SafeLoglikelihood(cube, ndim, nparams, lnew):
@@ -55,15 +55,14 @@ def solve(LogLikelihood, Prior, **kwargs):
 			l = float(LogLikelihood(a))
 			if not numpy.isfinite(l):
 				import sys
-				sys.stderr.write('WARNING: loglikelihood not finite: %f' % (l))
-				sys.stderr.write('         for parameters: %s' % a)
-				sys.stderr.write('         returned very low value instead')
-				sys.exit(1)
+				sys.stderr.write('WARNING: loglikelihood not finite: %f\n' % (l))
+				sys.stderr.write('         for parameters: %s\n' % a)
+				sys.stderr.write('         returned very low value instead\n')
 				return -1e100
 			return l
 		except Exception as e:
 			import sys
-			sys.stderr.write('ERROR in loglikelihood: %s' % e)
+			sys.stderr.write('ERROR in loglikelihood: %s\n' % e)
 			sys.exit(1)
 	
 	kwargs['LogLikelihood'] = SafeLoglikelihood
