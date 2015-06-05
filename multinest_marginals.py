@@ -28,6 +28,21 @@ n_params = len(parameters)
 a = pymultinest.Analyzer(n_params = n_params, outputfiles_basename = prefix)
 s = a.get_stats()
 
+json.dump(s, open(prefix + 'stats.json', 'w'), indent=4)
+
+print('  marginal likelihood:')
+print('    ln Z = %.1f +- %.1f' % (s['global evidence'], s['global evidence error']))
+print('  parameters:')
+for p, m in zip(parameters, s['marginals']):
+	lo, hi = m['1sigma']
+	med = m['median']
+	sigma = (hi - lo) / 2
+	i = max(0, int(-numpy.floor(numpy.log10(sigma))) + 1)
+	fmt = '%%.%df' % i
+	fmts = '\t'.join(['    %-15s' + fmt + " +- " + fmt])
+	print(fmts % (p, med, sigma))
+
+print('creating marginal plot ...')
 p = pymultinest.PlotMarginal(a)
 
 values = a.get_equal_weighted_posterior()
@@ -123,20 +138,6 @@ else:
 		plt.savefig(pp, format='pdf', bbox_inches='tight')
 		plt.close()
 	pp.close()
-
-json.dump(s, open(prefix + 'stats.json', 'w'), indent=4)
-
-print('  marginal likelihood:')
-print('    ln Z = %.1f +- %.1f' % (s['global evidence'], s['global evidence error']))
-print('  parameters:')
-for p, m in zip(parameters, s['marginals']):
-	lo, hi = m['1sigma']
-	med = m['median']
-	sigma = (hi - lo) / 2
-	i = max(0, int(-numpy.floor(numpy.log10(sigma))) + 1)
-	fmt = '%%.%df' % i
-	fmts = '\t'.join(['    %-15s' + fmt + " +- " + fmt])
-	print(fmts % (p, med, sigma))
 
 
 
