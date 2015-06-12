@@ -14,8 +14,8 @@ def prior(pars):
 if __name__ == "__main__":
 	ndim = 2
 	import os
-	if not os.path.exists('chains'): os.path.mkdir('chains')
-	if not os.path.exists('chains/clusters'): os.path.mkdir('chains/clusters')
+	if not os.path.exists('chains'): os.mkdir('chains')
+	if not os.path.exists('chains/clusters'): os.mkdir('chains/clusters')
 	pypolychord.run(loglikelihood, prior, ndim, n_live=500, n_chords=1, output_basename='chains/eggbox-')
 
 
