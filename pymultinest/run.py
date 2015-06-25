@@ -241,4 +241,23 @@ def run(LogLikelihood,
 		c_int(context))
 	signal.signal(signal.SIGINT, prev_handler)
 
+def _is_newer(filea, fileb):
+	 return os.stat(filea).st_mtime > os.stat(fileb).st_mtime
+def multinest_complete(outputfiles_basename = "chains/1-"):
+	""" 
+	Checks the output files of multinest to see if they are complete.
+	This also requires the presence of params.json, which your code should
+	write after calling run()
+	
+	returns True or False
+	"""
+	names = ['stats.dat', 'post_equal_weights.dat', '.txt', 'resume.dat', 'params.json']
+	for n in names:
+		if not os.path.exists(basename + n):
+			return False
+	# if stats.dat and post_equal_weights.dat are newer than .txt and resume.dat exists
+	if not _is_newer(basename + 'post_equal_weights.dat', basename + '.txt'):
+		return False
+	return True
+
 
