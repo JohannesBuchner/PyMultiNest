@@ -35,7 +35,7 @@ class Analyzer(object):
 		samples for modes with local log-evidence value
 		greater than nullZ, separated by 2 blank lines. Format is the 
 		same as [root].txt file."""
-		self.post_file = "%spost_seperate.dat" % self.outputfiles_basename
+		self.post_file = "%spost_separate.dat" % self.outputfiles_basename
 
 		"""[root]stats.dat
 		Contains the global log-evidence, its error & local log-evidence 
