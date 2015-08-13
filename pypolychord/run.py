@@ -1,13 +1,20 @@
 from __future__ import absolute_import, unicode_literals, print_function
 from ctypes import cdll
 import numpy
-import os
+import os, sys
+
+libname = 'libchord'
+libname += {
+            'darwin' : '.dylib',
+            'win32'  : '.dll',
+            'cygwin' : '.dll',
+            }.get(sys.platform, '.so')
 
 try:
-	lib = cdll.LoadLibrary('libchord.so')
+        lib = cdll.LoadLibrary(libname)
 except OSError as e:
-	if e.message == 'libchord.so: cannot open shared object file: No such file or directory':
-		print()
+        if e.message == '%s: cannot open shared object file: No such file or directory' % libname:
+                print()
 		print('ERROR:   Could not load PolyChord library "libchord.so"')
 		print('ERROR:   You have to build it first,,')
 		print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
