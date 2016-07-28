@@ -34,6 +34,13 @@ integrand_type = ctypes.CFUNCTYPE(c_int, POINTER(c_int),
   POINTER(c_double), POINTER(c_int), POINTER(c_double), c_void_p)
 peakfinder_type = ctypes.CFUNCTYPE(c_void_p, POINTER(c_int), POINTER(BOUNDS), 
   POINTER(c_int), POINTER(c_double))
+
+def wrap_integrand(integrand):
+  use_raw_callback = isinstance(integrand, ctypes._CFuncPtr)
+  if use_raw_callback:
+    return integrand
+  else:
+    return integrand_type(integrand)
   
 def Vegas(integrand, ndim, userdata=NULL, 
     epsrel=EPSREL, epsabs=EPSABS, verbose=0, ncomp=1, seed=None,
@@ -92,7 +99,7 @@ iteration.
   if seed is None:
     seed = 0
   
-  lib.Vegas(ndim, ncomp, integrand_type(integrand), userdata,
+  lib.Vegas(ndim, ncomp, wrap_integrand(integrand), userdata,
     c_int(nvec), c_double(epsrel), c_double(epsabs), verbose, seed,
     mineval, maxeval, nstart, nincrease, nbatch,
     gridno, statefile, spin,
@@ -137,7 +144,7 @@ def Suave(integrand, ndim, nnew=1000, nmin=2, flatness=50., userdata=NULL,
   if seed is None:
     seed = 0
   
-  lib.Suave(ndim, ncomp, integrand_type(integrand), userdata,
+  lib.Suave(ndim, ncomp, wrap_integrand(integrand), userdata,
     c_int(nvec), c_double(epsrel), c_double(epsabs), verbose, seed,
     mineval, maxeval, nnew, nmin, c_double(flatness), statefile, spin,
     byref(nregions), byref(neval), byref(fail), integral, error, prob)
@@ -280,7 +287,7 @@ def Divonne(integrand, ndim,
   if seed is None:
     seed = 0
 
-  lib.Divonne(ndim, ncomp, integrand_type(integrand), userdata,
+  lib.Divonne(ndim, ncomp, wrap_integrand(integrand), userdata,
     c_int(nvec), c_double(epsrel), c_double(epsabs), verbose, seed,
     mineval, maxeval, key1, key2, key3, maxpass, 
     c_double(border), c_double(maxchisq), c_double(mindeviation), 
@@ -318,7 +325,7 @@ def Cuhre(integrand, ndim,
   if seed is None:
     seed = 0
 
-  lib.Cuhre(ndim, ncomp, integrand_type(integrand), userdata,
+  lib.Cuhre(ndim, ncomp, wrap_integrand(integrand), userdata,
     c_int(nvec), c_double(epsrel), c_double(epsabs), verbose,
     mineval, maxeval, key, statefile, spin,
     byref(nregions), byref(neval), byref(fail), integral, error, prob)
