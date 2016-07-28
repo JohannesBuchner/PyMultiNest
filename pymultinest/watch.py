@@ -74,7 +74,7 @@ class ProgressPlotter(ProgressWatcher):
 		import shutil, os
 		x = numpy.loadtxt(self.live, ndmin=2)
 		for i in range(self.n_params):
-			plt.subplot(self.n_params, 1, i)
+			plt.subplot(self.n_params, 1, 1+i)
 			plt.plot(x[:,i], x[:,self.n_params], '.')
 		f = "%s.pdf" % self.live
 		# using a temporary file because the writing 
