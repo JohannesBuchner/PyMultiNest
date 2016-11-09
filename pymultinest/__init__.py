@@ -17,6 +17,7 @@ outputfiles_basename is the prefix used for the output files of MultiNest
 from __future__ import absolute_import, unicode_literals, print_function
 try:
 	from .run import run
+	from .solve import solve, Solver
 except ImportError as e:
 	print('WARNING: Only MultiNest analysing capabilities enabled, no running.')
 	print('WARNING: check installed packages (import failed with: "%s")' % e)
