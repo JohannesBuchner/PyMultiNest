@@ -139,7 +139,7 @@ class PlotMarginalModes(object):
 		leveltitles = ['max', 'max/3', 'max/10', 'max/100']
 		
 		if dim2 is not None:
-			plt.contour(grid_x, grid_y, grid_z, levels, linewidths=0.5, colors='k')
+			plt.contour(grid_x, grid_y, grid_z, levels[::-1], linewidths=0.5, colors='k')
 		elif marginalization_type == 'max':
 			# for the other types, these levels are pretty useless.
 			for i in range(len(levels)):
