@@ -89,7 +89,7 @@ class Solver(object):
 		else:
 			self.outputfiles_basename = '(temporary directory)'
 		results = solve(self.LogLikelihood, self.Prior, **kwargs)
-		for k, v in results.iteritems():
+		for k, v in results.items():
 			setattr(self, k, v)
 	def __str__(self):
 		s = 'Model in "%s"' % self.outputfiles_basename
