@@ -3,8 +3,13 @@ import pymultinest
 import math, os
 if not os.path.exists("chains"): os.mkdir("chains")
 
+# This "old" api may be a little bit faster and suitable for likelihoods
+# written in C (via ctypes).
+
 # our probability functions
 # Taken from the eggbox problem.
+
+# Take a look at pymultinest_demo.py for more pythonic convenience
 
 def myprior(cube, ndim, nparams):
 	for i in range(ndim):
