@@ -19,7 +19,7 @@ libname += {
 try:
 	lib = cdll.LoadLibrary(libname)
 except OSError as e:
-	message = e.args[0]
+	message = str(e)
 	if message == '%s: cannot open shared object file: No such file or directory' % libname:
 		print()
 		print('ERROR:   Could not load MultiNest library "%s"' % libname)
