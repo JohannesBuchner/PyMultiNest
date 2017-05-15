@@ -227,7 +227,8 @@ def run(LogLikelihood,
 				maxLogLike,logZ,logZerr)
 	prev_handler = signal.signal(signal.SIGINT, interrupt_handler)
 	
-	lib.run(c_bool(importance_nested_sampling),
+	# to avoid garbage collection of these ctypes, which leads to NULLs
+	args = [c_bool(importance_nested_sampling),
 		c_bool(multimodal), c_bool(const_efficiency_mode),
 		c_int(n_live_points), c_double(evidence_tolerance), 
 		c_double(sampling_efficiency), c_int(n_dims), c_int(n_params),
@@ -239,7 +240,8 @@ def run(LogLikelihood,
 		c_bool(write_output), c_bool(init_MPI),
 		c_double(log_zero), c_int(max_iter),
 		loglike_type(loglike),dumper_type(dumper),
-		c_int(context))
+		c_int(context)]
+	lib.run(*args)
 	signal.signal(signal.SIGINT, prev_handler)
 
 def _is_newer(filea, fileb):
