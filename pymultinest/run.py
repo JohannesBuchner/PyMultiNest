@@ -228,21 +228,28 @@ def run(LogLikelihood,
 	prev_handler = signal.signal(signal.SIGINT, interrupt_handler)
 	
 	# to avoid garbage collection of these ctypes, which leads to NULLs
-	args = [c_bool(importance_nested_sampling),
-		c_bool(multimodal), c_bool(const_efficiency_mode),
-		c_int(n_live_points), c_double(evidence_tolerance), 
-		c_double(sampling_efficiency), c_int(n_dims), c_int(n_params),
-		c_int(n_clustering_params), c_int(max_modes), 
-		c_int(n_iter_before_update), c_double(mode_tolerance), 
-		create_string_buffer(outputfiles_basename.encode(),100),
-		c_int(seed), wraps,
-		c_bool(verbose), c_bool(resume),
-		c_bool(write_output), c_bool(init_MPI),
-		c_double(log_zero), c_int(max_iter),
-		loglike_type(loglike),dumper_type(dumper),
-		c_int(context)]
-	lib.run(*args)
+	# we need to make local copies here that are not thrown away
+	s = outputfiles_basename.encode()
+	sb = create_string_buffer(s, 100)
+	argtypes = [c_bool, c_bool, c_bool, 
+		c_int, c_double, c_double, 
+		c_int, c_int, c_int, c_int, 
+		c_int, c_double, 
+		lambda x: x, c_int, lambda x: x, 
+		c_bool, c_bool, c_bool, c_bool, 
+		c_double, c_int, loglike_type, dumper_type, c_int
+		]
+	args = [importance_nested_sampling, multimodal, const_efficiency_mode,
+		n_live_points, evidence_tolerance, sampling_efficiency, 
+		n_dims, n_params, n_clustering_params, max_modes, 
+		n_iter_before_update, mode_tolerance, 
+		sb, seed, wraps,
+		verbose, resume, write_output, init_MPI,
+		log_zero, max_iter, loglike, dumper, context]
+	args_converted = [converter(v) for v, converter in zip(args, argtypes)]
+	lib.run(*args_converted)
 	signal.signal(signal.SIGINT, prev_handler)
+	assert len(args) == len(argtypes) # to make sure stuff is still here
 
 def _is_newer(filea, fileb):
 	 return os.stat(filea).st_mtime > os.stat(fileb).st_mtime
