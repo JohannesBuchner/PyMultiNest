@@ -30,8 +30,8 @@ convenience.
 	dimensionality of the problem
 
 """
-def solve(LogLikelihood, Prior, **kwargs):
-	n_dims = kwargs['n_dims']
+def solve(LogLikelihood, Prior, n_dims, **kwargs):
+	kwargs['n_dims'] = n_dims
 	files_temporary = False
 	if 'outputfiles_basename' not in kwargs:
 		files_temporary = True
@@ -40,9 +40,9 @@ def solve(LogLikelihood, Prior, **kwargs):
 	outputfiles_basename = kwargs['outputfiles_basename']
 	def SafePrior(cube, ndim, nparams):
 		try:
-			a = numpy.array([cube[i] for i in range(ndim)])
+			a = numpy.array([cube[i] for i in range(n_dims)])
 			b = Prior(a)
-			for i in range(ndim):
+			for i in range(n_dims):
 				cube[i] = b[i]
 		except Exception as e:
 			import sys
@@ -51,7 +51,7 @@ def solve(LogLikelihood, Prior, **kwargs):
 	
 	def SafeLoglikelihood(cube, ndim, nparams, lnew):
 		try:
-			a = numpy.array([cube[i] for i in range(ndim)])
+			a = numpy.array([cube[i] for i in range(n_dims)])
 			l = float(LogLikelihood(a))
 			if not numpy.isfinite(l):
 				import sys
