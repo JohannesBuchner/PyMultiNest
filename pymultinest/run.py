@@ -200,16 +200,31 @@ def run(LogLikelihood,
 	except:
 		pass
 	
-	if nargs == 4:
-		def loglike(cube, ndim, nparams, lnew, nullcontext):
-			if Prior:
-				Prior(cube, ndim, nparams)
-			return LogLikelihood(cube, ndim, nparams, lnew)
+	#Test to see if LogLikelihood is a method, in which case there is 
+	# an extra argument
+	if inspect.ismethod(LogLikelihood):
+		if nargs == 5:
+			def loglike(cube, ndim, nparams, lnew, nullcontext):
+				if Prior:
+					Prior(cube, ndim, nparams)
+				return LogLikelihood(cube, ndim, nparams, lnew)
+		else:
+			def loglike(cube, ndim, nparams, lnew, nullcontext):
+				if Prior:
+					Prior(cube, ndim, nparams)
+				return LogLikelihood(cube, ndim, nparams)
 	else:
-		def loglike(cube, ndim, nparams, lnew, nullcontext):
-			if Prior:
-				Prior(cube, ndim, nparams)
-			return LogLikelihood(cube, ndim, nparams)
+		if nargs == 4:
+			def loglike(cube, ndim, nparams, lnew, nullcontext):
+				if Prior:
+					Prior(cube, ndim, nparams)
+				return LogLikelihood(cube, ndim, nparams, lnew)
+		else:
+			def loglike(cube, ndim, nparams, lnew, nullcontext):
+				if Prior:
+					Prior(cube, ndim, nparams)
+				return LogLikelihood(cube, ndim, nparams)
+		
 	
 	def dumper(nSamples,nlive,nPar,
 			   physLive,posterior,paramConstr,
