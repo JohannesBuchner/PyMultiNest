@@ -2,11 +2,12 @@ language: python
 
 os:
   - linux
-  - osx
+# sadly travis does not support python on osx
+#  - osx
 
-matrix:
-  allow_failures:
-    - os: osx
+#matrix:
+#  allow_failures:
+#    - os: osx
 
 python:
   - "2.7"
@@ -20,18 +21,12 @@ env:
 #  - MULTINEST_TAG=v2.16
 #  - MULTINEST_TAG=v2.15
 
-addons:
-  apt:
-    packages:
-      - libblas-dev
-      - liblapack-dev
-      - libatlas-dev
-      - cmake
-      - build-essential
-      - gfortran
-
 before_install:
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install gcc49 lapack blas; fi
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then 
+       brew install gcc49 lapack blas
+    else
+       sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran
+    fi
 
 install:
   # Fetch and install conda
