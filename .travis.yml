@@ -72,7 +72,7 @@ install:
 
   # Install and test
   - git clone --branch ${MULTINEST_TAG} https://github.com/JohannesBuchner/MultiNest
-  - mkdir -p MultiNest/build; cd MultiNest/build; cmake .. && make && popd
+  - mkdir -p MultiNest/build; pushd MultiNest/build; cmake .. && make && popd
   - test -e MultiNest/lib/libmultinest.so
   - python setup.py install --user
 
