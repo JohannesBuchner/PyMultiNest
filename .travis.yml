@@ -1,13 +1,15 @@
 language: python
 
 python:
-  - "2.7"
+#  - "2.7"
   - "3.5"
 
 compiler:
   - gcc
 
 install:
+  - sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran
+# 
   # Fetch and install conda
   # -----------------------
   - export CONDA_BASE="http://repo.continuum.io/miniconda/Miniconda"
