@@ -48,12 +48,7 @@ Look at the documentation available at http://johannesbuchner.github.com/PyMulti
 
 Citing PyMultiNest
 --------------------------------------------
-See the documentation at http://johannesbuchner.github.com/PyMultiNest/index.html
-
-What is PyAPEMoST?
---------------------------------------------
-Similarly to PyMultiNest, it is an access module for a Bayesian inference engine.
-However, APEMoST is a Markov Chain Monte Carlo engine. See the `documentation <http://johannesbuchner.github.com/PyMultiNest/pyapemost>`_.
+See http://johannesbuchner.github.com/PyMultiNest/index.html#citing-pymultinest
 
 What is PyCuba?
 --------------------------------------------

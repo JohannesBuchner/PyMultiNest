@@ -12,7 +12,7 @@ with open('README.rst') as file:
 
 setup(
     name = "pymultinest",
-    version = "2.3",
+    version = "3.0",
     description = "Access modules for the MultiNest, APEMoST, Cuba and PolyChord integration libraries",
     author = "Johannes Buchner",
     author_email = "johannes.buchner.acad@gmx.com",
@@ -20,8 +20,8 @@ setup(
     maintainer_email = "johannes.buchner.acad@gmx.com",
     url = "http://johannesbuchner.github.com/PyMultiNest/",
     license = "GPLv3",
-    packages = ["pymultinest", "pyapemost", "pycuba", "pypolychord"],
-    provides = ["pymultinest", "pyapemost", "pycuba", "pypolychord"],
+    packages = ["pymultinest", "pycuba", "pypolychord"],
+    provides = ["pymultinest", "pycuba", "pypolychord"],
     requires = ["ctypesGsl", "numpy (>=1.5)", "matplotlib", "scipy"],
     scripts=['multinest_marginals.py'],
     long_description=long_description,

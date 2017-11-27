@@ -13,6 +13,18 @@ The algorithms available are
 * Suave
 * Vegas
 
+Make sure you `installed everything <install>`_ correctly.
+
+PyCuba Demo Program
+----------------------
+Take a look at the demo
+
+- `Demo pycuba_demo.py <https://github.com/JohannesBuchner/PyMultiNest/blob/master/pycuba_demo.py>`_.
+
+
+PyCuba API
+------------------
+
 The return value is always a dictionary:
 
 .. code-block:: python

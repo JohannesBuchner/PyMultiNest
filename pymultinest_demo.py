@@ -23,7 +23,7 @@ prefix = "chains/3-"
 
 # run MultiNest
 result = solve(LogLikelihood=myloglike, Prior=myprior, 
-	n_dims=n_params, outputfiles_basename=prefix)
+	n_dims=n_params, outputfiles_basename=prefix, verbose=True)
 
 print()
 print('evidence: %(logZ).1f +- %(logZerr).1f' % result)

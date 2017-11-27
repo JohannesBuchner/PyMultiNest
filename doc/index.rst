@@ -10,18 +10,17 @@ About
 ------------------------------
 
 This is the documentation for two python modules for Bayesian analysis,
-parameter estimation and model selection: pymultinest and pyapemost.
+parameter estimation and model selection: pymultinest and pycuba.
 
 * :doc:`PyMultiNest <pymultinest>` interacts with **MultiNest**, a Nested Sampling Monte Carlo library.
-* :doc:`PyAPEMoST <pyapemost>` interacts with **APEMoST**, a Markov Chain Monte Carlo inference engine.
 * :doc:`PyCuba <pycuba>` interacts with **cuba**, a library for various numerical integration methods.
 
 Get PyMultiNest
 -------------------------------
 
-Follow the instructions in the :doc:`installation guide <install>`.
+* Follow the instructions in the :doc:`installation guide <install>`.
 
-You can download the source code from the `code repository <https://github.com/JohannesBuchner/PyMultiNest>`_.
+* You can download the source code from the `GitHub code repository <https://github.com/JohannesBuchner/PyMultiNest>`_.
 
 Citing PyMultiNest
 -------------------------------
@@ -44,7 +43,6 @@ Documentation:
 .. toctree::
    install
    pymultinest
-   pyapemost
    pycuba
    :maxdepth: -1
 

@@ -9,12 +9,16 @@ PyMultiNest
 .. automodule:: pymultinest
 	:members:
 
+Make sure you `installed everything <install>`_ correctly.
+
 Demo program for PyMultiNest
 --------------------------------
 
-Take a look at, and run `pymultinest_demo.py <https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo.py>`_.
+Take a look at the demos:
 
-There is also a `minimalistic demo pymultinest_demo_minimal.py <https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo_minimal.py>`_.
+- `Demo with simple functions pymultinest_demo.py <https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo.py>`_.
+- `Demo with a class pymultinest_solver_demo.py <https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_solver_demo.py>`_.
+- `The old API, which allows C/Fortran Likelihood functions pymultinest_demo.py <https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo.py>`_.
 
 Tutorial
 ------------

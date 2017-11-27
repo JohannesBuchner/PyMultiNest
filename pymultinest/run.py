@@ -246,7 +246,6 @@ def run(LogLikelihood,
 		sb, seed, wraps,
 		verbose, resume, write_output, init_MPI,
 		log_zero, max_iter, loglike, dumper, context]
-	print(args)
 	args_converted = [converter(v) for v, converter in zip(args, argtypes)]
 	lib.run(*args_converted)
 	if 'mpi' in libname:
