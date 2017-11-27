@@ -22,20 +22,22 @@ I provide an interface to MultiNest.
     :target: https://travis-ci.org/JohannesBuchner/PyMultiNest
 
 The automatic build makes sure both Python 2.7 and Python 3 are working correctly 
-with MultiNest and Cuba.
+with MultiNest and Cuba. It also tests that MultiNest works with MPI enabled.
 
 What does PyMultiNest do?
 --------------------------
 
 PyMultiNest 
 
-  * provides an easy-to-use interface to MultiNest
+  * provides an easy-to-use interface to MultiNest and Cuba integration algorithms
 
-  * provides integration with your existing scientific Python code (numpy, scipy)
+  * allows connecting with your existing scientific Python code (numpy, scipy)
 
-  * allows you to write Prior & LogLikelihood functions in Python.
-
+  * allows Prior & LogLikelihood functions written in Python.
+  
   * Easy plotting, visualization and summary of MultiNest results.
+  
+  * Running MultiNest with MPI
 
 The plotting can also be run on existing MultiNest output, and when not using PyMultiNest for running MultiNest.
 
