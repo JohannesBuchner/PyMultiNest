@@ -19,8 +19,6 @@ compiler:
 env:
   - MULTINEST_TAG=v3.10 WITHMPI=yes
   - MULTINEST_TAG=v3.10 WITHMPI=no
-#  - MULTINEST_TAG=v2.16
-#  - MULTINEST_TAG=v2.15
 
 #before_install:
 #  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then 
@@ -96,6 +94,7 @@ script:
       python pymultinest_demo.py;
     fi
   - python multinest_marginals.py chains/3-
+  - python pycuba_demo.py
 
 after_success: coveralls
 

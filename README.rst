@@ -21,6 +21,9 @@ I provide an interface to MultiNest.
 .. image:: https://travis-ci.org/JohannesBuchner/PyMultiNest.svg?branch=master
     :target: https://travis-ci.org/JohannesBuchner/PyMultiNest
 
+The automatic build makes sure both Python 2.7 and Python 3 are working correctly 
+with MultiNest and Cuba.
+
 What does PyMultiNest do?
 --------------------------
 
