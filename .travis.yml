@@ -88,12 +88,12 @@ install:
 script:
   - python -c 'import pymultinest'
   - python -c 'import pycuba'
-  - coverage run setup.py test
+  - if [[ "$WITHMPI" == "no" ]]; then coverage run setup.py test; fi
   - rm -rf chains/
   - if [[ "$WITHMPI" == "yes" ]]; then 
-      mpiexec -np 4 python pymultinest_demo.py
+      mpiexec -np 4 python pymultinest_demo.py;
     else
-      python pymultinest_demo.py
+      python pymultinest_demo.py;
     fi
   - python multinest_marginals.py chains/3-
 
