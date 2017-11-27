@@ -11,13 +11,13 @@ os:
 
 python:
   - "2.7"
-  - "3.6"
+#  - "3.6"
 
 compiler:
   - gcc
 
 env:
-  - MULTINEST_TAG=v2.17
+  - MULTINEST_TAG=v3.10
 #  - MULTINEST_TAG=v2.16
 #  - MULTINEST_TAG=v2.15
 
