@@ -21,17 +21,16 @@ env:
 #  - MULTINEST_TAG=v2.16
 #  - MULTINEST_TAG=v2.15
 
-before_install:
-  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then 
-       brew install gcc49 lapack blas
-    else
-       sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran
-    fi
+#before_install:
+#  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then 
+#       brew install gcc49 lapack blas
+#    fi
 
 install:
   # Fetch and install conda
   # -----------------------
-  - if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "gcc" ]; then export CC=gcc-4.8; fi
+#  - if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "gcc" ]; then export CC=gcc-4.8; fi
+   - sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran
   - export CONDA_BASE="http://repo.continuum.io/miniconda/Miniconda"
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
       if [[ "${TRAVIS_PYTHON_VERSION}" == 2* ]]; then
