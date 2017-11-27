@@ -249,6 +249,11 @@ def run(LogLikelihood,
 	print(args)
 	args_converted = [converter(v) for v, converter in zip(args, argtypes)]
 	lib.run(*args_converted)
+	if 'mpi' in libname:
+		# wait for all processes to return
+		# Otherwise rank=0 is still writing output files
+		# while the others already try to read them.
+		MPI.COMM_WORLD.Barrier()
 	signal.signal(signal.SIGINT, prev_handler)
 	assert len(args) == len(argtypes) # to make sure stuff is still here
 
