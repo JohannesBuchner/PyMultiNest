@@ -71,13 +71,19 @@ install:
   - conda info -a
 
   # Install and test
-  - git clone https://github.com/JohannesBuchner/MultiNest.git
-  - pushd MultiNest/build && git checkout ${MULTINEST_TAG} && cmake .. && make && popd
+  - git clone --branch ${MULTINEST_TAG} https://github.com/JohannesBuchner/MultiNest.git
+  - pushd MultiNest/build
+  - cmake ..
+  - make
+  - popd
   - test -e MultiNest/lib/libmultinest.so
   - python setup.py install --user
 
   - git clone https://github.com/JohannesBuchner/cuba.git
-  - pushd cuba && ./configure && ./makesharedlib.sh && popd
+  - pushd cuba
+  - ./configure
+  - ./makesharedlib.sh
+  - popd
   - export LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH} 
 
 script:
