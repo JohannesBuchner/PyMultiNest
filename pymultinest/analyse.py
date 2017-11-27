@@ -1,3 +1,29 @@
+"""
+Analyzer and Parser for MultiNest output files
+===============================================
+
+Use like so::
+	
+	# create analyzer object
+	a = Analyzer(n_params, outputfiles_basename = "chains/1-")
+	
+	# get a dictionary containing information about
+	#   the logZ and its errors
+	#   the individual modes and their parameters
+	#   quantiles of the parameter posteriors
+	stats = a.get_stats()
+	
+	# get the best fit (highest likelihood) point
+	bestfit_params = a.get_best_fit()
+	
+	# iterate through the "posterior chain"
+	for params in a.get_equal_weighted_posterior():
+		print params
+
+
+"""
+
+
 from __future__ import absolute_import, unicode_literals, print_function
 import numpy
 from io import StringIO
@@ -17,7 +43,7 @@ class Analyzer(object):
 		in a structured way.
 		
 	"""
-	def __init__(self, n_params, outputfiles_basename = "chains/1-"):
+	def __init__(self, n_params, outputfiles_basename = "chains/1-", verbose=True):
 		self.outputfiles_basename = outputfiles_basename
 		self.n_params = n_params
 		"""
@@ -28,7 +54,8 @@ class Analyzer(object):
 		likelihood & normalized by the evidence.
 		"""
 		self.data_file = "%s.txt" % self.outputfiles_basename
-		print(('  analysing data from %s' % self.data_file))
+		if verbose:
+			print(('  analysing data from %s' % self.data_file))
 
 		"""[root]post_separate.dat
 		This file is only created if mmodal is set to T. Posterior 
