@@ -23,15 +23,11 @@ env:
 addons:
   apt:
     packages:
-      - libblas
       - libblas-dev
-      - liblapack
       - liblapack-dev
-      - libatlas-base
       - libatlas-dev
       - cmake
       - build-essential
-      - git
       - gfortran
 
 before_install:
