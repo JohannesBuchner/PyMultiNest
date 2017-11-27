@@ -18,10 +18,12 @@ def myloglike(cube):
 # number of dimensions our problem has
 parameters = ["x", "y"]
 n_params = len(parameters)
+# name of the output files
+prefix = "chains/3-"
 
 # run MultiNest
 result = solve(LogLikelihood=myloglike, Prior=myprior, 
-	n_dims=n_params, outputfiles_basename="chains/3-")
+	n_dims=n_params, outputfiles_basename=prefix)
 
 print()
 print('evidence: %(logZ).1f +- %(logZerr).1f' % result)
@@ -34,6 +36,6 @@ for name, col in zip(parameters, result['samples'].transpose()):
 # $ python multinest_marginals.py chains/3-
 # For that, we need to store the parameter names:
 import json
-with open('%sparams.json' % a.outputfiles_basename, 'w') as f:
+with open('%sparams.json' % prefix, 'w') as f:
 	json.dump(parameters, f, indent=2)
 
