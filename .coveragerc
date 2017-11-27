@@ -1,0 +1,23 @@
+#
+# .coveragerc to control coverage.py
+#
+
+[run]
+branch = True
+omit =
+    test*
+
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if __name__ == .__main__.
+omit =
+    .eggs/*
+    /home/travis/.local/lib/*
+    test*.py
+    setup.py
+    __init__.py
+    
+

@@ -1,0 +1,60 @@
+language: python
+
+python:
+  - "2.7"
+  - "3.5"
+
+compiler:
+  - gcc
+
+install:
+  # Fetch and install conda
+  # -----------------------
+  - export CONDA_BASE="http://repo.continuum.io/miniconda/Miniconda"
+  - if [[ "${TRAVIS_PYTHON_VERSION}" == 2* ]]; then
+      wget ${CONDA_BASE}2-latest-Linux-x86_64.sh -O miniconda.sh;
+    else
+      wget ${CONDA_BASE}3-latest-Linux-x86_64.sh -O miniconda.sh;
+    fi
+  - bash miniconda.sh -b -p ${HOME}/miniconda
+  - export PATH="${HOME}/miniconda/bin:${PATH}"
+  - hash -r
+
+  # Create the testing environment
+  # ------------------------------
+  - conda config --set always_yes yes
+  - conda config --set changeps1 no
+  - conda config --set show_channel_urls true
+  - conda config --add channels conda-forge
+  - conda update --quiet conda
+  - ENV_NAME="test-environment"
+  - conda create --quiet -n ${ENV_NAME} python=${TRAVIS_PYTHON_VERSION}
+  - source activate ${ENV_NAME}
+
+  # Customise the testing environment
+  # ---------------------------------
+  - conda install --quiet --file conda-requirements.txt
+  - pip install --user coveralls
+  - pip install --user codecov
+
+  # Summerise environment
+  # ---------------------
+  - conda list
+  - conda info -a
+
+  # Install and test
+  - git clone https://github.com/JohannesBuchner/MultiNest.git
+  - pushd MultiNest/build && cmake .. && make && popd
+  - test -e MultiNest/lib/libmultinest.so
+  - python setup.py install --user
+
+  - git clone https://github.com/JohannesBuchner/cuba.git
+  - pushd cuba && ./configure && ./makeshared.sh && popd
+
+script:
+  - LD_LIBRARY_PATH=MultiNest/lib/:${LD_LIBRARY_PATH} python -c 'import pymultinest'
+  - LD_LIBRARY_PATH=MultiNest/lib/:${LD_LIBRARY_PATH} coverage run setup.py test
+
+after_success: coveralls
+
+

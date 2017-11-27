@@ -25,5 +25,7 @@ setup(
     requires = ["ctypesGsl", "numpy (>=1.5)", "matplotlib", "scipy"],
     scripts=['multinest_marginals.py'],
     long_description=long_description,
+    setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
 )
 
