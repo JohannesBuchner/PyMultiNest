@@ -1,33 +1,31 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pymultinest.analyse &mdash; pymultinest 0.4 documentation</title>
-    
+    <title>pymultinest.analyse &#8212; pymultinest 2.5 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4',
+        VERSION:     '2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="pymultinest 0.4 documentation" href="../../index.html" />
-    <link rel="up" title="Module code" href="../index.html" /> 
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
   </head>
   <body>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -36,20 +34,20 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pymultinest 0.4 documentation</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">pymultinest 2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for pymultinest.analyse</h1><div class="highlight"><pre>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
 <span class="k">def</span> <span class="nf">loadtxt2d</span><span class="p">(</span><span class="n">intext</span><span class="p">):</span>
@@ -66,7 +64,7 @@
 <span class="sd">		in a structured way.</span>
 <span class="sd">		</span>
 <span class="sd">	&quot;&quot;&quot;</span>
-	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_params</span><span class="p">,</span> <span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s">&quot;chains/1-&quot;</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_params</span><span class="p">,</span> <span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s2">&quot;chains/1-&quot;</span><span class="p">):</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="n">outputfiles_basename</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">n_params</span> <span class="o">=</span> <span class="n">n_params</span>
 		<span class="sd">&quot;&quot;&quot;</span>
@@ -76,15 +74,15 @@
 <span class="sd">		probability is the sample prior mass multiplied by its </span>
 <span class="sd">		likelihood &amp; normalized by the evidence.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">data_file</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.txt&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span>
-		<span class="k">print</span><span class="p">((</span><span class="s">&#39;  analysing data from </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_file</span><span class="p">))</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">data_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.txt&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span>
+		<span class="nb">print</span><span class="p">((</span><span class="s1">&#39;  analysing data from </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_file</span><span class="p">))</span>
 
 		<span class="sd">&quot;&quot;&quot;[root]post_separate.dat</span>
 <span class="sd">		This file is only created if mmodal is set to T. Posterior </span>
 <span class="sd">		samples for modes with local log-evidence value</span>
 <span class="sd">		greater than nullZ, separated by 2 blank lines. Format is the </span>
 <span class="sd">		same as [root].txt file.&quot;&quot;&quot;</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">post_file</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">post_seperate.dat&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">post_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">post_separate.dat&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span>
 
 		<span class="sd">&quot;&quot;&quot;[root]stats.dat</span>
 <span class="sd">		Contains the global log-evidence, its error &amp; local log-evidence </span>
@@ -92,50 +90,50 @@
 <span class="sd">		deviations as well as the  best fit &amp; MAP parameters of each of </span>
 <span class="sd">		the mode found with local log-evidence &gt; nullZ.</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">stats_file</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">stats.dat&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">stats_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">stats.dat&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span>
 
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		[root]post_equal_weights.dat</span>
 <span class="sd">		Contains the equally weighted posterior samples</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">equal_weighted_file</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">post_equal_weights.dat&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">equal_weighted_file</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%s</span><span class="s2">post_equal_weights.dat&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span>
 	
 <div class="viewcode-block" id="Analyzer.get_data"><a class="viewcode-back" href="../../pymultinest_analyse.html#pymultinest.analyse.Analyzer.get_data">[docs]</a>	<span class="k">def</span> <span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">			fetches self.data_file</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;data&#39;</span><span class="p">):</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_file</span><span class="p">)</span>
 		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span></div>
 <div class="viewcode-block" id="Analyzer.get_equal_weighted_posterior"><a class="viewcode-back" href="../../pymultinest_analyse.html#pymultinest.analyse.Analyzer.get_equal_weighted_posterior">[docs]</a>	<span class="k">def</span> <span class="nf">get_equal_weighted_posterior</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">			fetches self.data_file</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;equal_weighted_posterior&#39;</span><span class="p">):</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;equal_weighted_posterior&#39;</span><span class="p">):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">equal_weighted_posterior</span> <span class="o">=</span> <span class="n">loadtxt2d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">equal_weighted_file</span><span class="p">)</span>
-		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equal_weighted_posterior</span>
-	</div>
+		<span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equal_weighted_posterior</span></div>
+	
 	<span class="k">def</span> <span class="nf">_read_error_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
-		<span class="c">#print(&#39;_read_error_line -&gt; line&gt;&#39;, l)</span>
-		<span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;   &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-		<span class="c">#print(&#39;_read_error_line -&gt; name&gt;&#39;, name)</span>
-		<span class="c">#print(&#39;_read_error_line -&gt; values&gt;&#39;, values)</span>
-		<span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;: &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-		<span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;: &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-		<span class="n">v</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; +/- &quot;</span><span class="p">)</span>
+		<span class="c1">#print(&#39;_read_error_line -&gt; line&gt;&#39;, l)</span>
+		<span class="n">name</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;   &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+		<span class="c1">#print(&#39;_read_error_line -&gt; name&gt;&#39;, name)</span>
+		<span class="c1">#print(&#39;_read_error_line -&gt; values&gt;&#39;, values)</span>
+		<span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+		<span class="n">values</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;: &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+		<span class="n">v</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; +/- &quot;</span><span class="p">)</span>
 		<span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 	<span class="k">def</span> <span class="nf">_read_error_into_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
 		<span class="n">name</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_error_line</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
 		<span class="n">d</span><span class="p">[</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">v</span>
-		<span class="n">d</span><span class="p">[</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> error&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">error</span>
-	<span class="k">def</span> <span class="nf">_read_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
-		<span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-			<span class="n">title</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+		<span class="n">d</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> error&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">error</span>
+	<span class="k">def</span> <span class="nf">_read_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">txt</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">title</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="n">txt</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
 			<span class="n">table</span> <span class="o">=</span> <span class="n">txt</span>
-		<span class="n">header</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+		<span class="n">header</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 		<span class="n">data</span> <span class="o">=</span> <span class="n">loadtxt2d</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
-		<span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">d</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 			<span class="n">d</span><span class="p">[</span><span class="n">title</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">data</span>
 		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 			<span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
@@ -174,22 +172,22 @@
 			<span class="n">q10</span> <span class="o">=</span> <span class="n">bi</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
 			
 			<span class="n">stats</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
-				<span class="s">&#39;median&#39;</span><span class="p">:</span> <span class="n">median</span><span class="p">,</span>
-				<span class="s">&#39;sigma&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">high1</span> <span class="o">-</span> <span class="n">low1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span>
-				<span class="s">&#39;1sigma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">low1</span><span class="p">,</span> <span class="n">high1</span><span class="p">],</span>
-				<span class="s">&#39;2sigma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">low2</span><span class="p">,</span> <span class="n">high2</span><span class="p">],</span>
-				<span class="s">&#39;3sigma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">low3</span><span class="p">,</span> <span class="n">high3</span><span class="p">],</span>
-				<span class="s">&#39;5sigma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">low5</span><span class="p">,</span> <span class="n">high5</span><span class="p">],</span>
-				<span class="s">&#39;q75%&#39;</span><span class="p">:</span> <span class="n">q1</span><span class="p">,</span>
-				<span class="s">&#39;q25%&#39;</span><span class="p">:</span> <span class="n">q3</span><span class="p">,</span>
-				<span class="s">&#39;q99%&#39;</span><span class="p">:</span> <span class="n">q99</span><span class="p">,</span>
-				<span class="s">&#39;q01%&#39;</span><span class="p">:</span> <span class="n">q01</span><span class="p">,</span>
-				<span class="s">&#39;q90%&#39;</span><span class="p">:</span> <span class="n">q99</span><span class="p">,</span>
-				<span class="s">&#39;q10%&#39;</span><span class="p">:</span> <span class="n">q10</span><span class="p">,</span>
+				<span class="s1">&#39;median&#39;</span><span class="p">:</span> <span class="n">median</span><span class="p">,</span>
+				<span class="s1">&#39;sigma&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">high1</span> <span class="o">-</span> <span class="n">low1</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">,</span>
+				<span class="s1">&#39;1sigma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">low1</span><span class="p">,</span> <span class="n">high1</span><span class="p">],</span>
+				<span class="s1">&#39;2sigma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">low2</span><span class="p">,</span> <span class="n">high2</span><span class="p">],</span>
+				<span class="s1">&#39;3sigma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">low3</span><span class="p">,</span> <span class="n">high3</span><span class="p">],</span>
+				<span class="s1">&#39;5sigma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">low5</span><span class="p">,</span> <span class="n">high5</span><span class="p">],</span>
+				<span class="s1">&#39;q75%&#39;</span><span class="p">:</span> <span class="n">q1</span><span class="p">,</span>
+				<span class="s1">&#39;q25%&#39;</span><span class="p">:</span> <span class="n">q3</span><span class="p">,</span>
+				<span class="s1">&#39;q99%&#39;</span><span class="p">:</span> <span class="n">q99</span><span class="p">,</span>
+				<span class="s1">&#39;q01%&#39;</span><span class="p">:</span> <span class="n">q01</span><span class="p">,</span>
+				<span class="s1">&#39;q90%&#39;</span><span class="p">:</span> <span class="n">q90</span><span class="p">,</span>
+				<span class="s1">&#39;q10%&#39;</span><span class="p">:</span> <span class="n">q10</span><span class="p">,</span>
 			<span class="p">})</span>
 		
 		<span class="n">mode_stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mode_stats</span><span class="p">()</span>
-		<span class="n">mode_stats</span><span class="p">[</span><span class="s">&#39;marginals&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span> 
+		<span class="n">mode_stats</span><span class="p">[</span><span class="s1">&#39;marginals&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span> 
 		<span class="k">return</span> <span class="n">mode_stats</span>
 	
 <div class="viewcode-block" id="Analyzer.get_mode_stats"><a class="viewcode-back" href="../../pymultinest_analyse.html#pymultinest.analyse.Analyzer.get_mode_stats">[docs]</a>	<span class="k">def</span> <span class="nf">get_mode_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -197,100 +195,99 @@
 <span class="sd">			information about the modes found:</span>
 <span class="sd">			mean, sigma, maximum a posterior in each dimension</span>
 <span class="sd">		&quot;&quot;&quot;</span>
-		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stats_file</span><span class="p">)</span> <span class="k">as</span> <span class="nb">file</span><span class="p">:</span>
-			<span class="n">lines</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-		<span class="c"># Global Evidence</span>
-		<span class="n">stats</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;modes&#39;</span><span class="p">:[]}</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stats_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+			<span class="n">lines</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+		<span class="c1"># Global Evidence</span>
+		<span class="n">stats</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;modes&#39;</span><span class="p">:[]}</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_read_error_into_dict</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">stats</span><span class="p">)</span>
 
-		<span class="k">if</span> <span class="s">&#39;Nested Sampling Global Log-Evidence&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
-			<span class="n">stats</span><span class="p">[</span><span class="s">&#39;global evidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s">&#39;Nested Sampling Global Log-Evidence&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
-			<span class="n">stats</span><span class="p">[</span><span class="s">&#39;global evidence error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s">&#39;Nested Sampling Global Log-Evidence error&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+		<span class="k">if</span> <span class="s1">&#39;Nested Sampling Global Log-Evidence&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="n">stats</span><span class="p">:</span>
+			<span class="n">stats</span><span class="p">[</span><span class="s1">&#39;global evidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;Nested Sampling Global Log-Evidence&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+			<span class="n">stats</span><span class="p">[</span><span class="s1">&#39;global evidence error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;Nested Sampling Global Log-Evidence error&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
 		
-		<span class="k">if</span> <span class="s">&#39;Nested Importance Sampling Global Log-Evidence&#39;</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-			<span class="c"># INS global evidence</span>
+		<span class="k">if</span> <span class="s1">&#39;Nested Importance Sampling Global Log-Evidence&#39;</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+			<span class="c1"># INS global evidence</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">_read_error_into_dict</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">stats</span><span class="p">)</span>
-			<span class="n">Z</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s">&#39;Nested Importance Sampling Global Log-Evidence&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
-			<span class="n">Zerr</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s">&#39;Nested Importance Sampling Global Log-Evidence error&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
-			<span class="c"># use INS results in default name</span>
-			<span class="n">stats</span><span class="p">[</span><span class="s">&#39;global evidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Z</span>
-			<span class="n">stats</span><span class="p">[</span><span class="s">&#39;global evidence error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Zerr</span>
+			<span class="n">Z</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;Nested Importance Sampling Global Log-Evidence&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+			<span class="n">Zerr</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s1">&#39;Nested Importance Sampling Global Log-Evidence error&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span>
+			<span class="c1"># use INS results in default name</span>
+			<span class="n">stats</span><span class="p">[</span><span class="s1">&#39;global evidence&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Z</span>
+			<span class="n">stats</span><span class="p">[</span><span class="s1">&#39;global evidence error&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Zerr</span>
 			
-			<span class="n">text</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+			<span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
 			
 			<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-			<span class="n">modelines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">)</span>
+			<span class="n">modelines</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
 			<span class="n">mode</span> <span class="o">=</span> <span class="p">{</span>
-				<span class="s">&#39;index&#39;</span><span class="p">:</span><span class="n">i</span>
+				<span class="s1">&#39;index&#39;</span><span class="p">:</span><span class="n">i</span>
 			<span class="p">}</span>
-			<span class="c"># no preamble; construct it</span>
-			<span class="c"># Strictly local evidence</span>
-			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;Strictly Local Log-Evidence&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Z</span>
-			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;Strictly Local Log-Evidence error&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Zerr</span>
-			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;Local Log-Evidence&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Z</span>
-			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;Local Log-Evidence error&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Zerr</span>
-			<span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Parameters&quot;</span><span class="p">)</span>
-			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;maximum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-			<span class="n">mode</span><span class="p">[</span><span class="s">&#39;maximum a posterior&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">2</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-			<span class="n">stats</span><span class="p">[</span><span class="s">&#39;modes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+			<span class="c1"># no preamble; construct it</span>
+			<span class="c1"># Strictly local evidence</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s1">&#39;Strictly Local Log-Evidence&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Z</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s1">&#39;Strictly Local Log-Evidence error&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Zerr</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s1">&#39;Local Log-Evidence&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Z</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s1">&#39;Local Log-Evidence error&#39;</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">Zerr</span>
+			<span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Parameters&quot;</span><span class="p">)</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s1">&#39;maximum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+			<span class="n">mode</span><span class="p">[</span><span class="s1">&#39;maximum a posterior&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">2</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+			<span class="n">stats</span><span class="p">[</span><span class="s1">&#39;modes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="n">text</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-			<span class="c"># without INS:</span>
-			<span class="n">parts</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n\n\n</span><span class="s">&quot;</span><span class="p">)</span>
+			<span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+			<span class="c1"># without INS:</span>
+			<span class="n">parts</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
 			<span class="k">del</span> <span class="n">parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 		
 			<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
 			<span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">:</span>
-				<span class="n">modelines</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">)</span>
+				<span class="n">modelines</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
 				<span class="n">mode</span> <span class="o">=</span> <span class="p">{</span>
-					<span class="s">&#39;index&#39;</span><span class="p">:</span><span class="n">i</span>
+					<span class="s1">&#39;index&#39;</span><span class="p">:</span><span class="n">i</span>
 				<span class="p">}</span>
 				<span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
-				<span class="n">modelines1</span> <span class="o">=</span> <span class="n">modelines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
-				<span class="c"># Strictly local evidence</span>
+				<span class="n">modelines1</span> <span class="o">=</span> <span class="n">modelines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+				<span class="c1"># Strictly local evidence</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_read_error_into_dict</span><span class="p">(</span><span class="n">modelines1</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mode</span><span class="p">)</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">_read_error_into_dict</span><span class="p">(</span><span class="n">modelines1</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">mode</span><span class="p">)</span>
-				<span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s">&quot;Parameters&quot;</span><span class="p">)</span>
-				<span class="n">mode</span><span class="p">[</span><span class="s">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-				<span class="n">mode</span><span class="p">[</span><span class="s">&#39;sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-				<span class="n">mode</span><span class="p">[</span><span class="s">&#39;maximum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">2</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-				<span class="n">mode</span><span class="p">[</span><span class="s">&#39;maximum a posterior&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">3</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-				<span class="n">stats</span><span class="p">[</span><span class="s">&#39;modes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
-		<span class="k">return</span> <span class="n">stats</span>
-</div>
+				<span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Parameters&quot;</span><span class="p">)</span>
+				<span class="n">mode</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+				<span class="n">mode</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+				<span class="n">mode</span><span class="p">[</span><span class="s1">&#39;maximum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">2</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+				<span class="n">mode</span><span class="p">[</span><span class="s1">&#39;maximum a posterior&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_table</span><span class="p">(</span><span class="n">modelines</span><span class="p">[</span><span class="mi">3</span><span class="p">])[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+				<span class="n">stats</span><span class="p">[</span><span class="s1">&#39;modes&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
+		<span class="k">return</span> <span class="n">stats</span></div>
+
 	<span class="k">def</span> <span class="nf">get_best_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_data</span><span class="p">()</span>
 		<span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
 		<span class="n">lastrow</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-		<span class="k">return</span> <span class="p">{</span><span class="s">&#39;log_likelihood&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">lastrow</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
-			<span class="s">&#39;parameters&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">lastrow</span><span class="p">[</span><span class="mi">2</span><span class="p">:])}</span>
-</pre></div></div>
+		<span class="k">return</span> <span class="p">{</span><span class="s1">&#39;log_likelihood&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">lastrow</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+			<span class="s1">&#39;parameters&#39;</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">lastrow</span><span class="p">[</span><span class="mi">2</span><span class="p">:])}</span></div>
+
+
+</pre></div>
 
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -299,13 +296,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">pymultinest 0.4 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">pymultinest 2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2013, Johannes Buchner.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013-2017, Johannes Buchner.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

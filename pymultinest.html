@@ -1,34 +1,33 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>PyMultiNest &mdash; pymultinest 0.4 documentation</title>
-    
+    <title>PyMultiNest &#8212; pymultinest 2.5 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4',
+        VERSION:     '2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pymultinest 0.4 documentation" href="index.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Running the sampler" href="pymultinest_run.html" />
-    <link rel="prev" title="Installing PyMultiNest and PyAPEMoST" href="install.html" /> 
+    <link rel="prev" title="Installing PyMultiNest and PyCuba" href="install.html" /> 
   </head>
   <body>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,16 +40,16 @@
           <a href="pymultinest_run.html" title="Running the sampler"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="install.html" title="Installing PyMultiNest and PyAPEMoST"
+          <a href="install.html" title="Installing PyMultiNest and PyCuba"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pymultinest 0.4 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.5 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="pymultinest">
 <h1>PyMultiNest<a class="headerlink" href="#pymultinest" title="Permalink to this headline">¶</a></h1>
@@ -66,17 +65,22 @@
 and in your LD_LIBRARY_PATH.</p>
 <blockquote>
 <div><p>Otherwise you will get an error like this:</p>
-<div class="highlight-python"><div class="highlight"><pre>&gt; OSError: libmultinest.so: cannot open shared object file: No such file or directory
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="ne">OSError</span><span class="p">:</span> <span class="n">libmultinest</span><span class="o">.</span><span class="n">so</span><span class="p">:</span> <span class="n">cannot</span> <span class="nb">open</span> <span class="n">shared</span> <span class="nb">object</span> <span class="n">file</span><span class="p">:</span> <span class="n">No</span> <span class="n">such</span> <span class="n">file</span> <span class="ow">or</span> <span class="n">directory</span>
 </pre></div>
 </div>
 </div></blockquote>
 <p>Common parameters:</p>
 <p>outputfiles_basename is the prefix used for the output files of MultiNest 
 (default chains/1-).</p>
+<p>Make sure you <a class="reference external" href="install">installed everything</a> correctly.</p>
 <div class="section" id="demo-program-for-pymultinest">
 <h2>Demo program for PyMultiNest<a class="headerlink" href="#demo-program-for-pymultinest" title="Permalink to this headline">¶</a></h2>
-<p>Take a look at, and run <a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo.py">pymultinest_demo.py</a>.</p>
-<p>There is also a <a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo_minimal.py">minimalistic demo pymultinest_demo_minimal.py</a>.</p>
+<p>Take a look at the demos:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo.py">Demo with simple functions pymultinest_demo.py</a>.</li>
+<li><a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_solver_demo.py">Demo with a class pymultinest_solver_demo.py</a>.</li>
+<li><a class="reference external" href="https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo.py">The old API, which allows C/Fortran Likelihood functions pymultinest_demo.py</a>.</li>
+</ul>
 </div>
 <div class="section" id="tutorial">
 <h2>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h2>
@@ -99,11 +103,11 @@ to <a class="reference external" href="https://github.com/JohannesBuchner/BXA">X
 You can obtain it via your package manager
 or via the python installer (pip or the older easy_install).</p>
 <p>Once installed, run your python program with:</p>
-<div class="highlight-python"><div class="highlight"><pre>mpiexec -n 4 python myprogram.py
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mpiexec</span> <span class="o">-</span><span class="n">n</span> <span class="mi">4</span> <span class="n">python</span> <span class="n">myprogram</span><span class="o">.</span><span class="n">py</span>
 </pre></div>
 </div>
 <p>PyMultiNest detects that it is run with multiple cores and will load
-the &#8220;libmultinest_mpi&#8221; library instead. No further modifications are necessary.</p>
+the “libmultinest_mpi” library instead. No further modifications are necessary.</p>
 </div>
 </div>
 
@@ -111,7 +115,7 @@ the &#8220;libmultinest_mpi&#8221; library instead. No further modifications are
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -126,33 +130,32 @@ the &#8220;libmultinest_mpi&#8221; library instead. No further modifications are
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="install.html"
-                        title="previous chapter">Installing PyMultiNest and PyAPEMoST</a></p>
+                        title="previous chapter">Installing PyMultiNest and PyCuba</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="pymultinest_run.html"
                         title="next chapter">Running the sampler</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/pymultinest.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pymultinest.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -165,14 +168,14 @@ the &#8220;libmultinest_mpi&#8221; library instead. No further modifications are
           <a href="pymultinest_run.html" title="Running the sampler"
              >next</a> |</li>
         <li class="right" >
-          <a href="install.html" title="Installing PyMultiNest and PyAPEMoST"
+          <a href="install.html" title="Installing PyMultiNest and PyCuba"
              >previous</a> |</li>
-        <li><a href="index.html">pymultinest 0.4 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.5 documentation</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2013, Johannes Buchner.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013-2017, Johannes Buchner.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

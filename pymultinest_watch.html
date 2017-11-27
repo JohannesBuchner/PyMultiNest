@@ -1,35 +1,33 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Watching the progress &mdash; pymultinest 0.4 documentation</title>
-    
+    <title>Watching the progress &#8212; pymultinest 2.5 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4',
+        VERSION:     '2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="pymultinest 0.4 documentation" href="index.html" />
-    <link rel="up" title="PyMultiNest" href="pymultinest.html" />
-    <link rel="next" title="PyAPEMoST" href="pyapemost.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="PyCuba" href="pycuba.html" />
     <link rel="prev" title="Analysing the output" href="pymultinest_analyse.html" /> 
   </head>
   <body>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -39,42 +37,43 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pyapemost.html" title="PyAPEMoST"
+          <a href="pycuba.html" title="PyCuba"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="pymultinest_analyse.html" title="Analysing the output"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">pymultinest 0.4 documentation</a> &raquo;</li>
-          <li><a href="pymultinest.html" accesskey="U">PyMultiNest</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="pymultinest.html" accesskey="U">PyMultiNest</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
-  <div class="section" id="module-pymultinest.watch">
-<span id="watching-the-progress"></span><h1>Watching the progress<a class="headerlink" href="#module-pymultinest.watch" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+  <div class="section" id="watching-the-progress">
+<h1>Watching the progress<a class="headerlink" href="#watching-the-progress" title="Permalink to this headline">¶</a></h1>
+<p>This module is not necessary for most users.</p>
+<span class="target" id="module-pymultinest.watch"></span><dl class="class">
 <dt id="pymultinest.watch.ProgressPlotter">
-<em class="property">class </em><tt class="descclassname">pymultinest.watch.</tt><tt class="descname">ProgressPlotter</tt><big>(</big><em>n_params</em>, <em>interval_ms=200</em>, <em>outputfiles_basename=u'chains/1-'</em><big>)</big><a class="reference internal" href="_modules/pymultinest/watch.html#ProgressPlotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.watch.ProgressPlotter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pymultinest.watch.</code><code class="descname">ProgressPlotter</code><span class="sig-paren">(</span><em>n_params</em>, <em>interval_ms=200</em>, <em>outputfiles_basename=u'chains/1-'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/watch.html#ProgressPlotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.watch.ProgressPlotter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Continuously creates plots (pdfs) of the live points.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="pymultinest.watch.ProgressPrinter">
-<em class="property">class </em><tt class="descclassname">pymultinest.watch.</tt><tt class="descname">ProgressPrinter</tt><big>(</big><em>n_params</em>, <em>interval_ms=200</em>, <em>outputfiles_basename=u'chains/1-'</em><big>)</big><a class="reference internal" href="_modules/pymultinest/watch.html#ProgressPrinter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.watch.ProgressPrinter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pymultinest.watch.</code><code class="descname">ProgressPrinter</code><span class="sig-paren">(</span><em>n_params</em>, <em>interval_ms=200</em>, <em>outputfiles_basename=u'chains/1-'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/watch.html#ProgressPrinter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.watch.ProgressPrinter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Continuously writes out the number of live and rejected points.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="pymultinest.watch.ProgressWatcher">
-<em class="property">class </em><tt class="descclassname">pymultinest.watch.</tt><tt class="descname">ProgressWatcher</tt><big>(</big><em>n_params</em>, <em>interval_ms=200</em>, <em>outputfiles_basename=u'chains/1-'</em><big>)</big><a class="reference internal" href="_modules/pymultinest/watch.html#ProgressWatcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.watch.ProgressWatcher" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pymultinest.watch.</code><code class="descname">ProgressWatcher</code><span class="sig-paren">(</span><em>n_params</em>, <em>interval_ms=200</em>, <em>outputfiles_basename=u'chains/1-'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/watch.html#ProgressWatcher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.watch.ProgressWatcher" title="Permalink to this definition">¶</a></dt>
 <dd><p>Abstract class for watching the progress of MultiNest.</p>
 <dl class="attribute">
 <dt id="pymultinest.watch.ProgressWatcher.interval_ms">
-<tt class="descname">interval_ms</tt><em class="property"> = None</em><a class="headerlink" href="#pymultinest.watch.ProgressWatcher.interval_ms" title="Permalink to this definition">¶</a></dt>
+<code class="descname">interval_ms</code><em class="property"> = None</em><a class="headerlink" href="#pymultinest.watch.ProgressWatcher.interval_ms" title="Permalink to this definition">¶</a></dt>
 <dd><p>This file contains the current set of live points. It has nPar+2
 columns. The first nPar columns are the ndim
 parameter values along with the (nPar-ndim)  additional
@@ -86,7 +85,7 @@ the last column is the node no. (used for clustering).</p>
 
 <dl class="attribute">
 <dt id="pymultinest.watch.ProgressWatcher.live">
-<tt class="descname">live</tt><em class="property"> = None</em><a class="headerlink" href="#pymultinest.watch.ProgressWatcher.live" title="Permalink to this definition">¶</a></dt>
+<code class="descname">live</code><em class="property"> = None</em><a class="headerlink" href="#pymultinest.watch.ProgressWatcher.live" title="Permalink to this definition">¶</a></dt>
 <dd><p>This file contains the set of rejected points. It has nPar+3
 columns. The first nPar columns are the ndim
 parameter values along with the (nPar-ndim)  additional
@@ -105,37 +104,36 @@ node no. (used for clustering).</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="pymultinest_analyse.html"
                         title="previous chapter">Analysing the output</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="pyapemost.html"
-                        title="next chapter">PyAPEMoST</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/pymultinest_watch.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <p class="topless"><a href="pycuba.html"
+                        title="next chapter">PyCuba</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pymultinest_watch.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -145,18 +143,18 @@ node no. (used for clustering).</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pyapemost.html" title="PyAPEMoST"
+          <a href="pycuba.html" title="PyCuba"
              >next</a> |</li>
         <li class="right" >
           <a href="pymultinest_analyse.html" title="Analysing the output"
              >previous</a> |</li>
-        <li><a href="index.html">pymultinest 0.4 documentation</a> &raquo;</li>
-          <li><a href="pymultinest.html" >PyMultiNest</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.5 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="pymultinest.html" >PyMultiNest</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2013, Johannes Buchner.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2013-2017, Johannes Buchner.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>
