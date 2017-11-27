@@ -72,18 +72,18 @@ install:
 
   # Install and test
   - git clone --branch ${MULTINEST_TAG} https://github.com/JohannesBuchner/MultiNest
-  - cd MultiNest/build
+  - mkdir -p MultiNest/build; pushd MultiNest/build
   - cmake ..
   - make
-  - cd -
+  - popd
   - test -e MultiNest/lib/libmultinest.so
   - python setup.py install --user
 
   - git clone https://github.com/JohannesBuchner/cuba
-  - cd cuba
+  - pushd cuba
   - ./configure
   - ./makesharedlib.sh
-  - cd -
+  - popd
   - export LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH} 
 
 script:
