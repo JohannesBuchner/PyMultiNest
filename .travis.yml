@@ -51,11 +51,12 @@ install:
   - python setup.py install --user
 
   - git clone https://github.com/JohannesBuchner/cuba.git
-  - pushd cuba && ./configure && ./makeshared.sh && popd
+  - pushd cuba && ./configure && ./makesharedlib.sh && popd
 
 script:
-  - LD_LIBRARY_PATH=MultiNest/lib/:${LD_LIBRARY_PATH} python -c 'import pymultinest'
-  - LD_LIBRARY_PATH=MultiNest/lib/:${LD_LIBRARY_PATH} coverage run setup.py test
+  - LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH} python -c 'import pymultinest'
+  - LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH} python -c 'import pycuba'
+  - LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH} coverage run setup.py test
 
 after_success: coveralls
 
