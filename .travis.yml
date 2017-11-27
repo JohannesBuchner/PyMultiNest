@@ -23,11 +23,11 @@ env:
 addons:
   apt:
     packages:
-      - libblas3
+      - libblas
       - libblas-dev
+      - liblapack
       - liblapack-dev
-      - liblapack3-dev
-      - libatlas3-base
+      - libatlas-base
       - libatlas-dev
       - cmake
       - build-essential
