@@ -32,7 +32,7 @@ install:
   # -----------------------
 #  - if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "gcc" ]; then export CC=gcc-4.8; fi
   - sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran 
-  - if [[ "$WITHMPI" == "yes" ]]; then sudo apt-get install -qq openmpi libopenmpi-dev; fi
+  - if [[ "$WITHMPI" == "yes" ]]; then sudo apt-get install -qq openmpi-bin libopenmpi-dev; fi
   - export CONDA_BASE="http://repo.continuum.io/miniconda/Miniconda"
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
       if [[ "${TRAVIS_PYTHON_VERSION}" == 2* ]]; then
