@@ -12,7 +12,7 @@ with open('README.rst') as file:
 
 setup(
     name = "pymultinest",
-    version = "3.0",
+    version = "2.5",
     description = "Access modules for the MultiNest, APEMoST, Cuba and PolyChord integration libraries",
     author = "Johannes Buchner",
     author_email = "johannes.buchner.acad@gmx.com",
