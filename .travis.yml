@@ -79,7 +79,7 @@ install:
   - git clone https://github.com/JohannesBuchner/cuba
   - pushd cuba && ./configure && ./makesharedlib.sh && popd
   - export LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH} 
-  - echo 'backend: Agg' > matplotlibrc
+  - 'echo "backend: Agg" > matplotlibrc'
 
 script:
   - python -c 'import pymultinest'
