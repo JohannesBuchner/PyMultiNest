@@ -22,6 +22,13 @@ if len(sys.argv) != 2:
 
 prefix = sys.argv[1]
 print('model "%s"' % prefix)
+if not os.path.exists(prefix + 'params.json'):
+	sys.stderr.write("""Expected the file %sparams.json with the parameter names.
+For example, for a three-dimensional problem:
+
+["Redshift $z$", "my parameter 2", "A"]
+%s""" % (sys.argv[0], __doc__))
+	sys.exit(2)
 parameters = json.load(open(prefix + 'params.json'))
 n_params = len(parameters)
 

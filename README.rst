@@ -32,23 +32,23 @@ PyMultiNest
 
   * allows you to write Prior & LogLikelihood functions in Python.
 
-PyMultiNest can 
-
-  * Plot and visualize MultiNests progress (watch.ProgressWatcher, watch.ProgressPlotter). This is still fairly basic, contributions and ideas are welcome)
-
   * Easy plotting, visualization and summary of MultiNest results.
 
-The plotting can be run on existing MultiNest output, and when not using PyMultiNest for running MultiNest.
-
-Code contributions are welcome! Contact me (buchner.johannes [ät] gmx.at).
-
-How can I use MultiNest with Python?
---------------------------------------------
-Look at the documentation available at http://johannesbuchner.github.com/PyMultiNest/index.html
+The plotting can also be run on existing MultiNest output, and when not using PyMultiNest for running MultiNest.
 
 Citing PyMultiNest
 --------------------------------------------
 See http://johannesbuchner.github.com/PyMultiNest/index.html#citing-pymultinest
+
+Questions and Problems
+--------------------------------------------
+
+For any questions or problems with the software, please open an issue.
+This helps other people google the same question.
+
+Using MultiNest with Python?
+--------------------------------------------
+Look at the documentation available at http://johannesbuchner.github.com/PyMultiNest/index.html
 
 What is PyCuba?
 --------------------------------------------
