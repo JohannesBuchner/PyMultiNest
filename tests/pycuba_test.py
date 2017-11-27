@@ -34,10 +34,10 @@ KEY = 0
 
 def print_header(name):
 	print('-------------------- %s test -------------------' % name)
+
 def print_results(name, results):
 	keys = ['nregions', 'neval', 'fail']
-	keys = list(filter(results.has_key, keys))
-	text = ["%s %d" % (k, results[k]) for k in keys]
+	text = ["%s %d" % (k, results[k]) for k in keys if k in results]
 	print("%s RESULT:\t" % name.upper() + "\t".join(text))
 	for comp in results['results']:
 		print("%s RESULT:\t" % name.upper() + \
