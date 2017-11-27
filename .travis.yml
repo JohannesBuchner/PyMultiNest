@@ -17,7 +17,8 @@ compiler:
   - gcc
 
 env:
-  - MULTINEST_TAG=v3.10
+  - MULTINEST_TAG=v3.10 WITHMPI=yes
+  - MULTINEST_TAG=v3.10 WITHMPI=no
 #  - MULTINEST_TAG=v2.16
 #  - MULTINEST_TAG=v2.15
 
@@ -30,7 +31,8 @@ install:
   # Fetch and install conda
   # -----------------------
 #  - if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "gcc" ]; then export CC=gcc-4.8; fi
-  - sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran openmpi openmpi-dev
+  - sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran 
+  - if [[ "$WITHMPI" == "yes" ]]; then sudo apt-get install -qq openmpi libopenmpi-dev; fi
   - export CONDA_BASE="http://repo.continuum.io/miniconda/Miniconda"
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
       if [[ "${TRAVIS_PYTHON_VERSION}" == 2* ]]; then
@@ -64,6 +66,7 @@ install:
   # ---------------------------------
   - conda install --quiet --file conda-requirements.txt
   - pip install --user coveralls
+  - if [[ "$WITHMPI" == "yes" ]]; then pip install --user mpi4py; fi
 
   # Summerise environment
   # ---------------------
@@ -86,7 +89,12 @@ script:
   - python -c 'import pymultinest'
   - python -c 'import pycuba'
   - coverage run setup.py test
-  - rm -rf chains/ && mpiexec -np 4 python pymultinest_demo.py
+  - rm -rf chains/
+  - if [[ "$WITHMPI" == "yes" ]]; then 
+      mpiexec -np 4 python pymultinest_demo.py
+    else
+      python pymultinest_demo.py
+    fi
   - python multinest_marginals.py chains/3-
 
 after_success: coveralls
