@@ -11,7 +11,7 @@ os:
 
 python:
   - "2.7"
-#  - "3.6"
+  - "3.6"
 
 compiler:
   - gcc
@@ -30,7 +30,7 @@ install:
   # Fetch and install conda
   # -----------------------
 #  - if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "gcc" ]; then export CC=gcc-4.8; fi
-  - sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran
+  - sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran openmpi openmpi-dev
   - export CONDA_BASE="http://repo.continuum.io/miniconda/Miniconda"
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
       if [[ "${TRAVIS_PYTHON_VERSION}" == 2* ]]; then
@@ -75,6 +75,7 @@ install:
   - mkdir -p MultiNest/build; pushd MultiNest/build; cmake .. && make && popd
   - test -e MultiNest/lib/libmultinest.so
   - python setup.py install --user
+  - python -c 'import pymultinest'|grep 'LD_LIBRARY_PATH'
 
   - git clone https://github.com/JohannesBuchner/cuba
   - pushd cuba && ./configure && ./makesharedlib.sh && popd
@@ -85,7 +86,7 @@ script:
   - python -c 'import pymultinest'
   - python -c 'import pycuba'
   - coverage run setup.py test
-  - rm -rf chains/ && python pymultinest_demo.py
+  - rm -rf chains/ && mpiexec -np 4 python pymultinest_demo.py
   - python multinest_marginals.py chains/3-
 
 after_success: coveralls

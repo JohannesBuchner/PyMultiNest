@@ -18,6 +18,9 @@ on nested sampling and the idea of disjoint multi-dimensional ellipse sampling.
 For the scientific community, where Python is becoming the new lingua franca (luckily),
 I provide an interface to MultiNest.
 
+.. image:: https://travis-ci.org/JohannesBuchner/PyMultiNest.svg?branch=master
+    :target: https://travis-ci.org/JohannesBuchner/PyMultiNest
+
 What does PyMultiNest do?
 --------------------------
 
