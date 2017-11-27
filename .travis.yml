@@ -1,22 +1,59 @@
 language: python
 
+os:
+  - linux
+  - osx
+
+matrix:
+  allow_failures:
+    - os: osx
+
 python:
-#  - "2.7"
-  - "3.5"
+  - "2.7"
+  - "3.6"
 
 compiler:
   - gcc
 
+env:
+  - MULTINEST_TAG=v2.17
+#  - MULTINEST_TAG=v2.16
+#  - MULTINEST_TAG=v2.15
+
+addons:
+  apt:
+    packages:
+      - libblas3
+      - libblas-dev
+      - liblapack-dev
+      - liblapack3-dev
+      - libatlas3-base
+      - libatlas-dev
+      - cmake
+      - build-essential
+      - git
+      - gfortran
+
+before_install:
+  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install gcc49 lapack blas; fi
+
 install:
-  - sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran
-# 
   # Fetch and install conda
   # -----------------------
+  - if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "gcc" ]; then export CC=gcc-4.8; fi
   - export CONDA_BASE="http://repo.continuum.io/miniconda/Miniconda"
-  - if [[ "${TRAVIS_PYTHON_VERSION}" == 2* ]]; then
-      wget ${CONDA_BASE}2-latest-Linux-x86_64.sh -O miniconda.sh;
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
+      if [[ "${TRAVIS_PYTHON_VERSION}" == 2* ]]; then
+        wget ${CONDA_BASE}2-latest-MacOSX-x86_64.sh -O miniconda.sh;
+      else
+        wget ${CONDA_BASE}3-latest-MacOSX-x86_64.sh -O miniconda.sh;
+      fi
     else
-      wget ${CONDA_BASE}3-latest-Linux-x86_64.sh -O miniconda.sh;
+      if [[ "${TRAVIS_PYTHON_VERSION}" == 2* ]]; then
+        wget ${CONDA_BASE}2-latest-Linux-x86_64.sh -O miniconda.sh;
+      else
+        wget ${CONDA_BASE}3-latest-Linux-x86_64.sh -O miniconda.sh;
+      fi
     fi
   - bash miniconda.sh -b -p ${HOME}/miniconda
   - export PATH="${HOME}/miniconda/bin:${PATH}"
@@ -37,7 +74,6 @@ install:
   # ---------------------------------
   - conda install --quiet --file conda-requirements.txt
   - pip install --user coveralls
-  - pip install --user codecov
 
   # Summerise environment
   # ---------------------
@@ -46,17 +82,20 @@ install:
 
   # Install and test
   - git clone https://github.com/JohannesBuchner/MultiNest.git
-  - pushd MultiNest/build && cmake .. && make && popd
+  - pushd MultiNest/build && git checkout ${MULTINEST_TAG} && cmake .. && make && popd
   - test -e MultiNest/lib/libmultinest.so
   - python setup.py install --user
 
   - git clone https://github.com/JohannesBuchner/cuba.git
   - pushd cuba && ./configure && ./makesharedlib.sh && popd
+  - export LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH} 
 
 script:
-  - LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH} python -c 'import pymultinest'
-  - LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH} python -c 'import pycuba'
-  - LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH} coverage run setup.py test
+  - python -c 'import pymultinest'
+  - python -c 'import pycuba'
+  - coverage run setup.py test
+  - rm -rf chains/ && python pymultinest_demo.py
+  - python multinest_marginals.py chains/3-
 
 after_success: coveralls
 

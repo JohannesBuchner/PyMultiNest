@@ -30,4 +30,10 @@ print('parameter values:')
 for name, col in zip(parameters, result['samples'].transpose()):
 	print('%15s : %.3f +- %.3f' % (name, col.mean(), col.std()))
 
+# make marginal plots by running:
+# $ python multinest_marginals.py chains/3-
+# For that, we need to store the parameter names:
+import json
+with open('%sparams.json' % a.outputfiles_basename, 'w') as f:
+	json.dump(parameters, f, indent=2)
 
