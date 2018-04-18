@@ -25,15 +25,15 @@ Use like so::
 
 
 from __future__ import absolute_import, unicode_literals, print_function
-import numpy
+from numpy import loadtxt, reshape, array, interp
 from io import StringIO
 import re
 
 def loadtxt2d(intext):
 	try:
-		return numpy.loadtxt(intext, ndmin=2)
+		return loadtxt(intext, ndmin=2)
 	except:
-		return numpy.loadtxt(intext)
+		return loadtxt(intext)
 
 class Analyzer(object):
 	"""
@@ -83,7 +83,7 @@ class Analyzer(object):
 			fetches self.data_file
 		"""
 		if not hasattr(self, 'data'):
-			self.data = numpy.loadtxt(self.data_file)
+			self.data = loadtxt(self.data_file)
 		return self.data
 	def get_equal_weighted_posterior(self):
 		"""
@@ -116,7 +116,7 @@ class Analyzer(object):
 		if d is not None:
 			d[title.strip().lower()] = data
 		if len(data.shape) == 1:
-			data = numpy.reshape(data, (1,-1))
+			data = reshape(data, (1,-1))
 		return data
 	
 	def get_stats(self):
@@ -127,13 +127,13 @@ class Analyzer(object):
 		for i in range(2, posterior.shape[1]):
 			b = list(zip(posterior[:,0], posterior[:,i]))
 			b.sort(key=lambda x: x[1])
-			b = numpy.array(b)
+			b = array(b)
 			b[:,0] = b[:,0].cumsum()
 			sig5 = 0.5 + 0.9999994 / 2.
 			sig3 = 0.5 + 0.9973 / 2.
 			sig2 = 0.5 + 0.95 / 2.
 			sig1 = 0.5 + 0.6826 / 2.
-			bi = lambda x: numpy.interp(x, b[:,0], b[:,1], left=b[0,1], right=b[-1,1])
+			bi = lambda x: interp(x, b[:,0], b[:,1], left=b[0,1], right=b[-1,1])
 			
 			low1 = bi(1 - sig1)
 			high1 = bi(sig1)
