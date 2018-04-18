@@ -6,9 +6,10 @@ from __future__ import absolute_import, unicode_literals, print_function
 
 from .run import run
 from .analyse import Analyzer
-import numpy
-import tempfile
-import shutil
+from numpy import array, isfinite
+from tempfile import mkdtemp
+from shutil import rmtree
+from sys import exit, stderr
 
 """
 A pythonic interface to MultiNest. The arguments are the same as in 
@@ -35,35 +36,32 @@ def solve(LogLikelihood, Prior, n_dims, **kwargs):
 	files_temporary = False
 	if 'outputfiles_basename' not in kwargs:
 		files_temporary = True
-		tempdir = tempfile.mkdtemp('pymultinest')
+		tempdir = mkdtemp('pymultinest')
 		kwargs['outputfiles_basename'] = tempdir + '/'
 	outputfiles_basename = kwargs['outputfiles_basename']
 	def SafePrior(cube, ndim, nparams):
 		try:
-			a = numpy.array([cube[i] for i in range(n_dims)])
+			a = array([cube[i] for i in range(n_dims)])
 			b = Prior(a)
 			for i in range(n_dims):
 				cube[i] = b[i]
 		except Exception as e:
-			import sys
-			sys.stderr.write('ERROR in prior: %s\n' % e)
-			sys.exit(1)
+			stderr.write('ERROR in prior: %s\n' % e)
+			exit(1)
 	
 	def SafeLoglikelihood(cube, ndim, nparams, lnew):
 		try:
-			a = numpy.array([cube[i] for i in range(n_dims)])
+			a = array([cube[i] for i in range(n_dims)])
 			l = float(LogLikelihood(a))
-			if not numpy.isfinite(l):
-				import sys
-				sys.stderr.write('WARNING: loglikelihood not finite: %f\n' % (l))
-				sys.stderr.write('         for parameters: %s\n' % a)
-				sys.stderr.write('         returned very low value instead\n')
+			if not isfinite(l):
+				stderr.write('WARNING: loglikelihood not finite: %f\n' % (l))
+				stderr.write('         for parameters: %s\n' % a)
+				stderr.write('         returned very low value instead\n')
 				return -1e100
 			return l
 		except Exception as e:
-			import sys
-			sys.stderr.write('ERROR in loglikelihood: %s\n' % e)
-			sys.exit(1)
+			stderr.write('ERROR in loglikelihood: %s\n' % e)
+			exit(1)
 	
 	kwargs['LogLikelihood'] = SafeLoglikelihood
 	kwargs['Prior'] = SafePrior
@@ -74,7 +72,7 @@ def solve(LogLikelihood, Prior, n_dims, **kwargs):
 	samples = analyzer.get_equal_weighted_posterior()[:,:-1]
 	
 	if files_temporary:
-		shutil.rmtree(tempdir, ignore_errors=True)
+		rmtree(tempdir, ignore_errors=True)
 	
 	return dict(logZ=stats['nested sampling global log-evidence'],
 		logZerr=stats['nested sampling global log-evidence error'],
