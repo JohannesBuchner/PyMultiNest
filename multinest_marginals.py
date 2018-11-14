@@ -27,7 +27,7 @@ if not os.path.exists(prefix + 'params.json'):
 For example, for a three-dimensional problem:
 
 ["Redshift $z$", "my parameter 2", "A"]
-%s""" % (sys.argv[0], __doc__))
+%s""" % (sys.argv[1], __doc__))
 	sys.exit(2)
 parameters = json.load(open(prefix + 'params.json'))
 n_params = len(parameters)
@@ -44,7 +44,10 @@ for p, m in zip(parameters, s['marginals']):
 	lo, hi = m['1sigma']
 	med = m['median']
 	sigma = (hi - lo) / 2
-	i = max(0, int(-numpy.floor(numpy.log10(sigma))) + 1)
+	if sigma == 0:
+		i = 3
+	else:
+		i = max(0, int(-numpy.floor(numpy.log10(sigma))) + 1)
 	fmt = '%%.%df' % i
 	fmts = '\t'.join(['    %-15s' + fmt + " +- " + fmt])
 	print(fmts % (p, med, sigma))
