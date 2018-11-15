@@ -25,7 +25,7 @@ def test():
 	def mydumper(nSamples,nlive,nPar,
                      physLive,posterior,paramConstr,
                      maxLogLike,logZ,logZerr,nullcontext):
-            print("calling dumper", shape(physLive))
+            print("calling dumper")
 
 	# number of dimensions our problem has
 	parameters = ["x", "y"]
