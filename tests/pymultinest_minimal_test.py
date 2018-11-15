@@ -28,11 +28,10 @@ def test():
 		return math.pow(2. + chi, 5)
 
 	def mydumper(nSamples,nlive,nPar,
-                     physLive,posterior,paramConstr,
-                     maxLogLike,logZ,logZerr,nullcontext):
-            print("calling dumper")
-            print("calling dumper", shape(physLive))
-	    test.dumper_was_called = True
+			physLive,posterior,paramConstr,
+			maxLogLike,logZ,logZerr,nullcontext):
+		print("calling dumper")
+		test.dumper_was_called = True
 
 	# number of dimensions our problem has
 	parameters = ["x", "y"]
@@ -45,4 +44,3 @@ def test():
 	assert test.prior_was_called
 	assert test.loglike_was_called
 	assert test.dumper_was_called
-	
