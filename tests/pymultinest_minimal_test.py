@@ -22,12 +22,18 @@ def test():
 			chi *= math.cos(cube[i] / 2.)
 		return math.pow(2. + chi, 5)
 
+	def mydumper(nSamples,nlive,nPar,
+                     physLive,posterior,paramConstr,
+                     maxLogLike,logZ,logZerr,nullcontext):
+            print("calling dumper", shape(physLive))
+
 	# number of dimensions our problem has
 	parameters = ["x", "y"]
 	n_params = len(parameters)
 
 	# run MultiNest
 	pymultinest.run(myloglike, myprior, n_params, 
-		resume = True, verbose = True)
+		resume = True, verbose = True,
+                dump_callback=mydumper)
 
 	
