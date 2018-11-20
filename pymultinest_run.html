@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Running the sampler &#8212; pymultinest 2.6 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '2.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -25,8 +17,7 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Analysing the output" href="pymultinest_analyse.html" />
     <link rel="prev" title="PyMultiNest" href="pymultinest.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -56,13 +47,13 @@
 <span id="running-the-sampler"></span><h1>Running the sampler<a class="headerlink" href="#module-pymultinest.run" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="pymultinest.run.run">
-<code class="descclassname">pymultinest.run.</code><code class="descname">run</code><span class="sig-paren">(</span><em>LogLikelihood</em>, <em>Prior</em>, <em>n_dims</em>, <em>n_params=None</em>, <em>n_clustering_params=None</em>, <em>wrapped_params=None</em>, <em>importance_nested_sampling=True</em>, <em>multimodal=True</em>, <em>const_efficiency_mode=False</em>, <em>n_live_points=400</em>, <em>evidence_tolerance=0.5</em>, <em>sampling_efficiency=0.8</em>, <em>n_iter_before_update=100</em>, <em>null_log_evidence=-1e+90</em>, <em>max_modes=100</em>, <em>mode_tolerance=-1e+90</em>, <em>outputfiles_basename=u'chains/1-'</em>, <em>seed=-1</em>, <em>verbose=False</em>, <em>resume=True</em>, <em>context=0</em>, <em>write_output=True</em>, <em>log_zero=-1e+100</em>, <em>max_iter=0</em>, <em>init_MPI=False</em>, <em>dump_callback=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/run.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.run.run" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pymultinest.run.</code><code class="descname">run</code><span class="sig-paren">(</span><em>LogLikelihood</em>, <em>Prior</em>, <em>n_dims</em>, <em>n_params=None</em>, <em>n_clustering_params=None</em>, <em>wrapped_params=None</em>, <em>importance_nested_sampling=True</em>, <em>multimodal=True</em>, <em>const_efficiency_mode=False</em>, <em>n_live_points=400</em>, <em>evidence_tolerance=0.5</em>, <em>sampling_efficiency=0.8</em>, <em>n_iter_before_update=100</em>, <em>null_log_evidence=-1e+90</em>, <em>max_modes=100</em>, <em>mode_tolerance=-1e+90</em>, <em>outputfiles_basename='chains/1-'</em>, <em>seed=-1</em>, <em>verbose=False</em>, <em>resume=True</em>, <em>context=0</em>, <em>write_output=True</em>, <em>log_zero=-1e+100</em>, <em>max_iter=0</em>, <em>init_MPI=False</em>, <em>dump_callback=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/run.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.run.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs MultiNest</p>
 <p>The most important parameters are the two log-probability functions Prior 
 and LogLikelihood. They are called by MultiNest.</p>
 <p>Prior should transform the unit cube into the parameter cube. Here
 is an example for a uniform prior:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Prior</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Prior</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
                 <span class="n">cube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
 </pre></div>
@@ -70,7 +61,7 @@ is an example for a uniform prior:</p>
 <p>The LogLikelihood function gets this parameter cube and should
 return the logarithm of the likelihood.
 Here is the example for the eggbox problem:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Loglike</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">,</span> <span class="n">lnew</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Loglike</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">,</span> <span class="n">lnew</span><span class="p">):</span>
         <span class="n">chi</span> <span class="o">=</span> <span class="mf">1.</span>
         
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
@@ -162,12 +153,14 @@ mpi4py initialises MPI already.</dd>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -195,7 +188,7 @@ mpi4py initialises MPI already.</dd>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2017, Johannes Buchner.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
     </div>
   </body>
 </html>
