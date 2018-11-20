@@ -222,8 +222,8 @@ def run(LogLikelihood,
 			
 			dump_callback(nSamples,nlive,nPar,
 				as_array(physLive,shape=(nPar+1,nlive)).T,
-				as_array(posterior,shape=(nPar+2,nSamples)).T,
-                                (pc[:,0],pc[:,1],pc[:,2],pc[:,3]), # (mean,std,bestfit,map)
+				as_array(posterior,shape=(nPar+2,nSamples)).T, 
+				(pc[:,0],pc[:,1],pc[:,2],pc[:,3]), # (mean,std,bestfit,map)
 				maxLogLike,logZ,logZerr, 0)
 	prev_handler = signal.signal(signal.SIGINT, interrupt_handler)
 	
