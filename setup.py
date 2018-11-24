@@ -22,7 +22,7 @@ setup(
     license = "GPLv3",
     packages = ["pymultinest", "pycuba"],
     provides = ["pymultinest", "pycuba"],
-    requires = ["ctypesGsl", "numpy (>=1.5)", "matplotlib", "scipy"],
+    requires = ["numpy (>=1.5)", "matplotlib", "scipy"],
     scripts=['multinest_marginals.py'],
     long_description=long_description,
     setup_requires=['pytest-runner'],
