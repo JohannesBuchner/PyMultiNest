@@ -8,6 +8,7 @@ try: # detect if run through mpiexec/mpirun
 	if MPI.COMM_WORLD.Get_size() > 1: # need parallel capabilities
 		libname = 'libmultinest_mpi'
 except ImportError:
+	MPI = None
 	pass
 
 libname += {
@@ -75,7 +76,8 @@ def run(LogLikelihood,
 	max_modes = 100, mode_tolerance = -1e90,
 	outputfiles_basename = "chains/1-", seed = -1, verbose = False,
 	resume = True, context = 0, write_output = True, log_zero = -1e100, 
-	max_iter = 0, init_MPI = False, dump_callback = None):
+	max_iter = 0, init_MPI = False, dump_callback = None,
+	force_no_MPI=False):
 	"""
 	Runs MultiNest
 	
@@ -170,6 +172,13 @@ def run(LogLikelihood,
 		a callback function for dumping the current status
 	
 	"""
+
+	if MPI and force_no_MPI:
+		libname = 'libmultinest' + {'darwin' : '.dylib',
+									'win32'  : '.dll',
+									'cygwin' : '.dll',
+									}.get(sys.platform, '.so')
+		lib = cdll.LoadLibrary(libname)
 
 	if n_params == None:
 		n_params = n_dims
