@@ -30,7 +30,7 @@ install:
   # -----------------------
 #  - if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "gcc" ]; then export CC=gcc-4.8; fi
   - sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran 
-  - if [[ "$WITHMPI" == "yes" ]]; then sudo apt-get install -qq openmpi-bin libopenmpi-dev; fi
+  - if [[ "$WITHMPI" == "yes" ]]; then sudo apt-get install -qq openmpi-bin libopenmpi-dev python-mpi4py; fi
   - export CONDA_BASE="http://repo.continuum.io/miniconda/Miniconda"
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
       if [[ "${TRAVIS_PYTHON_VERSION}" == 2* ]]; then
@@ -64,8 +64,6 @@ install:
   # ---------------------------------
   - conda install --quiet --file conda-requirements.txt
   - pip install --user coveralls
-  - export CONDA_BUILD_SYSROOT=/ # needed for mpi4py to compile
-  - if [[ "$WITHMPI" == "yes" ]]; then pip install --user mpi4py; fi
 
   # Summerise environment
   # ---------------------
