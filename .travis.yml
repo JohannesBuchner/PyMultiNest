@@ -64,7 +64,8 @@ install:
   # ---------------------------------
   - conda install --quiet --file conda-requirements.txt
   - pip install --user coveralls
-  - if [[ "$WITHMPI" == "yes" ]]; then pip install --user mpi4py; fi
+  - # 3.0.1 does not work with the older gcc installed in travis
+  - if [[ "$WITHMPI" == "yes" ]]; then pip install --user mpi4py==3.0.0; fi
 
   # Summerise environment
   # ---------------------
