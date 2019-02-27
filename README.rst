@@ -45,10 +45,45 @@ Citing PyMultiNest
 --------------------------------------------
 See http://johannesbuchner.github.com/PyMultiNest/index.html#citing-pymultinest
 
+Plotting results, corner and trace plots
+--------------------------------------------
+
+If you got pymultinest running with your likelihood (based on the pymultinest_demo*.py examples),
+you can create plots of the marginal probability distributions.
+
+If you set outputfiles_basename="myprefix-" in the run,
+you need to create a file myprefix-params.json which gives the names of each parameters,
+for example::
+
+	[
+	  "param1",
+	  "param2",
+	  "$N\_\mathrm{H}$",
+	  "norm",
+	]
+
+Then you can run::
+
+	$ python pymultinest-folder/multinest_marginals.py myprefix-
+
+which will create marginal plots for you.
+
+Recently I also added support for `corner.py <https://corner.readthedocs.io/>`_ (needs to be installed)::
+
+	$ python pymultinest-folder/multinest_marginals_corner.py myprefix-
+
+Also possible is trace and corner plots::
+
+	$ python pymultinest-folder/multinest_marginals_fancy.py myprefix-
+
+This last one has some potential drawbacks however: The code I borrowed here
+from dynesty is not meant for multi-modal nested sampling which reorders the 
+points, so the trace plot may not be 100% correct for multi-modal problems.
+
 Questions and Problems
 --------------------------------------------
 
-For any questions or problems with the software, please open an issue.
+For any questions or problems with the software, please `open an issue <https://github.com/JohannesBuchner/PyMultiNest/issues>`_.
 This helps other people google the same question.
 
 Using MultiNest with Python?

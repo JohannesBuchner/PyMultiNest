@@ -91,7 +91,7 @@ On **Mac OSX**:
 
 	$ cp -v ~/Downloads/MultiNest/lib/lib* /anaconda3/lib/
 
-A discussion on installing on Mac can be found in `<https://github.com/JohannesBuchner/PyMultiNest/issues/10>`_.
+A discussion on installing on Mac can be found in `issue 10 <https://github.com/JohannesBuchner/PyMultiNest/issues/10>`_. Compiling with MPI support on Mac is discussed in `issue 45 <https://github.com/JohannesBuchner/PyMultiNest/issues/45>`_
 
 3. Running some code
 --------------------------
@@ -151,7 +151,8 @@ Congratulations! You are now ready to run your own code. Copy the demo files as 
 
 Getting help
 ----------------------------
-Try searching the error message. Look at the `Open issues <https://github.com/JohannesBuchner/PyMultiNest/issues?state=open>`_.
+
+Try searching the error message. Search through the `existing questions <https://github.com/JohannesBuchner/PyMultiNest/issues?q=>`_.
 
 Generating the documentation
 ----------------------------
