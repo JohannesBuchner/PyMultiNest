@@ -83,7 +83,7 @@ class Analyzer(object):
 			fetches self.data_file
 		"""
 		if not hasattr(self, 'data'):
-			self.data = numpy.loadtxt(self.data_file)
+			self.data = loadtxt2d(self.data_file)
 		return self.data
 	def get_equal_weighted_posterior(self):
 		"""
