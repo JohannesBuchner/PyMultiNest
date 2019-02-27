@@ -4,12 +4,20 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Analysing the output &#8212; pymultinest 2.6 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.6',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -17,7 +25,8 @@
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Watching the progress" href="pymultinest_watch.html" />
     <link rel="prev" title="Running the sampler" href="pymultinest_run.html" /> 
-  </head><body>
+  </head>
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -43,12 +52,13 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="module-pymultinest.analyse">
-<span id="analysing-the-output"></span><h1>Analysing the output<a class="headerlink" href="#module-pymultinest.analyse" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="analyzer-and-parser-for-multinest-output-files">
+  <div class="section" id="analysing-the-output">
+<h1>Analysing the output<a class="headerlink" href="#analysing-the-output" title="Permalink to this headline">¶</a></h1>
+<p>See also the multinest_marginals*.py scripts.</p>
+<span class="target" id="module-pymultinest.analyse"></span><div class="section" id="analyzer-and-parser-for-multinest-output-files">
 <h2>Analyzer and Parser for MultiNest output files<a class="headerlink" href="#analyzer-and-parser-for-multinest-output-files" title="Permalink to this headline">¶</a></h2>
 <p>Use like so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># create analyzer object</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># create analyzer object</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">Analyzer</span><span class="p">(</span><span class="n">n_params</span><span class="p">,</span> <span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s2">&quot;chains/1-&quot;</span><span class="p">)</span>
 
 <span class="c1"># get a dictionary containing information about</span>
@@ -94,9 +104,9 @@ mean, sigma, maximum a posterior in each dimension</p>
 <dt id="pymultinest.analyse.Analyzer.n_params">
 <code class="descname">n_params</code><em class="property"> = None</em><a class="headerlink" href="#pymultinest.analyse.Analyzer.n_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>[root].txt
-Compatable with getdist with 2+nPar columns. Columns have 
+Compatable with getdist with 2+nPar columns. Columns have
 sample probability, -2*loglikehood, samples. Sample
-probability is the sample prior mass multiplied by its 
+probability is the sample prior mass multiplied by its
 likelihood &amp; normalized by the evidence.</p>
 </dd></dl>
 
@@ -104,9 +114,9 @@ likelihood &amp; normalized by the evidence.</p>
 <dt id="pymultinest.analyse.Analyzer.post_file">
 <code class="descname">post_file</code><em class="property"> = None</em><a class="headerlink" href="#pymultinest.analyse.Analyzer.post_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>[root]stats.dat
-Contains the global log-evidence, its error &amp; local log-evidence 
+Contains the global log-evidence, its error &amp; local log-evidence
 with error &amp; parameter means &amp; standard
-deviations as well as the  best fit &amp; MAP parameters of each of 
+deviations as well as the  best fit &amp; MAP parameters of each of
 the mode found with local log-evidence &gt; nullZ.</p>
 </dd></dl>
 
@@ -151,14 +161,12 @@ Contains the equally weighted posterior samples</p>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
-    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -186,7 +194,7 @@ Contains the equally weighted posterior samples</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2017, Johannes Buchner.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
     </div>
   </body>
 </html>

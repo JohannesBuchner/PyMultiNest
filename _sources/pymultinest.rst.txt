@@ -18,7 +18,7 @@ Take a look at the demos:
 
 - `Demo with simple functions pymultinest_demo.py <https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo.py>`_.
 - `Demo with a class pymultinest_solver_demo.py <https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_solver_demo.py>`_.
-- `The old API, which allows C/Fortran Likelihood functions pymultinest_demo.py <https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo.py>`_.
+- `The old API, which allows C/Fortran Likelihood functions pymultinest_demo.py <https://github.com/JohannesBuchner/PyMultiNest/blob/master/pymultinest_demo_old.py>`_.
 
 Tutorial
 ------------
