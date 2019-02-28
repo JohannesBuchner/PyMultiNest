@@ -17,7 +17,8 @@ compiler:
   - gcc
 
 env:
-  - MULTINEST_TAG=v3.10 WITHMPI=yes
+  - MULTINEST_TAG=v3.10 WITHMPI=mpich
+  - MULTINEST_TAG=v3.10 WITHMPI=openmpi
   - MULTINEST_TAG=v3.10 WITHMPI=no
 
 #before_install:
@@ -30,7 +31,8 @@ install:
   # -----------------------
 #  - if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "gcc" ]; then export CC=gcc-4.8; fi
   - sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran 
-  - if [[ "$WITHMPI" == "yes" ]]; then sudo apt-get install -qq openmpi-bin libopenmpi-dev python-mpi4py; fi
+  - if [[ "$WITHMPI" == "openmpi" ]]; then sudo apt-get install -qq openmpi-bin libopenmpi-dev python-mpi4py; fi
+  - if [[ "$WITHMPI" == "mpich" ]]; then sudo apt-get install -qq mpich libmpich-dev python-mpi4py; fi
   - export CONDA_BASE="http://repo.continuum.io/miniconda/Miniconda"
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
       if [[ "${TRAVIS_PYTHON_VERSION}" == 2* ]]; then
@@ -87,10 +89,10 @@ script:
   - python -c 'import pycuba'
   - if [[ "$WITHMPI" == "no" ]]; then coverage run setup.py test; fi
   - rm -rf chains/
-  - if [[ "$WITHMPI" == "yes" ]]; then 
-      mpiexec -np 4 python pymultinest_demo.py;
-    else
+  - if [[ "$WITHMPI" == "no" ]]; then 
       python pymultinest_demo.py;
+    else
+      mpiexec -np 4 python pymultinest_demo.py;
     fi
   - python multinest_marginals.py chains/3-
   - python pycuba_demo.py
