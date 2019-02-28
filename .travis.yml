@@ -31,8 +31,16 @@ install:
   # -----------------------
 #  - if [ "$TRAVIS_OS_NAME" = "osx" ] && [ "$CC" = "gcc" ]; then export CC=gcc-4.8; fi
   - sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran 
-  - if [[ "$WITHMPI" == "openmpi" ]]; then sudo apt-get install -qq openmpi-bin libopenmpi-dev python-mpi4py; fi
-  - if [[ "$WITHMPI" == "mpich" ]]; then sudo apt-get install -qq mpich libmpich-dev python-mpi4py; fi
+  - if [[ "$WITHMPI" == "openmpi" ]]; then 
+      sudo apt-get install -qq openmpi-bin libopenmpi-dev python-mpi4py
+      update-alternatives --set mpi $(update-alternatives --list mpi|grep "$WITHMPI")
+      update-alternatives --set mpirun $(update-alternatives --list mpirun|grep "$WITHMPI")
+    fi
+  - if [[ "$WITHMPI" == "mpich" ]]; then 
+      sudo apt-get install -qq mpich libmpich-dev python-mpi4py
+      update-alternatives --set mpi $(update-alternatives --list mpi|grep "$WITHMPI")
+      update-alternatives --set mpirun $(update-alternatives --list mpirun|grep "$WITHMPI")
+    fi
   - export CONDA_BASE="http://repo.continuum.io/miniconda/Miniconda"
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
       if [[ "${TRAVIS_PYTHON_VERSION}" == 2* ]]; then
