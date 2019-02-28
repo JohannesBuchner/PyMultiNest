@@ -33,13 +33,13 @@ install:
   - sudo apt-get install -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran 
   - if [[ "$WITHMPI" == "openmpi" ]]; then 
       sudo apt-get install -qq openmpi-bin libopenmpi-dev python-mpi4py;
-      update-alternatives --list mpi|grep "$WITHMPI" | xargs -rt update-alternatives --set mpi;
-      update-alternatives --list mpirun|grep "$WITHMPI" | xargs -rt update-alternatives --set mpirun;
+      sudo update-alternatives --list mpi|grep "$WITHMPI" | xargs -rt update-alternatives --set mpi;
+      sudo update-alternatives --list mpirun|grep "$WITHMPI" | xargs -rt update-alternatives --set mpirun;
     fi
   - if [[ "$WITHMPI" == "mpich" ]]; then 
       sudo apt-get install -qq mpich libmpich-dev python-mpi4py;
-      update-alternatives --list mpi|grep "$WITHMPI" | xargs -rt update-alternatives --set mpi;
-      update-alternatives --list mpirun|grep "$WITHMPI" | xargs -rt update-alternatives --set mpirun;
+      sudo update-alternatives --list mpi|grep "$WITHMPI" | xargs -rt update-alternatives --set mpi;
+      sudo update-alternatives --list mpirun|grep "$WITHMPI" | xargs -rt update-alternatives --set mpirun;
     fi
   - export CONDA_BASE="http://repo.continuum.io/miniconda/Miniconda"
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then 
