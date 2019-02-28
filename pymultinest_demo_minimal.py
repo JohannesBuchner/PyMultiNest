@@ -1,7 +1,8 @@
 from __future__ import absolute_import, unicode_literals, print_function
 import pymultinest
 import math, os
-os.makedirs('chains', exist_ok=True)
+try: os.mkdir('chains')
+except FileExistsError: pass
 
 # This "old" api may be a little bit faster and suitable for likelihoods
 # written in C (via ctypes).
