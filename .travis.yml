@@ -98,6 +98,11 @@ script:
   - if [[ "$WITHMPI" == "no" ]]; then coverage run setup.py test; fi
   - rm -rf chains/
   - if [[ "$WITHMPI" == "no" ]]; then 
+      python pymultinest_demo_minimal.py;
+    else
+      mpiexec -np 4 python pymultinest_demo_minimal.py;
+    fi
+  - if [[ "$WITHMPI" == "no" ]]; then 
       python pymultinest_demo.py;
     else
       mpiexec -np 4 python pymultinest_demo.py;
