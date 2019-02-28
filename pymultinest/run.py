@@ -7,8 +7,7 @@ try: # detect if run through mpiexec/mpirun
 	from mpi4py import MPI
 	if MPI.COMM_WORLD.Get_size() > 1: # need parallel capabilities
 		libname = 'libmultinest_mpi'
-except ImportError as e:
-	print('Not using MPI:', e)
+except ImportError:
 	pass
 
 libname += {

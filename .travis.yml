@@ -79,7 +79,10 @@ install:
   # ---------------------
   - conda list
   - conda info -a
-
+  - if [[ "$WITHMPI" != "no" ]]; then 
+      pip install --user mpi4py
+    fi
+  
   # Install and test
   - git clone --branch ${MULTINEST_TAG} https://github.com/JohannesBuchner/MultiNest
   - mkdir -p MultiNest/build; pushd MultiNest/build; cmake .. && make && popd
@@ -100,11 +103,13 @@ script:
   - if [[ "$WITHMPI" == "no" ]]; then 
       python pymultinest_demo_minimal.py;
     else
+      python -c 'import mpi4py' &&
       mpiexec -np 4 python pymultinest_demo_minimal.py;
     fi
   - if [[ "$WITHMPI" == "no" ]]; then 
       python pymultinest_demo.py;
     else
+      python -c 'import mpi4py' &&
       mpiexec -np 4 python pymultinest_demo.py;
     fi
   - python multinest_marginals.py chains/3-
