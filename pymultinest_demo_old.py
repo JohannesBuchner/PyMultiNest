@@ -4,7 +4,7 @@ import math
 import os
 import threading, subprocess
 from sys import platform
-if not os.path.exists("chains"): os.mkdir("chains")
+os.makedirs('chains', exist_ok=True)
 def show(filepath): 
 	""" open the output (pdf) file for the user """
 	if os.name == 'mac' or platform == 'darwin': subprocess.call(('open', filepath))

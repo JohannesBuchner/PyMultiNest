@@ -4,7 +4,7 @@ import numpy
 from numpy import pi, cos
 from pymultinest.solve import solve
 import os
-if not os.path.exists("chains"): os.mkdir("chains")
+os.makedirs('chains', exist_ok=True)
 
 # probability function, taken from the eggbox problem.
 
