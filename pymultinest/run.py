@@ -1,14 +1,15 @@
 from __future__ import absolute_import, unicode_literals, print_function
 from ctypes import cdll
-import sys
+import sys, os
 
 libname = 'libmultinest'
 try: # detect if run through mpiexec/mpirun
 	from mpi4py import MPI
 	if MPI.COMM_WORLD.Get_size() > 1: # need parallel capabilities
 		libname = 'libmultinest_mpi'
-except ImportError:
-	pass
+except ImportError as e:
+	if 'PMIX_RANK' in os.environ:
+		print("Not using MPI because import mpi4py failed: '%s'. To debug, run python -c 'import mpi4py'.", e)
 
 libname += {
 	'darwin' : '.dylib',

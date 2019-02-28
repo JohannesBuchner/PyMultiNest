@@ -30,10 +30,6 @@ n_params = len(parameters)
 pymultinest.run(myloglike, myprior, n_params, 
 	resume = True, verbose = True)
 
-# run 
-# $ multinest_marginals.py chains/1-
-# which will produce pretty marginal pdf plots
-
-# for code to analyse the results, and make plots see full demo
+# for making marginal / corner plots and reading the output files --> see full demo
 
 
