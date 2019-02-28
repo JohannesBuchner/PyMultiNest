@@ -5,7 +5,7 @@ from numpy import pi, cos
 from pymultinest.solve import solve
 import os
 try: os.mkdir('chains')
-except FileExistsError: pass
+except OSError: pass
 
 # probability function, taken from the eggbox problem.
 

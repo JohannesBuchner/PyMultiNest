@@ -5,7 +5,7 @@ import os
 import threading, subprocess
 from sys import platform
 try: os.mkdir('chains')
-except FileExistsError: pass
+except OSError: pass
 
 def show(filepath): 
 	""" open the output (pdf) file for the user """
