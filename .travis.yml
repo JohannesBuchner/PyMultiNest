@@ -80,7 +80,7 @@ install:
   - conda list
   - conda info -a
   - if [[ "$WITHMPI" != "no" ]]; then 
-      pip install --user mpi4py
+      pip install --user mpi4py;
     fi
   
   # Install and test
