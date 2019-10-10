@@ -13,24 +13,11 @@ except ImportError as e:
 	if 'PMIX_RANK' in os.environ:
 		print("Not using MPI because import mpi4py failed: '%s'. To debug, run python -c 'import mpi4py'.", e)
 
-libname += {
-	'darwin' : '.dylib',
-	'win32'  : '.dll',
-	'cygwin' : '.dll',
+libname = {
+	'darwin' : find_library(libname[len('lib'):]),
+	'win32'  : libname+'.dll',
+	'cygwin' : libname+'.dll',
 }.get(sys.platform, '.so')
-
-if sys.platform == 'Darwin':
-	libname = find_library('multinest')
-
-	try: # detect if run through mpiexec/mpirun
-		from mpi4py import MPI
-		if MPI.COMM_WORLD.Get_size() > 1: # need parallel capabilities
-			libname = find_library('multinest_mpi')
-	except ImportError as e:
-		if 'PMIX_RANK' in os.environ:
-			print("Not using MPI because import mpi4py failed: '%s'. To debug, run python -c 'import mpi4py'.", e)
-
-
 
 try:
 	lib = cdll.LoadLibrary(libname)
