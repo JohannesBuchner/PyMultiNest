@@ -28,7 +28,7 @@ if sys.platform == 'Darwin':
 			libname = find_library('multinest_mpi')
 	except ImportError as e:
 		if 'PMIX_RANK' in os.environ:
-		print("Not using MPI because import mpi4py failed: '%s'. To debug, run python -c 'import mpi4py'.", e)
+			print("Not using MPI because import mpi4py failed: '%s'. To debug, run python -c 'import mpi4py'.", e)
 
 
 
