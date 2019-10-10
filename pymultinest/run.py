@@ -2,27 +2,34 @@ from __future__ import absolute_import, unicode_literals, print_function
 from ctypes import cdll
 import sys, os
 from ctypes.util import find_library
-import platform
 
 
 libname = 'libmultinest'
-if platform.system() == 'Darwin': libname = find_library('multinest')
-
 try: # detect if run through mpiexec/mpirun
 	from mpi4py import MPI
 	if MPI.COMM_WORLD.Get_size() > 1: # need parallel capabilities
 		libname = 'libmultinest_mpi'
-		if platform.system() == 'Darwin': libname = find_library('multinest')
 except ImportError as e:
 	if 'PMIX_RANK' in os.environ:
 		print("Not using MPI because import mpi4py failed: '%s'. To debug, run python -c 'import mpi4py'.", e)
 
-if platform.system() != 'Darwin':
-	libname += {
-		'darwin' : '.dylib',
-		'win32'  : '.dll',
-		'cygwin' : '.dll',
-	}.get(sys.platform, '.so')
+libname += {
+	'darwin' : '.dylib',
+	'win32'  : '.dll',
+	'cygwin' : '.dll',
+}.get(sys.platform, '.so')
+
+if sys.platform == 'Darwin':
+	libname = find_library('multinest')
+
+	try: # detect if run through mpiexec/mpirun
+		from mpi4py import MPI
+		if MPI.COMM_WORLD.Get_size() > 1: # need parallel capabilities
+			libname = find_library('multinest_mpi')
+	except ImportError as e:
+		if 'PMIX_RANK' in os.environ:
+		print("Not using MPI because import mpi4py failed: '%s'. To debug, run python -c 'import mpi4py'.", e)
+
 
 
 try:
