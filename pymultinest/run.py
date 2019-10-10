@@ -18,7 +18,7 @@ except ImportError as e:
 
 
 try:
-	lib = cdll.LoadLibrary(libname)
+	lib = cdll.LoadLibrary(os.path.abspath(libname))
 except OSError as e:
 	message = str(e)
 	if message == '%s: cannot open shared object file: No such file or directory' % libname:
