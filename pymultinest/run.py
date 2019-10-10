@@ -26,7 +26,7 @@ if platform.system() != 'Darwin':
 
 
 try:
-	lib = cdll.LoadLibrary(os.path.abspath(libname))
+	lib = cdll.LoadLibrary(libname)
 except OSError as e:
 	message = str(e)
 	if message == '%s: cannot open shared object file: No such file or directory' % libname:
