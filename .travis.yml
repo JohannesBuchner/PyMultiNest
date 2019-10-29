@@ -67,7 +67,7 @@ install:
   - conda config --add channels conda-forge
   - conda update --quiet conda
   - ENV_NAME="test-environment"
-  - conda create --quiet -n ${ENV_NAME} python=${TRAVIS_PYTHON_VERSION}
+  - conda create --quiet -n ${ENV_NAME} python=${TRAVIS_PYTHON_VERSION} pytest
   - source activate ${ENV_NAME}
 
   # Customise the testing environment
