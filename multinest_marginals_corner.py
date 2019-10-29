@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals, print_function
 __doc__ = """
 Script that does default visualizations (marginal plots, 1-d and 2-d).
 
-Author: Johannes Buchner (C) 2013
+Author: Johannes Buchner (C) 2013-2019
 """
 import numpy
 from numpy import exp, log
