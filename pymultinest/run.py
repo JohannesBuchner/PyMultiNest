@@ -1,8 +1,6 @@
 from __future__ import absolute_import, unicode_literals, print_function
 from ctypes import cdll
 import sys, os
-from ctypes.util import find_library
-
 
 libname = 'libmultinest'
 try: # detect if run through mpiexec/mpirun
@@ -13,10 +11,10 @@ except ImportError as e:
 	if 'PMIX_RANK' in os.environ:
 		print("Not using MPI because import mpi4py failed: '%s'. To debug, run python -c 'import mpi4py'.", e)
 
-libname = {
-	'darwin' : find_library(libname[len('lib'):]),
-	'win32'  : libname+'.dll',
-	'cygwin' : libname+'.dll',
+libname += {
+	'darwin' : '.dylib',
+	'win32'  : '.dll',
+	'cygwin' : '.dll',
 }.get(sys.platform, '.so')
 
 try:
