@@ -13,12 +13,14 @@ except ImportError as e:
 		print("Not using MPI because import mpi4py failed: '%s'. To debug, run python -c 'import mpi4py'.", e)
 
 libname = {
-	'darwin' : find_library(libname[len('lib'):]),
+	'darwin' : libname[len('lib'):],
 	'win32'  : libname + '.dll',
 	'cygwin' : libname + '.dll',
 }.get(sys.platform, libname + '.so')
 
 try:
+	if sys.platform == 'darwin':
+		libname = find_library(libname)
 	lib = cdll.LoadLibrary(libname)
 except OSError as e:
 	message = str(e)
