@@ -6,9 +6,11 @@ import sys, os
 libname = 'libmultinest'
 try: # detect if run through mpiexec/mpirun
 	from mpi4py import MPI
-	if MPI.COMM_WORLD.Get_size() > 1: # need parallel capabilities
+	size = MPI.COMM_WORLD.Get_size()
+	if size > 1: # need parallel capabilities
 		libname = 'libmultinest_mpi'
 except ImportError as e:
+	size = 1
 	if 'PMIX_RANK' in os.environ:
 		print("Not using MPI because import mpi4py failed: '%s'. To debug, run python -c 'import mpi4py'.", e)
 
@@ -79,7 +81,7 @@ def run(LogLikelihood,
 	max_modes = 100, mode_tolerance = -1e90,
 	outputfiles_basename = "chains/1-", seed = -1, verbose = False,
 	resume = True, context = 0, write_output = True, log_zero = -1e100, 
-	max_iter = 0, init_MPI = False, dump_callback = None):
+	max_iter = 0, init_MPI = False, dump_callback = None, mpi_off = False):
 	"""
 	Runs MultiNest
 	
@@ -173,7 +175,24 @@ def run(LogLikelihood,
 	@param dump_callback:
 		a callback function for dumping the current status
 	
+	@param mpi_off:
+		provides the option of switching mpi parallelisation off even
+		when run through mpirun/mpiexec.
 	"""
+
+	libname = 'libmultinest'
+	if size > 1 and not mpi_off:
+		libname += "_mpi"
+
+	libname = {
+		'darwin' : libname[len('lib'):],
+		'win32'  : libname + '.dll',
+		'cygwin' : libname + '.dll',
+	}.get(sys.platform, libname + '.so')
+
+	if sys.platform == 'darwin':
+		libname = find_library(libname)
+	lib = cdll.LoadLibrary(libname)
 
 	if n_params == None:
 		n_params = n_dims
