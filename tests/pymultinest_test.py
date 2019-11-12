@@ -11,14 +11,20 @@ if not os.path.exists("chains"): os.mkdir("chains")
 
 def test_1():
 	def myprior(cube):
+		test_1.prior_dim = cube.shape
 		return cube * 10 * pi
 
 	def myloglike(cube):
+		test_1.params_dim = cube.shape
 		chi = (cos(cube / 2.)).prod()
 		return (2. + chi)**5
 
+	test_1.prior_dim = None
+	test_1.params_dim = None
+
 	# number of dimensions our problem has
 	parameters = ["x", "y"]
+	n_dims = len(parameters)
 	n_params = len(parameters)
 
 	# run MultiNest
@@ -35,18 +41,26 @@ def test_1():
 	for name, col in zip(parameters, result['samples'].transpose()):
 		print('%15s : %.3f +- %.3f' % (name, col.mean(), col.std()))
 
+	assert test_1.prior_dim == (n_params,)
+	assert test_1.params_dim == (n_dims,)
+
 	assert numpy.isclose(result['logZ'], 236.0, atol=1), result['logZ']
 	assert numpy.isclose(result['logZerr'], 0.1, atol=1), result['logZerr']
 
 def test_2():
 	"""testing n_params != n_dims case"""
 	def myprior(cube):
+		test_2.prior_dim = cube.shape
 		cube[-1] = numpy.sum(cube[:-1])
 		return cube * 10 * pi
 
 	def myloglike(cube):
-		chi = (cos(cube[:-1] / 2.)).prod()
+		test_2.params_dim = cube.shape
+		chi = (cos(cube / 2.)).prod()
 		return (2. + chi)**5
+
+	test_2.prior_dim = None
+	test_2.params_dim = None
 
 	# number of dimensions our problem has
 	parameters = ["x", "y"]
@@ -68,7 +82,10 @@ def test_2():
 	for name, col in zip(parameters, result['samples'].transpose()):
 		print('%15s : %.3f +- %.3f' % (name, col.mean(), col.std()))
 
-	assert numpy.isclose(result['logZ'], 239.1, atol=1), result['logZ']
+	assert test_2.prior_dim == (n_params,)
+	assert test_2.params_dim == (n_dims,)
+
+	assert numpy.isclose(result['logZ'], 236.0, atol=1), result['logZ']
 	assert numpy.isclose(result['logZerr'], 0.1, atol=1), result['logZerr']
 
 
