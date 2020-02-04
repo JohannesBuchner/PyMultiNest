@@ -35,14 +35,14 @@
           <div class="body" role="main">
             
   <h1>Source code for pymultinest.watch</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span>
 <span class="kn">import</span> <span class="nn">threading</span>
 
 <div class="viewcode-block" id="ProgressWatcher"><a class="viewcode-back" href="../../pymultinest_watch.html#pymultinest.watch.ProgressWatcher">[docs]</a><span class="k">class</span> <span class="nc">ProgressWatcher</span><span class="p">(</span><span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">):</span>
 	<span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">		Abstract class for watching the progress of MultiNest.</span>
 <span class="sd">	&quot;&quot;&quot;</span>
-	<span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_params</span><span class="p">,</span> <span class="n">interval_ms</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s2">&quot;chains/1-&quot;</span><span class="p">):</span>
+	<span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_params</span><span class="p">,</span> <span class="n">interval_ms</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s2">&quot;chains/1-&quot;</span><span class="p">):</span>
 		<span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">n_params</span> <span class="o">=</span> <span class="n">n_params</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="n">outputfiles_basename</span>
