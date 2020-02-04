@@ -12,7 +12,7 @@ with open('README.rst') as file:
 
 setup(
     name = "pymultinest",
-    version = "2.7",
+    version = "2.8",
     description = "Access modules for the MultiNest and Cuba integration libraries",
     author = "Johannes Buchner",
     author_email = "johannes.buchner.acad@gmx.com",
@@ -23,7 +23,7 @@ setup(
     packages = ["pymultinest", "pycuba"],
     provides = ["pymultinest", "pycuba"],
     requires = ["numpy (>=1.5)", "matplotlib", "scipy"],
-    scripts=['multinest_marginals.py'],
+    scripts=['multinest_marginals.py', 'multinest_marginals_corner.py', 'multinest_marginals_fancy.py'],
     long_description=long_description,
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
