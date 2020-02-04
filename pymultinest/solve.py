@@ -40,9 +40,10 @@ def solve(LogLikelihood, Prior, n_dims, **kwargs):
 	outputfiles_basename = kwargs['outputfiles_basename']
 	def SafePrior(cube, ndim, nparams):
 		try:
-			a = numpy.array([cube[i] for i in range(n_dims)])
+			n_params = kwargs.get('n_params', n_dims)
+			a = numpy.array([cube[i] for i in range(n_params)])
 			b = Prior(a)
-			for i in range(n_dims):
+			for i in range(n_params):
 				cube[i] = b[i]
 		except Exception as e:
 			import sys
