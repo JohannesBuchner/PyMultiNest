@@ -1,32 +1,22 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Running the sampler &#8212; pymultinest 2.6 documentation</title>
+    <meta charset="utf-8" />
+    <title>Running the sampler &#8212; pymultinest 2.9 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '2.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Analysing the output" href="pymultinest_analyse.html" />
     <link rel="prev" title="PyMultiNest" href="pymultinest.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -42,7 +32,7 @@
         <li class="right" >
           <a href="pymultinest.html" title="PyMultiNest"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="pymultinest.html" accesskey="U">PyMultiNest</a> &#187;</li> 
       </ul>
     </div>  
@@ -56,13 +46,13 @@
 <span id="running-the-sampler"></span><h1>Running the sampler<a class="headerlink" href="#module-pymultinest.run" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="pymultinest.run.run">
-<code class="descclassname">pymultinest.run.</code><code class="descname">run</code><span class="sig-paren">(</span><em>LogLikelihood</em>, <em>Prior</em>, <em>n_dims</em>, <em>n_params=None</em>, <em>n_clustering_params=None</em>, <em>wrapped_params=None</em>, <em>importance_nested_sampling=True</em>, <em>multimodal=True</em>, <em>const_efficiency_mode=False</em>, <em>n_live_points=400</em>, <em>evidence_tolerance=0.5</em>, <em>sampling_efficiency=0.8</em>, <em>n_iter_before_update=100</em>, <em>null_log_evidence=-1e+90</em>, <em>max_modes=100</em>, <em>mode_tolerance=-1e+90</em>, <em>outputfiles_basename='chains/1-'</em>, <em>seed=-1</em>, <em>verbose=False</em>, <em>resume=True</em>, <em>context=0</em>, <em>write_output=True</em>, <em>log_zero=-1e+100</em>, <em>max_iter=0</em>, <em>init_MPI=False</em>, <em>dump_callback=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/run.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.run.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pymultinest.run.</code><code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">LogLikelihood</em>, <em class="sig-param">Prior</em>, <em class="sig-param">n_dims</em>, <em class="sig-param">n_params=None</em>, <em class="sig-param">n_clustering_params=None</em>, <em class="sig-param">wrapped_params=None</em>, <em class="sig-param">importance_nested_sampling=True</em>, <em class="sig-param">multimodal=True</em>, <em class="sig-param">const_efficiency_mode=False</em>, <em class="sig-param">n_live_points=400</em>, <em class="sig-param">evidence_tolerance=0.5</em>, <em class="sig-param">sampling_efficiency=0.8</em>, <em class="sig-param">n_iter_before_update=100</em>, <em class="sig-param">null_log_evidence=-1e+90</em>, <em class="sig-param">max_modes=100</em>, <em class="sig-param">mode_tolerance=-1e+90</em>, <em class="sig-param">outputfiles_basename='chains/1-'</em>, <em class="sig-param">seed=-1</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">resume=True</em>, <em class="sig-param">context=0</em>, <em class="sig-param">write_output=True</em>, <em class="sig-param">log_zero=-1e+100</em>, <em class="sig-param">max_iter=0</em>, <em class="sig-param">init_MPI=False</em>, <em class="sig-param">dump_callback=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/run.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.run.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs MultiNest</p>
 <p>The most important parameters are the two log-probability functions Prior 
 and LogLikelihood. They are called by MultiNest.</p>
 <p>Prior should transform the unit cube into the parameter cube. Here
 is an example for a uniform prior:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Prior</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Prior</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
                 <span class="n">cube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cube</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
 </pre></div>
@@ -70,7 +60,7 @@ is an example for a uniform prior:</p>
 <p>The LogLikelihood function gets this parameter cube and should
 return the logarithm of the likelihood.
 Here is the example for the eggbox problem:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Loglike</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">,</span> <span class="n">lnew</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">Loglike</span><span class="p">(</span><span class="n">cube</span><span class="p">,</span> <span class="n">ndim</span><span class="p">,</span> <span class="n">nparams</span><span class="p">,</span> <span class="n">lnew</span><span class="p">):</span>
         <span class="n">chi</span> <span class="o">=</span> <span class="mf">1.</span>
         
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndim</span><span class="p">):</span>
@@ -80,30 +70,29 @@ Here is the example for the eggbox problem:</p>
 </div>
 <p>Some of the parameters are explained below. Otherwise consult the 
 MultiNest documentation.</p>
-<dl class="docutils">
-<dt>&#64;param importance_nested_sampling:</dt>
-<dd>If True, Multinest will use Importance Nested Sampling (INS). Read <a class="reference external" href="http://arxiv.org/abs/1306.2144">http://arxiv.org/abs/1306.2144</a>
-for more details on INS. Please read the MultiNest README file before using the INS in MultiNest v3.0.</dd>
-<dt>&#64;param n_params: </dt>
-<dd>Total no. of parameters, should be equal to ndims in most cases 
+<dl class="simple">
+<dt>&#64;param importance_nested_sampling:</dt><dd><p>If True, Multinest will use Importance Nested Sampling (INS). Read <a class="reference external" href="http://arxiv.org/abs/1306.2144">http://arxiv.org/abs/1306.2144</a>
+for more details on INS. Please read the MultiNest README file before using the INS in MultiNest v3.0.</p>
+</dd>
+<dt>&#64;param n_params: </dt><dd><p>Total no. of parameters, should be equal to ndims in most cases 
 but if you need to store some additional
 parameters with the actual parameters then you need to pass 
-them through the likelihood routine.</dd>
-<dt>&#64;param sampling_efficiency:</dt>
-<dd>defines the sampling efficiency. 0.8 and 0.3 are recommended 
+them through the likelihood routine.</p>
+</dd>
+<dt>&#64;param sampling_efficiency:</dt><dd><p>defines the sampling efficiency. 0.8 and 0.3 are recommended 
 for parameter estimation &amp; evidence evalutation
 respectively.
 use ‘parameter’ or ‘model’ to select the respective default 
-values</dd>
-<dt>&#64;param mode_tolerance:</dt>
-<dd>MultiNest can find multiple modes &amp; also specify which samples belong to which mode. It might be
+values</p>
+</dd>
+<dt>&#64;param mode_tolerance:</dt><dd><p>MultiNest can find multiple modes &amp; also specify which samples belong to which mode. It might be
 desirable to have separate samples &amp; mode statistics for modes with local log-evidence value greater than a
 particular value in which case Ztol should be set to that value. If there isn’t any particularly interesting
-Ztol value, then Ztol should be set to a very large negative number (e.g. -1e90).</dd>
-<dt>&#64;param evidence_tolerance:</dt>
-<dd>A value of 0.5 should give good enough accuracy.</dd>
-<dt>&#64;param n_clustering_params:</dt>
-<dd>If mmodal is T, MultiNest will attempt to separate out the 
+Ztol value, then Ztol should be set to a very large negative number (e.g. -1e90).</p>
+</dd>
+<dt>&#64;param evidence_tolerance:</dt><dd><p>A value of 0.5 should give good enough accuracy.</p>
+</dd>
+<dt>&#64;param n_clustering_params:</dt><dd><p>If mmodal is T, MultiNest will attempt to separate out the 
 modes. Mode separation is done through a clustering
 algorithm. Mode separation can be done on all the parameters 
 (in which case nCdims should be set to ndims) &amp; it
@@ -111,30 +100,31 @@ can also be done on a subset of parameters (in which case
 nCdims &lt; ndims) which might be advantageous as
 clustering is less accurate as the dimensionality increases. 
 If nCdims &lt; ndims then mode separation is done on
-the first nCdims parameters.</dd>
-<dt>&#64;param null_log_evidence:</dt>
-<dd>If mmodal is T, MultiNest can find multiple modes &amp; also specify 
+the first nCdims parameters.</p>
+</dd>
+<dt>&#64;param null_log_evidence:</dt><dd><p>If mmodal is T, MultiNest can find multiple modes &amp; also specify 
 which samples belong to which mode. It might be
 desirable to have separate samples &amp; mode statistics for modes 
 with local log-evidence value greater than a
 particular value in which case nullZ should be set to that 
 value. If there isn’t any particulrly interesting
 nullZ value, then nullZ should be set to a very large negative 
-number (e.g. -1.d90).</dd>
-<dt>&#64;param init_MPI:</dt>
-<dd>initialize MPI routines?, relevant only if compiling with MPI
+number (e.g. -1.d90).</p>
+</dd>
+<dt>&#64;param init_MPI:</dt><dd><p>initialize MPI routines?, relevant only if compiling with MPI
 To run pymultinest with MPI, you need mpi4py installed. Then,
 the libmultinest_mpi library is loaded when you run with mpiexec
 or similar. init_MPI should be set to False, because importing
-mpi4py initialises MPI already.</dd>
-<dt>&#64;param log_zero: </dt>
-<dd>points with loglike &lt; logZero will be ignored by MultiNest</dd>
-<dt>&#64;param max_iter: </dt>
-<dd>maximum number of iterations. 0 is unlimited.</dd>
-<dt>&#64;param write_output:</dt>
-<dd>write output files? This is required for analysis.</dd>
-<dt>&#64;param dump_callback:</dt>
-<dd>a callback function for dumping the current status</dd>
+mpi4py initialises MPI already.</p>
+</dd>
+<dt>&#64;param log_zero: </dt><dd><p>points with loglike &lt; logZero will be ignored by MultiNest</p>
+</dd>
+<dt>&#64;param max_iter: </dt><dd><p>maximum number of iterations. 0 is unlimited.</p>
+</dd>
+<dt>&#64;param write_output:</dt><dd><p>write output files? This is required for analysis.</p>
+</dd>
+<dt>&#64;param dump_callback:</dt><dd><p>a callback function for dumping the current status</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -161,13 +151,13 @@ mpi4py initialises MPI already.</dd>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -189,13 +179,13 @@ mpi4py initialises MPI already.</dd>
         <li class="right" >
           <a href="pymultinest.html" title="PyMultiNest"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="pymultinest.html" >PyMultiNest</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2017, Johannes Buchner.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
     </div>
   </body>
 </html>

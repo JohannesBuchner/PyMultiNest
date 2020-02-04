@@ -1,32 +1,22 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Analysing the output &#8212; pymultinest 2.6 documentation</title>
+    <meta charset="utf-8" />
+    <title>Analysing the output &#8212; pymultinest 2.9 documentation</title>
     <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '2.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Watching the progress" href="pymultinest_watch.html" />
     <link rel="prev" title="Running the sampler" href="pymultinest_run.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -42,7 +32,7 @@
         <li class="right" >
           <a href="pymultinest_run.html" title="Running the sampler"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="pymultinest.html" accesskey="U">PyMultiNest</a> &#187;</li> 
       </ul>
     </div>  
@@ -58,7 +48,7 @@
 <span class="target" id="module-pymultinest.analyse"></span><div class="section" id="analyzer-and-parser-for-multinest-output-files">
 <h2>Analyzer and Parser for MultiNest output files<a class="headerlink" href="#analyzer-and-parser-for-multinest-output-files" title="Permalink to this headline">¶</a></h2>
 <p>Use like so:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># create analyzer object</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># create analyzer object</span>
 <span class="n">a</span> <span class="o">=</span> <span class="n">Analyzer</span><span class="p">(</span><span class="n">n_params</span><span class="p">,</span> <span class="n">outputfiles_basename</span> <span class="o">=</span> <span class="s2">&quot;chains/1-&quot;</span><span class="p">)</span>
 
 <span class="c1"># get a dictionary containing information about</span>
@@ -77,52 +67,52 @@
 </div>
 <dl class="class">
 <dt id="pymultinest.analyse.Analyzer">
-<em class="property">class </em><code class="descclassname">pymultinest.analyse.</code><code class="descname">Analyzer</code><span class="sig-paren">(</span><em>n_params</em>, <em>outputfiles_basename='chains/1-'</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/analyse.html#Analyzer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.Analyzer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pymultinest.analyse.</code><code class="sig-name descname">Analyzer</code><span class="sig-paren">(</span><em class="sig-param">n_params</em>, <em class="sig-param">outputfiles_basename='chains/1-'</em>, <em class="sig-param">verbose=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/analyse.html#Analyzer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.Analyzer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class for accessing the output of MultiNest.</p>
 <p>After the run, this class provides a mean of reading the result
 in a structured way.</p>
 <dl class="method">
 <dt id="pymultinest.analyse.Analyzer.get_data">
-<code class="descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/analyse.html#Analyzer.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.Analyzer.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/analyse.html#Analyzer.get_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.Analyzer.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>fetches self.data_file</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymultinest.analyse.Analyzer.get_equal_weighted_posterior">
-<code class="descname">get_equal_weighted_posterior</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/analyse.html#Analyzer.get_equal_weighted_posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.Analyzer.get_equal_weighted_posterior" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_equal_weighted_posterior</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/analyse.html#Analyzer.get_equal_weighted_posterior"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.Analyzer.get_equal_weighted_posterior" title="Permalink to this definition">¶</a></dt>
 <dd><p>fetches self.data_file</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pymultinest.analyse.Analyzer.get_mode_stats">
-<code class="descname">get_mode_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/analyse.html#Analyzer.get_mode_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.Analyzer.get_mode_stats" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_mode_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pymultinest/analyse.html#Analyzer.get_mode_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pymultinest.analyse.Analyzer.get_mode_stats" title="Permalink to this definition">¶</a></dt>
 <dd><p>information about the modes found:
 mean, sigma, maximum a posterior in each dimension</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pymultinest.analyse.Analyzer.n_params">
-<code class="descname">n_params</code><em class="property"> = None</em><a class="headerlink" href="#pymultinest.analyse.Analyzer.n_params" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">n_params</code><em class="property"> = None</em><a class="headerlink" href="#pymultinest.analyse.Analyzer.n_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>[root].txt
-Compatable with getdist with 2+nPar columns. Columns have
+Compatable with getdist with 2+nPar columns. Columns have 
 sample probability, -2*loglikehood, samples. Sample
-probability is the sample prior mass multiplied by its
+probability is the sample prior mass multiplied by its 
 likelihood &amp; normalized by the evidence.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pymultinest.analyse.Analyzer.post_file">
-<code class="descname">post_file</code><em class="property"> = None</em><a class="headerlink" href="#pymultinest.analyse.Analyzer.post_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">post_file</code><em class="property"> = None</em><a class="headerlink" href="#pymultinest.analyse.Analyzer.post_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>[root]stats.dat
-Contains the global log-evidence, its error &amp; local log-evidence
+Contains the global log-evidence, its error &amp; local log-evidence 
 with error &amp; parameter means &amp; standard
-deviations as well as the  best fit &amp; MAP parameters of each of
+deviations as well as the  best fit &amp; MAP parameters of each of 
 the mode found with local log-evidence &gt; nullZ.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pymultinest.analyse.Analyzer.stats_file">
-<code class="descname">stats_file</code><em class="property"> = None</em><a class="headerlink" href="#pymultinest.analyse.Analyzer.stats_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stats_file</code><em class="property"> = None</em><a class="headerlink" href="#pymultinest.analyse.Analyzer.stats_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>[root]post_equal_weights.dat
 Contains the equally weighted posterior samples</p>
 </dd></dl>
@@ -138,7 +128,7 @@ Contains the equally weighted posterior samples</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Analysing the output</a><ul>
 <li><a class="reference internal" href="#analyzer-and-parser-for-multinest-output-files">Analyzer and Parser for MultiNest output files</a></li>
@@ -160,13 +150,13 @@ Contains the equally weighted posterior samples</p>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -188,13 +178,13 @@ Contains the equally weighted posterior samples</p>
         <li class="right" >
           <a href="pymultinest_run.html" title="Running the sampler"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="pymultinest.html" >PyMultiNest</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2017, Johannes Buchner.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
     </div>
   </body>
 </html>

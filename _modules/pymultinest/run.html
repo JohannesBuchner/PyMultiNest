@@ -1,30 +1,20 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pymultinest.run &#8212; pymultinest 2.6 documentation</title>
+    <meta charset="utf-8" />
+    <title>pymultinest.run &#8212; pymultinest 2.9 documentation</title>
     <link rel="stylesheet" href="../../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '2.6',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -34,7 +24,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">pymultinest 2.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pymultinest 2.9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
@@ -45,25 +35,29 @@
           <div class="body" role="main">
             
   <h1>Source code for pymultinest.run</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">ctypes</span> <span class="k">import</span> <span class="n">cdll</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">unicode_literals</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="n">cdll</span>
+<span class="kn">from</span> <span class="nn">ctypes.util</span> <span class="kn">import</span> <span class="n">find_library</span> 
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
 
 <span class="n">libname</span> <span class="o">=</span> <span class="s1">&#39;libmultinest&#39;</span>
 <span class="k">try</span><span class="p">:</span> <span class="c1"># detect if run through mpiexec/mpirun</span>
-	<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="k">import</span> <span class="n">MPI</span>
+	<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
 	<span class="k">if</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="o">.</span><span class="n">Get_size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># need parallel capabilities</span>
 		<span class="n">libname</span> <span class="o">=</span> <span class="s1">&#39;libmultinest_mpi&#39;</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-	<span class="k">pass</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+	<span class="k">if</span> <span class="s1">&#39;PMIX_RANK&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Not using MPI because import mpi4py failed: &#39;</span><span class="si">%s</span><span class="s2">&#39;. To debug, run python -c &#39;import mpi4py&#39;.&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
 
-<span class="n">libname</span> <span class="o">+=</span> <span class="p">{</span>
-	<span class="s1">&#39;darwin&#39;</span> <span class="p">:</span> <span class="s1">&#39;.dylib&#39;</span><span class="p">,</span>
-	<span class="s1">&#39;win32&#39;</span>  <span class="p">:</span> <span class="s1">&#39;.dll&#39;</span><span class="p">,</span>
-	<span class="s1">&#39;cygwin&#39;</span> <span class="p">:</span> <span class="s1">&#39;.dll&#39;</span><span class="p">,</span>
-<span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="p">,</span> <span class="s1">&#39;.so&#39;</span><span class="p">)</span>
+<span class="n">libname</span> <span class="o">=</span> <span class="p">{</span>
+	<span class="s1">&#39;darwin&#39;</span> <span class="p">:</span> <span class="n">libname</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="s1">&#39;lib&#39;</span><span class="p">):],</span>
+	<span class="s1">&#39;win32&#39;</span>  <span class="p">:</span> <span class="n">libname</span> <span class="o">+</span> <span class="s1">&#39;.dll&#39;</span><span class="p">,</span>
+	<span class="s1">&#39;cygwin&#39;</span> <span class="p">:</span> <span class="n">libname</span> <span class="o">+</span> <span class="s1">&#39;.dll&#39;</span><span class="p">,</span>
+<span class="p">}</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="p">,</span> <span class="n">libname</span> <span class="o">+</span> <span class="s1">&#39;.so&#39;</span><span class="p">)</span>
 
 <span class="k">try</span><span class="p">:</span>
+	<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span> <span class="o">==</span> <span class="s1">&#39;darwin&#39;</span><span class="p">:</span>
+		<span class="n">libname</span> <span class="o">=</span> <span class="n">find_library</span><span class="p">(</span><span class="n">libname</span><span class="p">)</span>
 	<span class="n">lib</span> <span class="o">=</span> <span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span><span class="n">libname</span><span class="p">)</span>
 <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
 	<span class="n">message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
@@ -101,8 +95,8 @@
 	<span class="kn">import</span> <span class="nn">sys</span>
 	<span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-<span class="kn">from</span> <span class="nn">ctypes</span> <span class="k">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">numpy.ctypeslib</span> <span class="k">import</span> <span class="n">as_array</span>
+<span class="kn">from</span> <span class="nn">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">numpy.ctypeslib</span> <span class="kn">import</span> <span class="n">as_array</span>
 <span class="kn">import</span> <span class="nn">signal</span><span class="o">,</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 
@@ -331,13 +325,13 @@
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -353,13 +347,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">pymultinest 2.6 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">pymultinest 2.9 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2017, Johannes Buchner.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.7.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
     </div>
   </body>
 </html>
