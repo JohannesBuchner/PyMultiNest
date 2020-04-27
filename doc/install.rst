@@ -59,7 +59,7 @@ On **Ubuntu Linux**, install with:
 
 On **Mac OSX**:
 
-* As in the instructions above, you need cmake and a Fortran compiler.
+* As in the instructions above, you need cmake (e.g. with "brew install cmake"), a Fortran compiler (e.g. with "brew install gcc") and possibly MPI (e.g. with "brew install open-mpi" and then "pip install mpi4py")
 * If you google for "MultiNest Mac OSX" or "PyMultiNest Mac OSX" you will find installation instructions.
 
 2. Building the libraries
@@ -73,8 +73,9 @@ On **Mac OSX**:
   	cd MultiNest/build
   	cmake ..
   	make
-
-  * Include the lib/ directory in your LD_LIBRARY_PATH.
+    
+  * On e.g. Mac OSX, make sure the correct compilers are used by calling cmake using -DCMAKE_C_COMPILER=/path/to/gcc -DCMAKE_CXX_COMPILER=/path/to/g++
+  * Include the lib/ directory in your LD_LIBRARY_PATH
   * More detailed install instructions for MultiNest are available in the `tutorial <http://johannesbuchner.github.io/pymultinest-tutorial/install.html#on-your-own-computer>`_.
 
 * If you want to use :doc:`PyCuba <pycuba>`:
@@ -103,6 +104,7 @@ libraries. So put the three directories in the dynamic library load path:
 
      $ export LD_LIBRARY_PATH=$HOME/Downloads/MultiNest/lib:$HOME/Downloads/cuba/directory/:$LD_LIBRARY_PATH
 
+* On Mac OSX, do the same for DYLD_LIBRARY_PATH.
 * Replace the above with your actual path.
 * Consider putting this line into your shell startup script (e.g. ~/.bashrc).
 
@@ -164,5 +166,4 @@ Go in the doc directory and run make:
      $ cd doc && make html
 
 Point your web browser to _build/html/index.html in doc.
-
 
