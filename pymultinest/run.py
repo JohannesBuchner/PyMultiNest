@@ -58,6 +58,21 @@ except OSError as e:
 	import sys
 	sys.exit(1)
 
+# try getting MultiNest version information from library name (only works on Linux!)
+pre311 = True
+if sys.platform == "linux":
+	from distutils.version import StrictVersion
+
+	libfile = find_library(libname)
+	verstring = os.path.basename(libfile).split(".so.")[-1]
+    
+	try:
+		pre311 = StrictVersion(verstring) < StrictVersion("3.11")
+	except Exception as e:
+		print("Could not get MultiNest version information: {}".format(e))
+		pass
+
+
 from ctypes import *
 from numpy.ctypeslib import as_array
 import signal, sys
@@ -234,7 +249,8 @@ def run(LogLikelihood,
 	# to avoid garbage collection of these ctypes, which leads to NULLs
 	# we need to make local copies here that are not thrown away
 	s = outputfiles_basename.encode()
-	sb = create_string_buffer(s, 100)
+	# allow longer string names in MultiNest 3.11 or greater
+	sb = create_string_buffer(s, 100 if pre311 else 1000)
 	argtypes = [c_bool, c_bool, c_bool, 
 		c_int, c_double, c_double, 
 		c_int, c_int, c_int, c_int, 
