@@ -236,8 +236,8 @@ def run(LogLikelihood,
 	s = outputfiles_basename.encode()
 	
 	if len(os.path.join(outputfiles_basename, "phys_live-birth.txt")) > 100:
-		# try 1000 character length file name (the may cause MultiNest failure
-		# or filename truncation if not using latest MultiNest version)
+		# try 1000 character length file name (this may cause MultiNest failure
+		# or filename truncation if not using the latest MultiNest version)
 		sb = create_string_buffer(s, 1000)
 	else:
 		# 100 characters work for all MultiNest versions
