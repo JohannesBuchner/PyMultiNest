@@ -119,14 +119,16 @@ script:
       if [[ "$MULTINEST_TAG" == "filelength" ]]; then
         python pymultinest_demo_longname.py;
       else
-        TESTRESULT=0; python pymultinest_demo_longname.py || TESTRESULT=$?; expr $TESTRESULT != 0
+        TESTRESULT=0; python pymultinest_demo_longname.py || TESTRESULT=$?; expr $TESTRESULT != 0;
+      fi
     else
       if [[ "$MULTINEST_TAG" == "filelength" ]]; then
         python -c 'import mpi4py' &&
         mpiexec -np 4 python pymultinest_demo_longname.py;
       else
         TESTRESULT=0; (python -c 'import mpi4py' &&
-        mpiexec -np 4 python pymultinest_demo_longname.py) || TESTRESULT=$?; expr $TESTRESULT != 0
+        mpiexec -np 4 python pymultinest_demo_longname.py) || TESTRESULT=$?; expr $TESTRESULT != 0;
+      fi
     fi
   - python multinest_marginals.py chains/3-
   - python pycuba_demo.py
