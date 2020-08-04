@@ -234,8 +234,8 @@ def run(LogLikelihood,
 	# to avoid garbage collection of these ctypes, which leads to NULLs
 	# we need to make local copies here that are not thrown away
 	s = outputfiles_basename.encode()
-	
-	if len(os.path.join(outputfiles_basename, "phys_live-birth.txt")) > 100:
+
+	if len(outputfiles_basename + "post_equal_weights.txt") > 100:
 		# try 1000 character length file name (this may cause MultiNest failure
 		# or filename truncation if not using the latest MultiNest version)
 		sb = create_string_buffer(s, 1000)
