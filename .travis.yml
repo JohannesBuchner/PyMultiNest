@@ -117,7 +117,8 @@ script:
       if [[ "$MULTINEST_TAG" == "filelength" ]]; then
         python tests/pymultinest_long_name_test.py;
       else
-        if python tests/pymultinest_long_name_test.py; then
+        TESTRESULT=0; python tests/pymultinest_long_name_test.py || $TESTRESULT=$?;
+        if [ $TESTRESULT == 0 ]; then
           echo "Unexpected success";
           exit 1;
         else
