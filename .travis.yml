@@ -20,8 +20,6 @@ env:
   - MULTINEST_TAG=v3.10 WITHMPI=mpich
   - MULTINEST_TAG=v3.10 WITHMPI=openmpi
   - MULTINEST_TAG=v3.10 WITHMPI=no
-  - MULTINEST_TAG=filelength WITHMPI=mpich
-  - MULTINEST_TAG=filelength WITHMPI=openmpi
   - MULTINEST_TAG=filelength WITHMPI=no
 
 #before_install:
@@ -117,17 +115,9 @@ script:
     fi
   - if [[ "$WITHMPI" == "no" ]]; then
       if [[ "$MULTINEST_TAG" == "filelength" ]]; then
-        python pymultinest_demo_longname.py;
+        python tests/pymultinest_long_name_test.py;
       else
         TESTRESULT=0; python pymultinest_demo_longname.py || TESTRESULT=$?; expr $TESTRESULT != 0;
-      fi
-    else
-      if [[ "$MULTINEST_TAG" == "filelength" ]]; then
-        python -c 'import mpi4py' &&
-        mpiexec -np 4 python pymultinest_demo_longname.py;
-      else
-        TESTRESULT=0; (python -c 'import mpi4py' &&
-        mpiexec -np 4 python pymultinest_demo_longname.py) || TESTRESULT=$?; expr $TESTRESULT != 0;
       fi
     fi
   - python multinest_marginals.py chains/3-
