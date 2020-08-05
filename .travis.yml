@@ -117,7 +117,7 @@ script:
       if [[ "$MULTINEST_TAG" == "filelength" ]]; then
         python tests/pymultinest_long_name_test.py;
       else
-        TESTRESULT=0; python pymultinest_demo_longname.py || TESTRESULT=$?; expr $TESTRESULT != 0;
+        TESTRESULT=0; python tests/pymultinest_long_name_test.py || TESTRESULT=$?; expr $TESTRESULT != 0;
       fi
     fi
   - python multinest_marginals.py chains/3-
