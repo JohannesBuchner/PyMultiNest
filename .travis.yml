@@ -99,7 +99,7 @@ install:
 script:
   - python -c 'import pymultinest'
   - python -c 'import pycuba'
-  - if [[ "$WITHMPI" == "no" ]]; then coverage run setup.py test; fi
+  - if [[ "$WITHMPI" == "no" ]]; then coverage run setup.py test --ignore=tests/pymultinest_long_name_test.py; fi
   - rm -rf chains/
   - if [[ "$WITHMPI" == "no" ]]; then 
       python pymultinest_demo_minimal.py;
@@ -117,7 +117,12 @@ script:
       if [[ "$MULTINEST_TAG" == "filelength" ]]; then
         python tests/pymultinest_long_name_test.py;
       else
-        TESTRESULT=0; python tests/pymultinest_long_name_test.py || TESTRESULT=$?; expr $TESTRESULT != 0;
+        if python tests/pymultinest_long_name_test.py; then
+          echo "Unexpected success";
+          exit 1;
+        else
+          echo "Long name failed with error code $? as expected"
+        fi
       fi
     fi
   - python multinest_marginals.py chains/3-
