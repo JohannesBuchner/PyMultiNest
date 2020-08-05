@@ -99,7 +99,7 @@ install:
 script:
   - python -c 'import pymultinest'
   - python -c 'import pycuba'
-  - if [[ "$WITHMPI" == "no" ]]; then coverage run setup.py test --ignore=tests/pymultinest_long_name_test.py; fi
+  - if [[ "$WITHMPI" == "no" ]]; then coverage run setup.py test; fi
   - rm -rf chains/
   - if [[ "$WITHMPI" == "no" ]]; then 
       python pymultinest_demo_minimal.py;
