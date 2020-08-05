@@ -10,17 +10,17 @@ os:
 #    - os: osx
 
 python:
-  #- "2.7"
+  - "2.7"
   - "3.6"
 
 compiler:
   - gcc
 
 env:
-  #- MULTINEST_TAG=v3.10 WITHMPI=mpich
-  #- MULTINEST_TAG=v3.10 WITHMPI=openmpi
+  - MULTINEST_TAG=v3.10 WITHMPI=mpich
+  - MULTINEST_TAG=v3.10 WITHMPI=openmpi
   - MULTINEST_TAG=v3.10 WITHMPI=no
-  #- MULTINEST_TAG=filelength WITHMPI=no
+  - MULTINEST_TAG=filelength WITHMPI=no
 
 #before_install:
 #  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then 
