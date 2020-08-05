@@ -17,10 +17,10 @@ compiler:
   - gcc
 
 env:
-  - MULTINEST_TAG=v3.10 WITHMPI=mpich
-  - MULTINEST_TAG=v3.10 WITHMPI=openmpi
+  - MULTINEST_TAG=v3.10b WITHMPI=mpich
+  - MULTINEST_TAG=v3.10b WITHMPI=openmpi
+  - MULTINEST_TAG=v3.10b WITHMPI=no
   - MULTINEST_TAG=v3.10 WITHMPI=no
-  - MULTINEST_TAG=filelength WITHMPI=no
 
 #before_install:
 #  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then 
@@ -114,7 +114,7 @@ script:
       mpiexec -np 4 python pymultinest_demo.py;
     fi
   - if [[ "$WITHMPI" == "no" ]]; then
-      if [[ "$MULTINEST_TAG" == "filelength" ]]; then
+      if [[ "$MULTINEST_TAG" == "v3.10b" ]]; then
         python tests/pymultinest_long_name_test.py;
       else
         if python tests/pymultinest_long_name_test.py; then
