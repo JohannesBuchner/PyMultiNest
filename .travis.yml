@@ -5,13 +5,10 @@ os:
 # sadly travis does not support python on osx
 #  - osx
 
-#matrix:
-#  allow_failures:
-#    - os: osx
-
 python:
   - "2.7"
-  - "3.6"
+  - "3.4"
+  - "3.8"
 
 compiler:
   - gcc
