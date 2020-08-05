@@ -234,7 +234,18 @@ def run(LogLikelihood,
 	# to avoid garbage collection of these ctypes, which leads to NULLs
 	# we need to make local copies here that are not thrown away
 	s = outputfiles_basename.encode()
-	sb = create_string_buffer(s, 100)
+
+	if len(outputfiles_basename + "post_equal_weights.txt") < 100:
+		# 100 characters work for all MultiNest versions
+		sb = create_string_buffer(s, 100)
+	elif len(outputfiles_basename + "post_equal_weights.txt") > 1000:
+		# file name is too long
+		raise ValueError("Filenames must be less than 1000 characters long.")
+	else:
+		# try 1000 character length file name (this may cause MultiNest failure
+		# or filename truncation if not using the latest MultiNest version)
+		sb = create_string_buffer(s, 1000)
+
 	argtypes = [c_bool, c_bool, c_bool, 
 		c_int, c_double, c_double, 
 		c_int, c_int, c_int, c_int, 

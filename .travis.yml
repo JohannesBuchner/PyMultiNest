@@ -20,6 +20,7 @@ env:
   - MULTINEST_TAG=v3.10 WITHMPI=mpich
   - MULTINEST_TAG=v3.10 WITHMPI=openmpi
   - MULTINEST_TAG=v3.10 WITHMPI=no
+  - MULTINEST_TAG=filelength WITHMPI=no
 
 #before_install:
 #  - if [ "$TRAVIS_OS_NAME" = "osx" ]; then 
@@ -84,7 +85,7 @@ install:
     fi
   
   # Install and test
-  - git clone --branch ${MULTINEST_TAG} https://github.com/JohannesBuchner/MultiNest
+  - git clone --branch ${MULTINEST_TAG} https://github.com/mattpitkin/MultiNest-1 MultiNest
   - mkdir -p MultiNest/build; pushd MultiNest/build; cmake .. && make && popd
   - test -e MultiNest/lib/libmultinest.so
   - python setup.py install --user
@@ -111,6 +112,18 @@ script:
     else
       python -c 'import mpi4py' &&
       mpiexec -np 4 python pymultinest_demo.py;
+    fi
+  - if [[ "$WITHMPI" == "no" ]]; then
+      if [[ "$MULTINEST_TAG" == "filelength" ]]; then
+        python tests/pymultinest_long_name_test.py;
+      else
+        if python tests/pymultinest_long_name_test.py; then
+          echo "Unexpected success";
+          exit 1;
+        else
+          echo "Long name failed with error code $? as expected";
+        fi;
+      fi;
     fi
   - python multinest_marginals.py chains/3-
   - python pycuba_demo.py
