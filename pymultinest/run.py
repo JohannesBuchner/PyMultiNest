@@ -3,60 +3,63 @@ from ctypes import cdll
 from ctypes.util import find_library 
 import sys, os
 
-libname = 'libmultinest'
+def _load_library(libname):
+	libname = {
+		'darwin' : libname[len('lib'):],
+		'win32'  : libname + '.dll',
+		'cygwin' : libname + '.dll',
+	}.get(sys.platform, libname + '.so')
+
+	try:
+		if sys.platform == 'darwin':
+			libname = find_library(libname)
+		return cdll.LoadLibrary(libname)
+	except OSError as e:
+		message = str(e)
+		if message == '%s: cannot open shared object file: No such file or directory' % libname:
+			print()
+			print('ERROR:   Could not load MultiNest library "%s"' % libname)
+			print('ERROR:   You have to build it first,')
+			print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
+			print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+			print()
+		if message.endswith('cannot open shared object file: No such file or directory'):
+			print()
+			print('ERROR:   Could not load MultiNest library: %s' % message.split(':')[0])
+			print('ERROR:   You have to build MultiNest,')
+			print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
+			print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+			print()
+		if 'undefined symbol: mpi_' in message:
+			print()
+			print('ERROR:   You tried to compile MultiNest linked with MPI,')
+			print('ERROR:   but now when running, MultiNest can not find the MPI linked libraries.')
+			print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+			print()
+		# the next if is useless because we can not catch symbol lookup errors (the executable crashes)
+		# but it is still there as documentation.
+		if 'symbol lookup error' in message and 'mpi' in message:
+			print()
+			print('ERROR:   You are trying to get MPI to run, but MPI failed to load.')
+			print('ERROR:   Specifically, mpi symbols are missing in the executable.')
+			print('ERROR:   Let me know if this is a problem of running python or a compilation problem.')
+			print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+			print()
+		# what if built with MPI, but don't have MPI
+		print('problem:', e)
+		import sys
+		sys.exit(1)
+
+lib = _load_library('libmultinest')
+
+lib_mpi = None
 try: # detect if run through mpiexec/mpirun
 	from mpi4py import MPI
 	if MPI.COMM_WORLD.Get_size() > 1: # need parallel capabilities
-		libname = 'libmultinest_mpi'
+		lib_mpi = _load_library('libmultinest_mpi')
 except ImportError as e:
 	if 'PMIX_RANK' in os.environ:
 		print("Not using MPI because import mpi4py failed: '%s'. To debug, run python -c 'import mpi4py'.", e)
-
-libname = {
-	'darwin' : libname[len('lib'):],
-	'win32'  : libname + '.dll',
-	'cygwin' : libname + '.dll',
-}.get(sys.platform, libname + '.so')
-
-try:
-	if sys.platform == 'darwin':
-		libname = find_library(libname)
-	lib = cdll.LoadLibrary(libname)
-except OSError as e:
-	message = str(e)
-	if message == '%s: cannot open shared object file: No such file or directory' % libname:
-		print()
-		print('ERROR:   Could not load MultiNest library "%s"' % libname)
-		print('ERROR:   You have to build it first,')
-		print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
-		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
-		print()
-	if message.endswith('cannot open shared object file: No such file or directory'):
-		print()
-		print('ERROR:   Could not load MultiNest library: %s' % message.split(':')[0])
-		print('ERROR:   You have to build MultiNest,')
-		print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
-		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
-		print()
-	if 'undefined symbol: mpi_' in message:
-		print()
-		print('ERROR:   You tried to compile MultiNest linked with MPI,')
-		print('ERROR:   but now when running, MultiNest can not find the MPI linked libraries.')
-		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
-		print()
-	# the next if is useless because we can not catch symbol lookup errors (the executable crashes)
-	# but it is still there as documentation.
-	if 'symbol lookup error' in message and 'mpi' in message:
-		print()
-		print('ERROR:   You are trying to get MPI to run, but MPI failed to load.')
-		print('ERROR:   Specifically, mpi symbols are missing in the executable.')
-		print('ERROR:   Let me know if this is a problem of running python or a compilation problem.')
-		print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
-		print()
-	# what if built with MPI, but don't have MPI
-	print('problem:', e)
-	import sys
-	sys.exit(1)
 
 from ctypes import *
 from numpy.ctypeslib import as_array
@@ -79,7 +82,7 @@ def run(LogLikelihood,
 	max_modes = 100, mode_tolerance = -1e90,
 	outputfiles_basename = "chains/1-", seed = -1, verbose = False,
 	resume = True, context = 0, write_output = True, log_zero = -1e100, 
-	max_iter = 0, init_MPI = False, dump_callback = None):
+	max_iter = 0, init_MPI = False, dump_callback = None, use_MPI = True):
 	"""
 	Runs MultiNest
 	
@@ -173,6 +176,9 @@ def run(LogLikelihood,
 	@param dump_callback:
 		a callback function for dumping the current status
 	
+	@param use_MPI:
+		if True (default), if run with mpiexec and mpi4py installed, use multinest MPI library.
+		if False, use only a single processor.
 	"""
 
 	if n_params == None:
@@ -262,7 +268,10 @@ def run(LogLikelihood,
 		verbose, resume, write_output, init_MPI,
 		log_zero, max_iter, loglike, dumper, context]
 	args_converted = [converter(v) for v, converter in zip(args, argtypes)]
-	lib.run(*args_converted)
+	if use_MPI and lib_mpi is not None:
+		lib.run(*args_converted)
+	else:
+		lib_mpi.run(*args_converted)
 	if 'mpi' in libname:
 		# wait for all processes to return
 		# Otherwise rank=0 is still writing output files
@@ -289,5 +298,3 @@ def multinest_complete(outputfiles_basename = "chains/1-"):
 	if not _is_newer(basename + 'post_equal_weights.dat', basename + '.txt'):
 		return False
 	return True
-
-
