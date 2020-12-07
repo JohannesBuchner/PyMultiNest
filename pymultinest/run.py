@@ -47,7 +47,6 @@ def _load_library(libname):
 			print()
 		# what if built with MPI, but don't have MPI
 		print('problem:', e)
-		import sys
 		sys.exit(1)
 
 lib = _load_library('libmultinest')
