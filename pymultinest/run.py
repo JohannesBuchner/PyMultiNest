@@ -269,9 +269,9 @@ def run(LogLikelihood,
 		log_zero, max_iter, loglike, dumper, context]
 	args_converted = [converter(v) for v, converter in zip(args, argtypes)]
 	if use_MPI and lib_mpi is not None:
-		lib.run(*args_converted)
-	else:
 		lib_mpi.run(*args_converted)
+	else:
+		lib.run(*args_converted)
 	if 'mpi' in libname:
 		# wait for all processes to return
 		# Otherwise rank=0 is still writing output files
