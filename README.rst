@@ -18,8 +18,8 @@ on nested sampling and the idea of disjoint multi-dimensional ellipse sampling.
 For the scientific community, where Python is becoming the new lingua franca (luckily),
 I provide an interface to MultiNest.
 
-.. image:: https://travis-ci.org/JohannesBuchner/PyMultiNest.svg?branch=master
-    :target: https://travis-ci.org/JohannesBuchner/PyMultiNest
+.. image:: https://travis-ci.com/JohannesBuchner/PyMultiNest.svg?branch=master
+    :target: https://travis-ci.com/JohannesBuchner/PyMultiNest
 
 The automatic build makes sure both Python 2.7 and Python 3 are working correctly 
 with MultiNest and Cuba. It also tests that MultiNest works with MPI enabled.
@@ -105,6 +105,3 @@ them as C functions.
 You still have the neat python interface (default parameters, etc.), but
 achieve full execution speed, as only native code is executed while
 MultiNest runs.
-
-
-
