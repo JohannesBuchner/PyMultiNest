@@ -1,17 +1,18 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PyMultiNest &#8212; pymultinest 2.9 documentation</title>
-    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Running the sampler" href="pymultinest_run.html" />
@@ -24,15 +25,13 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="pymultinest_run.html" title="Running the sampler"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="install.html" title="Installing PyMultiNest and PyCuba"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">PyMultiNest</a></li> 
       </ul>
     </div>  
 
@@ -46,25 +45,10 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pymultinest_run.html">Running the sampler</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pymultinest_analyse.html">Analysing the output</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pymultinest_analyse.html#analyzer-and-parser-for-multinest-output-files">Analyzer and Parser for MultiNest output files</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="pymultinest_analyse.html">Analysing the output</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pymultinest_watch.html">Watching the progress</a></li>
 </ul>
 </div>
-<span class="target" id="module-pymultinest"></span><p>PyMultiNest is a module to use the MultiNest sampling engine.</p>
-<p>To import this module, you must have <em>libmultinest.so</em> (MultiNest) compiled 
-and in your LD_LIBRARY_PATH.</p>
-<blockquote>
-<div><p>Otherwise you will get an error like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="ne">OSError</span><span class="p">:</span> <span class="n">libmultinest</span><span class="o">.</span><span class="n">so</span><span class="p">:</span> <span class="n">cannot</span> <span class="nb">open</span> <span class="n">shared</span> <span class="nb">object</span> <span class="n">file</span><span class="p">:</span> <span class="n">No</span> <span class="n">such</span> <span class="n">file</span> <span class="ow">or</span> <span class="n">directory</span>
-</pre></div>
-</div>
-</div></blockquote>
-<p>Common parameters:</p>
-<p>outputfiles_basename is the prefix used for the output files of MultiNest 
-(default chains/1-).</p>
 <p>Make sure you <a class="reference external" href="install">installed everything</a> correctly.</p>
 <div class="section" id="demo-program-for-pymultinest">
 <h2>Demo program for PyMultiNest<a class="headerlink" href="#demo-program-for-pymultinest" title="Permalink to this headline">¶</a></h2>
@@ -105,6 +89,7 @@ the “libmultinest_mpi” library instead. No further modifications are necessa
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -143,7 +128,7 @@ the “libmultinest_mpi” library instead. No further modifications are necessa
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -155,20 +140,18 @@ the “libmultinest_mpi” library instead. No further modifications are necessa
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="pymultinest_run.html" title="Running the sampler"
              >next</a> |</li>
         <li class="right" >
           <a href="install.html" title="Installing PyMultiNest and PyCuba"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">PyMultiNest</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2017, Johannes Buchner.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.3.1.
     </div>
   </body>
 </html>

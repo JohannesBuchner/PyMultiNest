@@ -1,17 +1,18 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>PyCuba &#8212; pymultinest 2.9 documentation</title>
-    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Watching the progress" href="pymultinest_watch.html" /> 
@@ -23,12 +24,10 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="pymultinest_watch.html" title="Watching the progress"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">PyCuba</a></li> 
       </ul>
     </div>  
 
@@ -123,14 +122,14 @@ in this function).</p>
   <span class="n">KEY</span> <span class="o">=</span> <span class="mi">0</span>
   
   <span class="k">def</span> <span class="nf">print_header</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;-------------------- </span><span class="si">%s</span><span class="s1"> test -------------------&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-------------------- </span><span class="si">%s</span><span class="s1"> test -------------------&#39;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
   <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">results</span><span class="p">):</span>
     <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;nregions&#39;</span><span class="p">,</span> <span class="s1">&#39;neval&#39;</span><span class="p">,</span> <span class="s1">&#39;fail&#39;</span><span class="p">]</span>
     <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">has_key</span><span class="p">,</span> <span class="n">keys</span><span class="p">))</span>
     <span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">results</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">]</span>
-    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> RESULT:</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> RESULT:</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">]:</span>
-      <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> RESULT:</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> \
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> RESULT:</span><span class="se">\t</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> \
 	<span class="s2">&quot;</span><span class="si">%(integral).8f</span><span class="s2"> +- </span><span class="si">%(error).8f</span><span class="se">\t</span><span class="s2">p = </span><span class="si">%(prob).3f</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">comp</span><span class="p">)</span>
   
   <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">environ</span> <span class="k">as</span> <span class="n">env</span>
@@ -157,189 +156,13 @@ in this function).</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="module-pycuba">
-<span id="api-documentation"></span><h2>API documentation<a class="headerlink" href="#module-pycuba" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="pycuba.BOUNDS">
-<em class="property">class </em><code class="sig-prename descclassname">pycuba.</code><code class="sig-name descname">BOUNDS</code><a class="reference internal" href="_modules/pycuba.html#BOUNDS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pycuba.BOUNDS" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pycuba.Cuhre">
-<code class="sig-prename descclassname">pycuba.</code><code class="sig-name descname">Cuhre</code><span class="sig-paren">(</span><em class="sig-param">integrand</em>, <em class="sig-param">ndim</em>, <em class="sig-param">key=0</em>, <em class="sig-param">mineval=0</em>, <em class="sig-param">maxeval=50000</em>, <em class="sig-param">ncomp=1</em>, <em class="sig-param">userdata=&lt;pycuba.LP_c_int object&gt;</em>, <em class="sig-param">seed=None</em>, <em class="sig-param">epsrel=0.001</em>, <em class="sig-param">epsabs=1e-12</em>, <em class="sig-param">verbose=0</em>, <em class="sig-param">statefile=&lt;pycuba.LP_c_int object&gt;</em>, <em class="sig-param">nvec=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pycuba.html#Cuhre"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pycuba.Cuhre" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt><em>key</em> chooses the basic integration rule:</dt><dd><p>key = 7, 9, 11, 13 selects the cubature rule of degree key. Note that the degree-11
-rule is available only in 3 dimensions, the degree-13 rule only in 2 dimensions.
-For other values, the default rule is taken, which is the degree-13 rule in 2 dimensions,
-the degree-11 rule in 3 dimensions, and the degree-9 rule otherwise.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="pycuba.Divonne">
-<code class="sig-prename descclassname">pycuba.</code><code class="sig-name descname">Divonne</code><span class="sig-paren">(</span><em class="sig-param">integrand</em>, <em class="sig-param">ndim</em>, <em class="sig-param">key1</em>, <em class="sig-param">key2</em>, <em class="sig-param">key3</em>, <em class="sig-param">maxpass</em>, <em class="sig-param">border</em>, <em class="sig-param">maxchisq</em>, <em class="sig-param">mindeviation</em>, <em class="sig-param">mineval=0</em>, <em class="sig-param">maxeval=50000</em>, <em class="sig-param">ncomp=1</em>, <em class="sig-param">ldxgiven=None</em>, <em class="sig-param">xgiven=None</em>, <em class="sig-param">nextra=0</em>, <em class="sig-param">peakfinder=None</em>, <em class="sig-param">userdata=&lt;pycuba.LP_c_int object&gt;</em>, <em class="sig-param">seed=None</em>, <em class="sig-param">epsrel=0.001</em>, <em class="sig-param">epsabs=1e-12</em>, <em class="sig-param">verbose=0</em>, <em class="sig-param">statefile=&lt;pycuba.LP_c_int object&gt;</em>, <em class="sig-param">nvec=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pycuba.html#Divonne"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pycuba.Divonne" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><dl class="simple">
-<dt><em>key1</em>: determines sampling in the partitioning phase:</dt><dd><p>key1 = 7, 9, 11, 13 selects the cubature rule of degree key1. Note that the degree-11
-rule is available only in 3 dimensions, the degree-13 rule only in 2 dimensions.
-For other values of key1, a quasi-random sample of n1 = <a href="#id1"><span class="problematic" id="id2">|key1|</span></a> points is used, where
-the sign of key1 determines the type of sample,
-- key1 &gt; 0, use a Korobov quasi-random sample,
-- key1 &lt; 0, use a “standard” sample (a Sobol quasi-random sample if seed = 0,
-otherwise a pseudo-random sample).</p>
-</dd>
-<dt><em>key2</em>: determines sampling in the final integration phase:</dt><dd><p>key2 = 7, 9, 11, 13 selects the cubature rule of degree key2. Note that the degree-11
-rule is available only in 3 dimensions, the degree-13 rule only in 2 dimensions.
-For other values of key2, a quasi-random sample is used, where the sign of key2
-determines the type of sample,
-- key2 &gt; 0, use a Korobov quasi-random sample,
-- key2 &lt; 0, use a ‘standard’ sample (see description of key1 above),
-and n2 = <a href="#id3"><span class="problematic" id="id4">|key2|</span></a> determines the number of points,
-- n2 &gt;= 40, sample n2 points,
-- n2 &lt; 40, sample n2 need points, where nneed is the number of points needed to
-reach the prescribed accuracy, as estimated by Divonne from the results of the
-partitioning phase.</p>
-</dd>
-<dt><em>key3</em> sets the strategy for the refinement phase:</dt><dd><p>key3 = 0, do not treat the subregion any further.
-key3 = 1, split the subregion up once more.
-Otherwise, the subregion is sampled a third time with key3 specifying the sampling
-parameters exactly as key2 above.</p>
-</dd>
-<dt><em>maxpass</em>: controls the thoroughness of the partitioning phase: The</dt><dd><p>partitioning phase terminates when the estimated total number of integrand evalu-
-ations (partitioning plus final integration) does not decrease for maxpass successive
-iterations.
-A decrease in points generally indicates that Divonne discovered new structures of
-the integrand and was able to find a more effective partitioning. maxpass can be
-understood as the number of ‘safety’ iterations that are performed before the par-
-tition is accepted as final and counting consequently restarts at zero whenever new
-structures are found.</p>
-</dd>
-<dt><em>border</em>: the width of the border of the integration region.</dt><dd><p>Points falling into this border region will not be sampled directly, but will be extrap-
-olated from two samples from the interior. Use a non-zero border if the integrand
-subroutine cannot produce values directly on the integration boundary.</p>
-</dd>
-<dt><em>maxchisq</em>: the maximum chisquare value a single subregion is al-</dt><dd><p>lowed to have in the final integration phase. Regions which fail this chisquare test and whose
-sample averages differ by more than mindeviation move on to the refinement phase.</p>
-</dd>
-<dt><em>mindeviation</em>: a bound, given as the fraction of the re-</dt><dd><p>quested error of the entire integral, which determines whether it is worthwhile fur-
-ther examining a region that failed the chisquare test. Only if the two sampling averages
-obtained for the region differ by more than this bound is the region further treated.</p>
-</dd>
-</dl>
-</div></blockquote>
-<dl>
-<dt><em>ldxgiven</em>: the leading dimension of xgiven, i.e. the offset between one</dt><dd><p>point and the next in memory.</p>
-</dd>
-<dt><em>xgiven(ldxgiven,ngiven)</em>: a list of points where the inte-</dt><dd><p>grand might have peaks. Divonne will consider these points when partitioning the
-integration region. The idea here is to help the integrator find the extrema of the in-
-tegrand in the presence of very narrow peaks. Even if only the approximate location
-of such peaks is known, this can considerably speed up convergence.</p>
-</dd>
-<dt><em>nextra</em>: the maximum number of extra points the peak-finder subrou-</dt><dd><p>tine will return. If nextra is zero, peakfinder is not called and an arbitrary object
-may be passed in its place, e.g. just 0.</p>
-</dd>
-<dt><em>peakfinder</em>: the peak-finder subroutine. This subroutine is called</dt><dd><blockquote>
-<div><p>whenever a region is up for subdivision and is supposed to point out possible peaks
-lying in the region, thus acting as the dynamic counterpart of the static list of points
-supplied in xgiven. It is expected to be declared as
-def peakfinder(ndim, b, n, x):</p>
-<blockquote>
-<div><p>The bounds of the subregion are passed in the array b, where b(1,d ) is the lower and
-b(2,d ) the upper bound in dimension d . On entry, n specifies the maximum number
-of points that may be written to x. On exit, n must contain the actual number of
-points in x.</p>
-</div></blockquote>
-</div></blockquote>
-<p>Divonne actually passes the integrand one more argument, i.e. the integrand subroutine is
-really declared as</p>
-<p>def integrand(ndim, x, ncomp, f, phase):</p>
-<dl class="simple">
-<dt>The fifth argument, phase, indicates the integration phase:</dt><dd><p>0, sampling of the points in xgiven,
-1, partitioning phase,
-2, final integration phase,
-3, refinement phase.</p>
-</dd>
-</dl>
-<p>This information might be useful if the integrand takes long to compute and a sufficiently
-accurate approximation of the integrand is available. The actual value of the integral is only
-of minor importance in the partitioning phase, which is instead much more dependent on
-the peak structure of the integrand to find an appropriate tessellation. An approximation
-which reproduces the peak structure while leaving out the fine details might hence be a
-perfectly viable and much faster substitute when phase &lt; 2.</p>
-<p>In all other instances, phase can be ignored and it is entirely admissible to define the
-integrand with only five arguments.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="pycuba.Suave">
-<code class="sig-prename descclassname">pycuba.</code><code class="sig-name descname">Suave</code><span class="sig-paren">(</span><em class="sig-param">integrand</em>, <em class="sig-param">ndim</em>, <em class="sig-param">nnew=1000</em>, <em class="sig-param">nmin=2</em>, <em class="sig-param">flatness=50.0</em>, <em class="sig-param">userdata=&lt;pycuba.LP_c_int object&gt;</em>, <em class="sig-param">epsrel=0.001</em>, <em class="sig-param">epsabs=1e-12</em>, <em class="sig-param">verbose=0</em>, <em class="sig-param">ncomp=1</em>, <em class="sig-param">seed=None</em>, <em class="sig-param">mineval=0</em>, <em class="sig-param">maxeval=50000</em>, <em class="sig-param">statefile=&lt;pycuba.LP_c_int object&gt;</em>, <em class="sig-param">nvec=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pycuba.html#Suave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pycuba.Suave" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>nnew</em>: the number of new integrand evaluations in each subdivision.</p>
-<p><em>nmin</em>: the minimum number of samples a former pass must contribute
-to a subregion to be considered in that region’s compound integral value. Increasing
-nmin may reduce jumps in the chi^2 value.</p>
-<p><em>flatness</em>: the parameter p in Eq. (1), i.e. the type of norm
-used to compute the fluctuation of a sample. This determines how prominently ‘out-
-liers,’ i.e. individual samples with a large fluctuation, figure in the total fluctuation,
-which in turn determines how a region is split up. As suggested by its name, flatness
-should be chosen large for ‘flat’ integrands and small for ‘volatile’ integrands with
-high peaks. Note that since flatness appears in the exponent, one should not use
-too large values (say, no more than a few hundred) lest terms be truncated internally
-to prevent overflow.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pycuba.Vegas">
-<code class="sig-prename descclassname">pycuba.</code><code class="sig-name descname">Vegas</code><span class="sig-paren">(</span><em class="sig-param">integrand</em>, <em class="sig-param">ndim</em>, <em class="sig-param">userdata=&lt;pycuba.LP_c_int object&gt;</em>, <em class="sig-param">epsrel=0.001</em>, <em class="sig-param">epsabs=1e-12</em>, <em class="sig-param">verbose=0</em>, <em class="sig-param">ncomp=1</em>, <em class="sig-param">seed=None</em>, <em class="sig-param">mineval=0</em>, <em class="sig-param">maxeval=50000</em>, <em class="sig-param">nstart=1000</em>, <em class="sig-param">nincrease=500</em>, <em class="sig-param">nbatch=1000</em>, <em class="sig-param">gridno=0</em>, <em class="sig-param">statefile=&lt;pycuba.LP_c_int object&gt;</em>, <em class="sig-param">nvec=1</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pycuba.html#Vegas"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pycuba.Vegas" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><p><em>nstart</em>: the number of integrand evaluations per iteration to start</p>
-</div></blockquote>
-<dl>
-<dt>with.</dt><dd><p><em>nincrease</em>: the increase in the number of integrand evaluations per</p>
-</dd>
-<dt>iteration.</dt><dd><dl class="simple">
-<dt><em>nbatch</em>: the batch size for sampling.</dt><dd><p>Vegas samples points not all at once, but in batches of size nbatch, to avoid exces-
-sive memory consumption. 1000 is a reasonable value, though it should not affect
-performance too much.</p>
-</dd>
-<dt><em>gridno</em>: the slot in the internal grid table.</dt><dd><p>It may accelerate convergence to keep the grid accumulated during one integration for
-the next one, if the integrands are reasonably similar to each other. Vegas maintains
-an internal table with space for ten grids for this purpose. The slot in this grid is
-specified by gridno.
-If a grid number between 1 and 10 is selected, the grid is not discarded at the end of
-the integration, but stored in the respective slot of the table for a future invocation.
-The grid is only re-used if the dimension of the subsequent integration is the same
-as the one it originates from.
-In repeated invocations it may become necessary to flush a slot in memory, in which
-case the negative of the grid number should be set.</p>
-</dd>
-<dt><em>statefile</em>: a filename for storing the internal state.</dt><dd><p>Vegas can store its entire internal state (i.e. all the information to resume an inter-
-rupted integration) in an external file. The state file is updated after every iteration.
-If, on a subsequent invocation, Vegas finds a file of the specified name, it loads the
-internal state and continues from the point it left off. Needless to say, using an ex-
-isting state file with a different integrand generally leads to wrong results. Once the
-integration finishes successfully, i.e. the prescribed accuracy is attained, the state file
-is removed.
-This feature is useful mainly to define ‘check-points’ in long-running integrations
-from which the calculation can be restarted.</p>
-</dd>
-</dl>
-<p>Vegas actually passes the integrand two more arguments, i.e. the integrand subroutine
-is really declared as</p>
-<p>def integrand(ndim, x, ncomp, f, userdata, weight, iter):</p>
-<p>where weight contains the weight of the point being sampled and iter the current iteration
-number. These extra arguments can safely be ignored, i.e. the integrand may be (and
-usually is) defined with just five (or even four, if userdata is also ignored) arguments.</p>
-</dd>
-</dl>
-</dd></dl>
-
+<div class="section" id="api-documentation">
+<h2>API documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -350,7 +173,7 @@ usually is) defined with just five (or even four, if userdata is also ignored) a
 <li><a class="reference internal" href="#">PyCuba</a><ul>
 <li><a class="reference internal" href="#pycuba-demo-program">PyCuba Demo Program</a></li>
 <li><a class="reference internal" href="#pycuba-api">PyCuba API</a></li>
-<li><a class="reference internal" href="#module-pycuba">API documentation</a></li>
+<li><a class="reference internal" href="#api-documentation">API documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -374,7 +197,7 @@ usually is) defined with just five (or even four, if userdata is also ignored) a
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -386,17 +209,15 @@ usually is) defined with just five (or even four, if userdata is also ignored) a
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="pymultinest_watch.html" title="Watching the progress"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">PyCuba</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2017, Johannes Buchner.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.3.1.
     </div>
   </body>
 </html>

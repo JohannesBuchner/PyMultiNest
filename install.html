@@ -1,17 +1,18 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Installing PyMultiNest and PyCuba &#8212; pymultinest 2.9 documentation</title>
-    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="PyMultiNest" href="pymultinest.html" />
@@ -24,15 +25,13 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="pymultinest.html" title="PyMultiNest"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Welcome to pymultinest’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Installing PyMultiNest and PyCuba</a></li> 
       </ul>
     </div>  
 
@@ -44,7 +43,7 @@
   <div class="section" id="installing-pymultinest-and-pycuba">
 <h1><a class="toc-backref" href="#id1">Installing PyMultiNest and PyCuba</a><a class="headerlink" href="#installing-pymultinest-and-pycuba" title="Permalink to this headline">¶</a></h1>
 <div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
+<p class="topic-title">Contents</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#installing-pymultinest-and-pycuba" id="id1">Installing PyMultiNest and PyCuba</a></p>
 <ul>
@@ -105,7 +104,7 @@ libraries. If you only want to use one of them, skip the others according.</p>
 </div>
 <p>On <strong>Mac OSX</strong>:</p>
 <ul class="simple">
-<li><p>As in the instructions above, you need cmake and a Fortran compiler.</p></li>
+<li><p>As in the instructions above, you need cmake (e.g. with “brew install cmake”), a Fortran compiler (e.g. with “brew install gcc”) and possibly MPI (e.g. with “brew install open-mpi” and then “pip install mpi4py”)</p></li>
 <li><p>If you google for “MultiNest Mac OSX” or “PyMultiNest Mac OSX” you will find installation instructions.</p></li>
 </ul>
 </div>
@@ -122,7 +121,8 @@ libraries. If you only want to use one of them, skip the others according.</p>
 </pre></div>
 </div>
 </li>
-<li><p>Include the lib/ directory in your LD_LIBRARY_PATH.</p></li>
+<li><p>On e.g. Mac OSX, make sure the correct compilers are used by calling cmake using -DCMAKE_C_COMPILER=/path/to/gcc -DCMAKE_CXX_COMPILER=/path/to/g++</p></li>
+<li><p>Include the lib/ directory in your LD_LIBRARY_PATH</p></li>
 <li><p>More detailed install instructions for MultiNest are available in the <a class="reference external" href="http://johannesbuchner.github.io/pymultinest-tutorial/install.html#on-your-own-computer">tutorial</a>.</p></li>
 </ul>
 </li>
@@ -152,6 +152,7 @@ libraries. So put the three directories in the dynamic library load path:</p>
 </pre></div>
 </div>
 <ul class="simple">
+<li><p>On Mac OSX, do the same for DYLD_LIBRARY_PATH.</p></li>
 <li><p>Replace the above with your actual path.</p></li>
 <li><p>Consider putting this line into your shell startup script (e.g. ~/.bashrc).</p></li>
 </ul>
@@ -210,6 +211,7 @@ $ python <span class="nv">$OLDPWD</span>/pycuba_demo.py
 </div>
 
 
+            <div class="clearer"></div>
           </div>
         </div>
       </div>
@@ -250,7 +252,7 @@ $ python <span class="nv">$OLDPWD</span>/pycuba_demo.py
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -262,20 +264,18 @@ $ python <span class="nv">$OLDPWD</span>/pycuba_demo.py
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="pymultinest.html" title="PyMultiNest"
              >next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Welcome to pymultinest’s documentation!"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">pymultinest 2.9 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Installing PyMultiNest and PyCuba</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2013-2017, Johannes Buchner.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.3.1.
     </div>
   </body>
 </html>
