@@ -1,7 +1,7 @@
 from __future__ import absolute_import, unicode_literals, print_function
 from ctypes import cdll
 from ctypes.util import find_library 
-import sys, os
+import sys, os, threading
 
 def _load_library(libname):
 	libname = {
@@ -201,6 +201,10 @@ def run(LogLikelihood,
 	dumper_type  = CFUNCTYPE(c_void_p, c_int, c_int, c_int,
 		POINTER(c_double),POINTER(c_double),POINTER(c_double),
 		c_double,c_double,c_double,c_void_p)
+
+	# check if threads are involved
+	# in that case we can't use the signal handler
+	is_thread = threading.active_count() > 1
 	
 	# check if lnew is supported by user function
 	nargs = 3
@@ -234,7 +238,8 @@ def run(LogLikelihood,
 				as_array(posterior,shape=(nPar+2,nSamples)).T, 
 				(pc[:,0],pc[:,1],pc[:,2],pc[:,3]), # (mean,std,bestfit,map)
 				maxLogLike,logZ,logZerr, 0)
-	prev_handler = signal.signal(signal.SIGINT, interrupt_handler)
+	if not is_thread:
+		prev_handler = signal.signal(signal.SIGINT, interrupt_handler)
 	
 	# to avoid garbage collection of these ctypes, which leads to NULLs
 	# we need to make local copies here that are not thrown away
@@ -275,7 +280,8 @@ def run(LogLikelihood,
 		MPI.COMM_WORLD.Barrier()
 	else:
 		lib.run(*args_converted)
-	signal.signal(signal.SIGINT, prev_handler)
+	if not is_thread:
+		signal.signal(signal.SIGINT, prev_handler)
 	assert len(args) == len(argtypes) # to make sure stuff is still here
 
 def _is_newer(filea, fileb):
