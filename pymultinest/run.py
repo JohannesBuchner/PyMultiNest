@@ -65,9 +65,9 @@ from numpy.ctypeslib import as_array
 import signal, sys
 import inspect
 
-def interrupt_handler(signal, frame):
+def interrupt_handler(recvsignal, frame):
 	sys.stderr.write('ERROR: Interrupt received: Terminating\n')
-	sys.exit(1)
+	os.kill(os.getpid(), signal.SIGTERM)
 
 def run(LogLikelihood,
 	Prior,
