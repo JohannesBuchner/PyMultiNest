@@ -43,7 +43,7 @@ The plotting can also be run on existing MultiNest output, and when not using Py
 
 Citing PyMultiNest
 --------------------------------------------
-See http://johannesbuchner.github.com/PyMultiNest/index.html#citing-pymultinest
+See http://johannesbuchner.github.io/PyMultiNest/index.html#citing-pymultinest
 
 Plotting results, corner and trace plots
 --------------------------------------------
