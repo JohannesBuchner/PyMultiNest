@@ -80,6 +80,7 @@ def solve(LogLikelihood, Prior, n_dims, **kwargs):
 	return dict(logZ=stats['nested sampling global log-evidence'],
 		logZerr=stats['nested sampling global log-evidence error'],
 		samples = samples,
+		analyzer = analyzer,
 		)
 
 class Solver(object):
