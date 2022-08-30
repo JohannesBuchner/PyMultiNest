@@ -21,20 +21,20 @@ def _load_library(libname):
 			print('ERROR:   Could not load MultiNest library "%s"' % libname)
 			print('ERROR:   You have to build it first,')
 			print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
-			print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+			print('ERROR:   manual: https://johannesbuchner.github.io/PyMultiNest/install.html')
 			print()
 		if message.endswith('cannot open shared object file: No such file or directory'):
 			print()
 			print('ERROR:   Could not load MultiNest library: %s' % message.split(':')[0])
 			print('ERROR:   You have to build MultiNest,')
 			print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
-			print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+			print('ERROR:   manual: https://johannesbuchner.github.io/PyMultiNest/install.html')
 			print()
 		if 'undefined symbol: mpi_' in message:
 			print()
 			print('ERROR:   You tried to compile MultiNest linked with MPI,')
 			print('ERROR:   but now when running, MultiNest can not find the MPI linked libraries.')
-			print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+			print('ERROR:   manual: https://johannesbuchner.github.io/PyMultiNest/install.html')
 			print()
 		# the next if is useless because we can not catch symbol lookup errors (the executable crashes)
 		# but it is still there as documentation.
@@ -43,7 +43,7 @@ def _load_library(libname):
 			print('ERROR:   You are trying to get MPI to run, but MPI failed to load.')
 			print('ERROR:   Specifically, mpi symbols are missing in the executable.')
 			print('ERROR:   Let me know if this is a problem of running python or a compilation problem.')
-			print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+			print('ERROR:   manual: https://johannesbuchner.github.io/PyMultiNest/install.html')
 			print()
 		# what if built with MPI, but don't have MPI
 		print('problem:', e)
