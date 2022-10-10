@@ -296,9 +296,9 @@ def multinest_complete(outputfiles_basename = "chains/1-"):
 	"""
 	names = ['stats.dat', 'post_equal_weights.dat', '.txt', 'resume.dat', 'params.json']
 	for n in names:
-		if not os.path.exists(basename + n):
+		if not os.path.exists(outputfiles_basename + n):
 			return False
 	# if stats.dat and post_equal_weights.dat are newer than .txt and resume.dat exists
-	if not _is_newer(basename + 'post_equal_weights.dat', basename + '.txt'):
+	if not _is_newer(outputfiles_basename + 'post_equal_weights.dat', outputfiles_basename + '.txt'):
 		return False
 	return True
