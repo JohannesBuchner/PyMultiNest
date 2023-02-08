@@ -209,7 +209,10 @@ def run(LogLikelihood,
 	# check if lnew is supported by user function
 	nargs = 3
 	try:
-		nargs = len(inspect.getfullargspec(LogLikelihood).args) - inspect.ismethod(LogLikelihood)
+		if sys.version_info[0] == 3:
+			nargs = len(inspect.getfullargspec(LogLikelihood).args) - inspect.ismethod(LogLikelihood)
+		else:
+			nargs = len(inspect.getargspec(LogLikelihood).args) - inspect.ismethod(LogLikelihood)
 	except:
 		pass
 	
