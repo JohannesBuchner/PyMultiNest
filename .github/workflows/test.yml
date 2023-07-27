@@ -55,7 +55,7 @@ jobs:
     - name: Install python dependencies
       run: |
         mamba install --quiet --file conda-requirements.txt corner
-        pip install --user coveralls
+        pip install --user coveralls coverage-lcov
         conda list
         conda info -a
 
@@ -86,6 +86,8 @@ jobs:
         # do not test pycuba, it is broken
         rm tests/pycuba_test.py
         coverage run setup.py test
+        coverage report
+        coverage-lcov
         python pymultinest_demo_minimal.py
         python pymultinest_demo.py
 
