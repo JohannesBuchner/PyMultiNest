@@ -69,7 +69,7 @@ jobs:
 
     - name: Install MultiNest
       run: |
-        git clone --branch ${MULTINEST_TAG} https://github.com/JohannesBuchner/MultiNest
+        git clone https://github.com/JohannesBuchner/MultiNest
         mkdir -p MultiNest/build; pushd MultiNest/build; cmake .. && make && popd
         test -e MultiNest/lib/libmultinest.so
         
