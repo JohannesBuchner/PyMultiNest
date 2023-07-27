@@ -11,12 +11,10 @@ jobs:
   Test:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        #python-version: [3.8, 3.9, '3.10', 3]
-        python-version: [3]
-        #MPI: ['mpich', 'openmpi', 'no']
-        MPI: ['no']
+        python-version: [3.8, 3.9, '3.10', 3]
+        MPI: ['mpich', 'openmpi', 'no']
 
     defaults:
       run:
@@ -109,9 +107,9 @@ jobs:
 
     - name: Coveralls Finished
       uses: coverallsapp/github-action@master
+      if: ${{ matrix.MPI == 'no' }}
       with:
         github-token: ${{ secrets.github_token }}
-        parallel-finished: true
 
   CondaTest:
     runs-on: ubuntu-latest
