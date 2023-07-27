@@ -24,22 +24,9 @@ jobs:
         shell: bash -l {0}
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-
-    - uses: conda-incubator/setup-miniconda@v2
-      with:
-        auto-update-conda: false
-        channels: conda-forge
-        python-version: ${{ matrix.python-version }}
-        mamba-version: "*"
-
     - name: Install build dependencies
       run: |
-        sudo apt-get update && sudo apt-get -y --no-install-recommends install -y -qq libblas{3,-dev} liblapack{3,-dev} libatlas{,-base-dev} cmake build-essential git gfortran 
+        sudo apt-get update && sudo apt-get -y --no-install-recommends install -y -qq libblas{3,-dev} liblapack{3,-dev} libatlas-base-dev cmake build-essential git gfortran 
 
     - name: Install openmpi
       if: ${{ matrix.MPI == 'openmpi' }}
@@ -54,6 +41,19 @@ jobs:
         sudo apt-get install -qq mpich libmpich-dev python-mpi4py;
         update-alternatives --list mpi|grep "$WITHMPI" | xargs -rt sudo update-alternatives --set mpi;
         update-alternatives --list mpirun|grep "$WITHMPI" | xargs -rt sudo update-alternatives --set mpirun;
+
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: false
+        channels: conda-forge
+        python-version: ${{ matrix.python-version }}
+        mamba-version: "*"
 
     - name: Install python dependencies
       run: |
