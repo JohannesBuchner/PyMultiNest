@@ -128,7 +128,7 @@ def resample_equal(samples, weights, rstate=None):
     positions = (rstate.random() + np.arange(nsamples)) / nsamples
 
     # Resample the data.
-    idx = np.zeros(nsamples, dtype=np.int)
+    idx = np.zeros(nsamples, dtype=int)
     cumulative_sum = np.cumsum(weights)
     i, j = 0, 0
     while i < nsamples:
@@ -1680,4 +1680,3 @@ cornerpoints(results, labels=parameters)
 plt.savefig(prefix + 'cornerp.pdf', bbox_inches='tight')
 plt.savefig(prefix + 'cornerp.png', bbox_inches='tight')
 plt.close()
-
