@@ -97,9 +97,9 @@ jobs:
       if: ${{ matrix.MPI != 'no' }}
       run: |
         python -c 'import mpi4py' &&
-        mpiexec -np 4 python pymultinest_demo_minimal.py;
+        mpiexec -np 4 --oversubscribe python pymultinest_demo_minimal.py;
         python -c 'import mpi4py' &&
-        mpiexec -np 4 python pymultinest_demo.py;
+        mpiexec -np 4 --oversubscribe python pymultinest_demo.py;
 
     - name: Long filename test
       run: |
