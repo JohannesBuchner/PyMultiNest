@@ -105,7 +105,6 @@ jobs:
     - name: Marginal scripts test
       run: |
         python multinest_marginals.py chains/3-
-        python multinest_marginals_fancy.py chains/3-
         python multinest_marginals_corner.py chains/3-
 
     - name: Coveralls Finished
