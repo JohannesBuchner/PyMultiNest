@@ -1,0 +1,125 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '42 4 5,20 * *'
+
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8, 3.9, '3.10', 3]
+        multinest-tag: ['v3.10b']
+        MPI: ['mpich', 'openmpi', 'no']
+
+    defaults:
+      run:
+        # this is needed, because otherwise conda env is not available
+        shell: bash -l {0}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: false
+        channels: conda-forge
+        python-version: ${{ matrix.python-version }}
+        mamba-version: "*"
+
+    - name: Install build dependencies
+      run: |
+        sudo apt-get update && sudo apt-get -y --no-install-recommends install -y -qq libblas{3,-dev} liblapack{3,-dev} libatlas{3-base,-dev} cmake build-essential git gfortran 
+
+    - name: Install openmpi
+      if: ${{ matrix.MPI == 'openmpi' }}
+      run: |
+        sudo apt-get install -qq openmpi-bin libopenmpi-dev python-mpi4py;
+        update-alternatives --list mpi|grep "$WITHMPI" | xargs -rt sudo update-alternatives --set mpi;
+        update-alternatives --list mpirun|grep "$WITHMPI" | xargs -rt sudo update-alternatives --set mpirun;
+
+    - name: Install mpich
+      if: ${{ matrix.MPI == 'mpich' }}
+      run: |
+        sudo apt-get install -qq mpich libmpich-dev python-mpi4py;
+        update-alternatives --list mpi|grep "$WITHMPI" | xargs -rt sudo update-alternatives --set mpi;
+        update-alternatives --list mpirun|grep "$WITHMPI" | xargs -rt sudo update-alternatives --set mpirun;
+
+    - name: Install python dependencies
+      run: |
+        mamba install --quiet --file conda-requirements.txt corner
+        pip install --user coveralls
+        conda list
+        conda info -a
+
+    - name: No-MPI case
+      if: ${{ matrix.MPI == 'no' }}
+      run: |
+        pip install --user mpi4py
+
+    - name: Install MultiNest
+      run: |
+        git clone --branch ${MULTINEST_TAG} https://github.com/JohannesBuchner/MultiNest
+        mkdir -p MultiNest/build; pushd MultiNest/build; cmake .. && make && popd
+        test -e MultiNest/lib/libmultinest.so
+        
+    - name: Install PyMultiNest
+      run: |
+        python setup.py install --user
+        python -c 'import pymultinest'|grep 'LD_LIBRARY_PATH'
+
+    - name: Install Cuba
+      run: |
+        git clone https://github.com/JohannesBuchner/cuba
+        pushd cuba && ./configure && ./makesharedlib.sh && popd
+        export LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH}
+        'echo "backend: Agg" > matplotlibrc'
+
+    - name: Test imports
+      run: |
+         python -c 'import pymultinest'
+         python -c 'import pycuba'
+         rm -rf chains/
+
+    - name: No-MPI tests
+      if: ${{ matrix.MPI == 'no' }}
+      run: |
+        coverage run setup.py test
+        python pymultinest_demo_minimal.py
+        python pymultinest_demo.py
+
+    - name: MPI tests
+      if: ${{ matrix.MPI != 'no' }}
+      run: |
+        python -c 'import mpi4py' &&
+        mpiexec -np 4 python pymultinest_demo_minimal.py;
+        python -c 'import mpi4py' &&
+        mpiexec -np 4 python pymultinest_demo.py;
+
+    - name: Long filename test
+      run: |
+        python tests/pymultinest_long_name_test.py;
+    - name: Marginal scripts test
+      run: |
+        python multinest_marginals.py chains/3-
+        python multinest_marginals_fancy.py chains/3-
+        python multinest_marginals_corner.py chains/3-
+
+    - name: Test PyCuba
+      run: |
+        python pycuba_demo.py
+
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel-finished: true
