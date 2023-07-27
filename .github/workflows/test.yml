@@ -88,7 +88,7 @@ jobs:
         rm tests/pycuba_test.py
         coverage run setup.py test
         coverage report
-        coveragepy-lcov
+        coverage-lcov
         python pymultinest_demo_minimal.py
         python pymultinest_demo.py
 
