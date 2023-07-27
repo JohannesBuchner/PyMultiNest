@@ -71,17 +71,17 @@ jobs:
         git clone https://github.com/JohannesBuchner/MultiNest
         mkdir -p MultiNest/build; pushd MultiNest/build; cmake .. && make && popd
         test -e MultiNest/lib/libmultinest.so
+        echo LD_LIBRARY_PATH=MultiNest/lib/:${LD_LIBRARY_PATH} >> $GITHUB_ENV
         
     - name: Install PyMultiNest
       run: |
         python setup.py install --user
-        python -c 'import pymultinest'|grep 'LD_LIBRARY_PATH'
 
     - name: Install Cuba
       run: |
         git clone https://github.com/JohannesBuchner/cuba
         pushd cuba && ./configure && ./makesharedlib.sh && popd
-        echo LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH} >> $GITHUB_ENV
+        echo LD_LIBRARY_PATH=cuba/:${LD_LIBRARY_PATH} >> $GITHUB_ENV
         'echo "backend: Agg" > matplotlibrc'
 
     - name: Test imports
