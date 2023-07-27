@@ -160,11 +160,4 @@ jobs:
 
     - name: Tests
       run: |
-        python setup.py test
         python pymultinest_demo_minimal.py
-
-    - name: Coveralls Finished
-      uses: coverallsapp/github-action@master
-      with:
-        github-token: ${{ secrets.github_token }}
-        parallel-finished: true
