@@ -18,7 +18,7 @@ setup(
     author_email = "johannes.buchner.acad@gmx.com",
     maintainer = "Johannes Buchner",
     maintainer_email = "johannes.buchner.acad@gmx.com",
-    url = "http://johannesbuchner.github.com/PyMultiNest/",
+    url = "https://johannesbuchner.github.io/PyMultiNest/",
     license = "GPLv3",
     packages = ["pymultinest", "pycuba"],
     provides = ["pymultinest", "pycuba"],

@@ -43,7 +43,7 @@ The plotting can also be run on existing MultiNest output, and when not using Py
 
 Citing PyMultiNest
 --------------------------------------------
-See http://johannesbuchner.github.com/PyMultiNest/index.html#citing-pymultinest
+See http://johannesbuchner.github.io/PyMultiNest/index.html#citing-pymultinest
 
 Plotting results, corner and trace plots
 --------------------------------------------
@@ -88,7 +88,7 @@ This helps other people google the same question.
 
 Using MultiNest with Python?
 --------------------------------------------
-Look at the documentation available at http://johannesbuchner.github.com/PyMultiNest/index.html
+Look at the documentation available at http://johannesbuchner.github.io/PyMultiNest/
 
 What is PyCuba?
 --------------------------------------------

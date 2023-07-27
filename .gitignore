@@ -13,3 +13,4 @@ build
 dist
 doc/_build
 *.egg-info
+.eggs

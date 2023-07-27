@@ -1,7 +1,7 @@
 from __future__ import absolute_import, unicode_literals, print_function
 from ctypes import cdll
 from ctypes.util import find_library 
-import sys, os
+import sys, os, threading
 
 def _load_library(libname):
 	libname = {
@@ -21,20 +21,20 @@ def _load_library(libname):
 			print('ERROR:   Could not load MultiNest library "%s"' % libname)
 			print('ERROR:   You have to build it first,')
 			print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
-			print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+			print('ERROR:   manual: https://johannesbuchner.github.io/PyMultiNest/install.html')
 			print()
 		if message.endswith('cannot open shared object file: No such file or directory'):
 			print()
 			print('ERROR:   Could not load MultiNest library: %s' % message.split(':')[0])
 			print('ERROR:   You have to build MultiNest,')
 			print('ERROR:   and point the LD_LIBRARY_PATH environment variable to it!')
-			print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+			print('ERROR:   manual: https://johannesbuchner.github.io/PyMultiNest/install.html')
 			print()
 		if 'undefined symbol: mpi_' in message:
 			print()
 			print('ERROR:   You tried to compile MultiNest linked with MPI,')
 			print('ERROR:   but now when running, MultiNest can not find the MPI linked libraries.')
-			print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+			print('ERROR:   manual: https://johannesbuchner.github.io/PyMultiNest/install.html')
 			print()
 		# the next if is useless because we can not catch symbol lookup errors (the executable crashes)
 		# but it is still there as documentation.
@@ -43,7 +43,7 @@ def _load_library(libname):
 			print('ERROR:   You are trying to get MPI to run, but MPI failed to load.')
 			print('ERROR:   Specifically, mpi symbols are missing in the executable.')
 			print('ERROR:   Let me know if this is a problem of running python or a compilation problem.')
-			print('ERROR:   manual: http://johannesbuchner.github.com/PyMultiNest/install.html')
+			print('ERROR:   manual: https://johannesbuchner.github.io/PyMultiNest/install.html')
 			print()
 		# what if built with MPI, but don't have MPI
 		print('problem:', e)
@@ -201,11 +201,18 @@ def run(LogLikelihood,
 	dumper_type  = CFUNCTYPE(c_void_p, c_int, c_int, c_int,
 		POINTER(c_double),POINTER(c_double),POINTER(c_double),
 		c_double,c_double,c_double,c_void_p)
+
+	# check if threads are involved
+	# in that case we can't use the signal handler
+	is_thread = threading.active_count() > 1
 	
 	# check if lnew is supported by user function
 	nargs = 3
 	try:
-		nargs = len(inspect.getargspec(LogLikelihood).args) - inspect.ismethod(LogLikelihood)
+		if sys.version_info[0] == 3:
+			nargs = len(inspect.getfullargspec(LogLikelihood).args) - inspect.ismethod(LogLikelihood)
+		else:
+			nargs = len(inspect.getargspec(LogLikelihood).args) - inspect.ismethod(LogLikelihood)
 	except:
 		pass
 	
@@ -234,7 +241,8 @@ def run(LogLikelihood,
 				as_array(posterior,shape=(nPar+2,nSamples)).T, 
 				(pc[:,0],pc[:,1],pc[:,2],pc[:,3]), # (mean,std,bestfit,map)
 				maxLogLike,logZ,logZerr, 0)
-	prev_handler = signal.signal(signal.SIGINT, interrupt_handler)
+	if not is_thread:
+		prev_handler = signal.signal(signal.SIGINT, interrupt_handler)
 	
 	# to avoid garbage collection of these ctypes, which leads to NULLs
 	# we need to make local copies here that are not thrown away
@@ -275,7 +283,8 @@ def run(LogLikelihood,
 		MPI.COMM_WORLD.Barrier()
 	else:
 		lib.run(*args_converted)
-	signal.signal(signal.SIGINT, prev_handler)
+	if not is_thread:
+		signal.signal(signal.SIGINT, prev_handler)
 	assert len(args) == len(argtypes) # to make sure stuff is still here
 
 def _is_newer(filea, fileb):
@@ -290,9 +299,9 @@ def multinest_complete(outputfiles_basename = "chains/1-"):
 	"""
 	names = ['stats.dat', 'post_equal_weights.dat', '.txt', 'resume.dat', 'params.json']
 	for n in names:
-		if not os.path.exists(basename + n):
+		if not os.path.exists(outputfiles_basename + n):
 			return False
 	# if stats.dat and post_equal_weights.dat are newer than .txt and resume.dat exists
-	if not _is_newer(basename + 'post_equal_weights.dat', basename + '.txt'):
+	if not _is_newer(outputfiles_basename + 'post_equal_weights.dat', outputfiles_basename + '.txt'):
 		return False
 	return True
