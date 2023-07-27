@@ -39,7 +39,7 @@ jobs:
 
     - name: Install build dependencies
       run: |
-        sudo apt-get update && sudo apt-get -y --no-install-recommends install -y -qq libblas{3,-dev} liblapack{3,-dev} libatlas-base{,-dev} cmake build-essential git gfortran 
+        sudo apt-get update && sudo apt-get -y --no-install-recommends install -y -qq libblas{3,-dev} liblapack{3,-dev} libatlas{,-base-dev} cmake build-essential git gfortran 
 
     - name: Install openmpi
       if: ${{ matrix.MPI == 'openmpi' }}
