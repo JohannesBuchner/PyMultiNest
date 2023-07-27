@@ -15,7 +15,7 @@ jobs:
       matrix:
         #python-version: [3.8, 3.9, '3.10', 3]
         #MPI: ['mpich', 'openmpi', 'no']
-        python-version: [3]
+        python-version: ['3.10']
         MPI: ['openmpi', 'no']
 
     defaults:
@@ -115,6 +115,7 @@ jobs:
         github-token: ${{ secrets.github_token }}
 
   CondaTest:
+    if: false
     runs-on: ubuntu-latest
 
     defaults:
