@@ -11,7 +11,7 @@ jobs:
   Test:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         #python-version: [3.8, 3.9, '3.10', 3]
         python-version: [3]
@@ -82,7 +82,7 @@ jobs:
       run: |
         git clone https://github.com/JohannesBuchner/cuba
         pushd cuba && ./configure && ./makesharedlib.sh && popd
-        export LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH}
+        echo LD_LIBRARY_PATH=MultiNest/lib/:cuba/:${LD_LIBRARY_PATH} >> $GITHUB_ENV
         'echo "backend: Agg" > matplotlibrc'
 
     - name: Test imports
@@ -118,6 +118,47 @@ jobs:
     - name: Test PyCuba
       run: |
         python pycuba_demo.py
+
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.github_token }}
+        parallel-finished: true
+
+  CondaTest:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        # this is needed, because otherwise conda env is not available
+        shell: bash -l {0}
+
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - uses: conda-incubator/setup-miniconda@v2
+      with:
+        auto-update-conda: false
+        channels: conda-forge
+        python-version: ${{ matrix.python-version }}
+        mamba-version: "*"
+
+    - name: Install dependencies
+      run: |
+        mamba install --quiet --file conda-requirements.txt
+
+    - name: Test imports
+      run: |
+         python -m pip install .
+         python -c 'import pymultinest'
+
+    - name: Tests
+      run: |
+        python setup.py test
+        python pymultinest_demo_minimal.py
 
     - name: Coveralls Finished
       uses: coverallsapp/github-action@master
