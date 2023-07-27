@@ -50,15 +50,13 @@ jobs:
 
     - uses: conda-incubator/setup-miniconda@v2
       with:
-        auto-update-conda: false
         channels: conda-forge
         python-version: ${{ matrix.python-version }}
-        environment-file: conda-requirements.txt
         mamba-version: "*"
 
     - name: Install python dependencies
       run: |
-        mamba install --quiet corner
+        mamba install --quiet --file conda-requirements.txt corner
         pip install --user coveralls
         conda list
         conda info -a
