@@ -63,7 +63,7 @@ jobs:
         conda info -a
 
     - name: No-MPI case
-      if: ${{ matrix.MPI == 'no' }}
+      if: ${{ matrix.MPI != 'no' }}
       run: |
         pip install --user mpi4py
 
