@@ -113,7 +113,9 @@ jobs:
       uses: coverallsapp/github-action@master
       if: ${{ matrix.MPI == 'no' }}
       with:
+        path-to-lcov: lcov.info
         github-token: ${{ secrets.github_token }}
+        flag-name: MPI-${{ matrix.MPI }}
 
   CondaTest:
     if: false
