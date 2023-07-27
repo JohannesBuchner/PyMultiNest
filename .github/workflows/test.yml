@@ -56,8 +56,7 @@ jobs:
 
     - name: Install python dependencies
       run: |
-        mamba install --quiet --file conda-requirements.txt corner
-        pip install --user coveralls coverage-lcov coveragepy-lcov
+        mamba install --quiet --file conda-requirements.txt corner coveralls coverage-lcov
         conda list
         conda info -a
 
