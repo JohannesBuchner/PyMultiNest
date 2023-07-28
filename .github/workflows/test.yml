@@ -54,8 +54,10 @@ jobs:
 
     - name: Install python dependencies
       run: |
-        mamba install --quiet --file conda-requirements.txt corner coveralls coverage-lcov
-        sed --in-place -e 's,"report_include",,g' -e 's,"report_omit",,g' /usr/share/miniconda/envs/*/lib/python*/site-packages/coverage_lcov/converter.py
+        mamba install --quiet --file conda-requirements.txt corner coveralls 
+        git clone https://github.com/JohannesBuchner/coverage-lcov
+        pushd coverage-lcov && pip install . && popd
+        #sed --in-place -e 's,"report_include",,g' -e 's,"report_omit",,g' /usr/share/miniconda/envs/*/lib/python*/site-packages/coverage_lcov/converter.py
         conda list
         conda info -a
 
