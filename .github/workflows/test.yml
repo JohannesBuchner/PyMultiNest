@@ -30,15 +30,15 @@ jobs:
       if: ${{ matrix.MPI == 'openmpi' }}
       run: |
         sudo apt-get install -qq openmpi-bin libopenmpi-dev python3-mpi4py
-        update-alternatives --list mpi|grep "$MPI" | xargs -rt sudo update-alternatives --set mpi
-        update-alternatives --list mpirun|grep "$MPI" | xargs -rt sudo update-alternatives --set mpirun
+        update-alternatives --list mpi|grep "${{ matrix.MPI }}" | xargs -rt sudo update-alternatives --set mpi
+        update-alternatives --list mpirun|grep "${{ matrix.MPI }}" | xargs -rt sudo update-alternatives --set mpirun
 
     - name: Install mpich
       if: ${{ matrix.MPI == 'mpich' }}
       run: |
         sudo apt-get install -qq mpich libmpich-dev python3-mpi4py
-        update-alternatives --list mpi|grep "$MPI" | xargs -rt sudo update-alternatives --set mpi
-        update-alternatives --list mpirun|grep "$MPI" | xargs -rt sudo update-alternatives --set mpirun
+        update-alternatives --list mpi|grep "${{ matrix.MPI }}" | xargs -rt sudo update-alternatives --set mpi
+        update-alternatives --list mpirun|grep "${{ matrix.MPI }}" | xargs -rt sudo update-alternatives --set mpirun
 
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
