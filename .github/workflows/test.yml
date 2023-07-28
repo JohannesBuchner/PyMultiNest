@@ -10,6 +10,7 @@ on:
 jobs:
   Test:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -55,8 +56,7 @@ jobs:
     - name: Install python dependencies
       run: |
         mamba install --quiet --file conda-requirements.txt corner coveralls 
-        git clone https://github.com/JohannesBuchner/coverage-lcov
-        pushd coverage-lcov && pip install . && popd
+        pip install git+https://github.com/JohannesBuchner/coverage-lcov
         #sed --in-place -e 's,"report_include",,g' -e 's,"report_omit",,g' /usr/share/miniconda/envs/*/lib/python*/site-packages/coverage_lcov/converter.py
         conda list
         conda info -a
@@ -73,7 +73,8 @@ jobs:
         mkdir -p MultiNest/build; pushd MultiNest/build; cmake .. && make && popd
         test -e MultiNest/lib/libmultinest.so
         echo LD_LIBRARY_PATH=MultiNest/lib/:${LD_LIBRARY_PATH} >> $GITHUB_ENV
-        
+        echo RDMAV_FORK_SAFE=1 >> $GITHUB_ENV
+
     - name: Install PyMultiNest
       run: |
         python setup.py install --user
@@ -122,8 +123,8 @@ jobs:
         flag-name: MPI-${{ matrix.MPI }}
 
   CondaTest:
-    if: false
     runs-on: ubuntu-latest
+    timeout-minutes: 20
 
     defaults:
       run:
