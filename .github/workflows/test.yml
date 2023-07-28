@@ -65,6 +65,7 @@ jobs:
       if: ${{ matrix.MPI != 'no' }}
       run: |
         pip install --user mpi4py
+        python -c 'import mpi4py'
 
     - name: Install MultiNest
       run: |
@@ -94,12 +95,15 @@ jobs:
         python pymultinest_demo.py
 
     - name: MPI tests
-      if: ${{ matrix.MPI != 'no' }}
+      if: ${{ matrix.MPI == 'openmpi' }}
       run: |
-        python -c 'import mpi4py' &&
-        mpiexec -np 4 --oversubscribe python pymultinest_demo_minimal.py;
-        python -c 'import mpi4py' &&
-        mpiexec -np 4 --oversubscribe python pymultinest_demo.py;
+        mpiexec -np 4 --oversubscribe python pymultinest_demo_minimal.py
+        mpiexec -np 4 --oversubscribe python pymultinest_demo.py
+    - name: MPI tests
+      if: ${{ matrix.MPI == 'mpich' }}
+      run: |
+        mpiexec -np 4 python pymultinest_demo_minimal.py
+        mpiexec -np 4 python pymultinest_demo.py
 
     - name: Long filename test
       run: |
