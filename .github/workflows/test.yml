@@ -51,7 +51,10 @@ jobs:
       with:
         channels: conda-forge
         python-version: ${{ matrix.python-version }}
-        mamba-version: "*"
+        #mamba-version: "*"
+
+    - name: Install mamba
+      run: conda install -y -c conda-forge mamba
 
     - name: Install python dependencies
       run: |
@@ -61,7 +64,7 @@ jobs:
         conda list
         conda info -a
 
-    - name: No-MPI case
+    - name: install mpi4py
       if: ${{ matrix.MPI != 'no' }}
       run: |
         pip install --user mpi4py
@@ -144,7 +147,10 @@ jobs:
         channels: conda-forge
         python-version: ${{ matrix.python-version }}
         environment-file: conda-requirements.txt
-        mamba-version: "*"
+        #mamba-version: "*"
+
+    - name: Install mamba
+      run: conda install -y -c conda-forge mamba
 
     - name: Install dependencies
       run: |
