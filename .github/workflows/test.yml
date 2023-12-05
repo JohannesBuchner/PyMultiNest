@@ -20,7 +20,7 @@ jobs:
     defaults:
       run:
         # this is needed, because otherwise conda env is not available
-        shell: bash -l {0}
+        shell: bash -leo pipefail {0} {0}
 
     steps:
     - name: Install build dependencies
@@ -50,7 +50,7 @@ jobs:
 
     - name: Install python dependencies
       run: |
-        mamba install -c conda-forge --file conda-requirements.txt python=${{ matrix.python-version }} corner coveralls numpy
+        micromamba install -c conda-forge --file conda-requirements.txt python=${{ matrix.python-version }} corner coveralls numpy
         pip install git+https://github.com/JohannesBuchner/coverage-lcov
         #sed --in-place -e 's,"report_include",,g' -e 's,"report_omit",,g' /usr/share/miniconda/envs/*/lib/python*/site-packages/coverage_lcov/converter.py
         conda list
@@ -124,7 +124,7 @@ jobs:
     defaults:
       run:
         # this is needed, because otherwise conda env is not available
-        shell: bash -l {0}
+        shell: bash -leo pipefail {0} {0}
 
     steps:
     - uses: actions/checkout@v2
@@ -132,10 +132,11 @@ jobs:
       with:
         cache-environment: false
         cache-downloads: true
+        environment-name: test
         environment-file: conda-requirements.txt
 
     - name: Install dependencies
-      run: mamba install -c conda-forge --quiet multinest
+      run: micromamba install -c conda-forge --quiet multinest
 
     - name: Test imports
       run: |
