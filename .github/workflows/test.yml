@@ -72,7 +72,7 @@ jobs:
 
     - name: Install PyMultiNest
       run: |
-        python setup.py install --user
+        python -m pip install .
 
     - name: Test imports
       run: |
@@ -84,7 +84,7 @@ jobs:
       run: |
         # do not test pycuba, it is broken
         rm tests/pycuba_test.py
-        coverage run setup.py test
+        coverage run pytest
         coverage report
         coverage-lcov
         python pymultinest_demo_minimal.py
