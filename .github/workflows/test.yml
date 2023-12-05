@@ -42,23 +42,16 @@ jobs:
         update-alternatives --list mpirun|grep "${{ matrix.MPI }}" | xargs -rt sudo update-alternatives --set mpirun
 
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+    - uses: mamba-org/setup-micromamba@v1
       with:
+        environment-name: test
+        cache-environment: false
+        cache-downloads: true
         python-version: ${{ matrix.python-version }}
-
-    - uses: conda-incubator/setup-miniconda@v2
-      with:
-        channels: conda-forge
-        python-version: ${{ matrix.python-version }}
-        #mamba-version: "*"
-
-    - name: Install mamba
-      run: conda install -y -c conda-forge mamba
 
     - name: Install python dependencies
       run: |
-        mamba install --quiet --file conda-requirements.txt corner coveralls numpy
+        mamba install -c conda-forge --file conda-requirements.txt corner coveralls numpy
         pip install git+https://github.com/JohannesBuchner/coverage-lcov
         #sed --in-place -e 's,"report_include",,g' -e 's,"report_omit",,g' /usr/share/miniconda/envs/*/lib/python*/site-packages/coverage_lcov/converter.py
         conda list
@@ -136,25 +129,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+    - uses: mamba-org/setup-micromamba@v1
       with:
-        python-version: ${{ matrix.python-version }}
-
-    - uses: conda-incubator/setup-miniconda@v2
-      with:
-        auto-update-conda: false
-        channels: conda-forge
+        environment-name: test
+        cache-environment: false
+        cache-downloads: true
         python-version: ${{ matrix.python-version }}
         environment-file: conda-requirements.txt
-        #mamba-version: "*"
-
-    - name: Install mamba
-      run: conda install -y -c conda-forge mamba
 
     - name: Install dependencies
-      run: |
-        mamba install --quiet multinest
+      run: mamba install -c conda-forge --quiet multinest
 
     - name: Test imports
       run: |
