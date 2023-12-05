@@ -47,11 +47,10 @@ jobs:
         environment-name: test
         cache-environment: false
         cache-downloads: true
-        python-version: ${{ matrix.python-version }}
 
     - name: Install python dependencies
       run: |
-        mamba install -c conda-forge --file conda-requirements.txt corner coveralls numpy
+        mamba install -c conda-forge --file conda-requirements.txt python=${{ matrix.python-version }} corner coveralls numpy
         pip install git+https://github.com/JohannesBuchner/coverage-lcov
         #sed --in-place -e 's,"report_include",,g' -e 's,"report_omit",,g' /usr/share/miniconda/envs/*/lib/python*/site-packages/coverage_lcov/converter.py
         conda list
@@ -131,10 +130,8 @@ jobs:
     - uses: actions/checkout@v2
     - uses: mamba-org/setup-micromamba@v1
       with:
-        environment-name: test
         cache-environment: false
         cache-downloads: true
-        python-version: ${{ matrix.python-version }}
         environment-file: conda-requirements.txt
 
     - name: Install dependencies
