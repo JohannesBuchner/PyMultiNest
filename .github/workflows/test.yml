@@ -51,7 +51,7 @@ jobs:
     - name: Install python dependencies
       run: |
         micromamba install -c conda-forge --file conda-requirements.txt python=${{ matrix.python-version }} corner coveralls pytest
-        pip install git+https://github.com/JohannesBuchner/coverage-lcov
+        pip install git+https://github.com/JohannesBuchner/coverage-lcov@feature-coverage7
         #sed --in-place -e 's,"report_include",,g' -e 's,"report_omit",,g' /usr/share/miniconda/envs/*/lib/python*/site-packages/coverage_lcov/converter.py
         conda list
         conda info -a
