@@ -1,0 +1,119 @@
+name: MacOS Test
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '42 4 5,20 * *'
+
+
+jobs:
+  Test:
+    runs-on: macos-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: [3.8, 3.9, '3.10', 3.11, 3]
+        MPI: ['mpich', 'openmpi', 'no']
+
+    defaults:
+      run:
+        # this is needed, because otherwise conda env is not available
+        shell: bash -leo pipefail {0} {0}
+
+    steps:
+    - name: Install build dependencies
+      run: |
+        brew update && brew install openblas lapack cmake git gcc
+        echo "FC=$(which gfortran-11)" >> $GITHUB_ENV
+        echo "CC=$(which gcc)" >> $GITHUB_ENV
+        echo "CXX=$(which g++)" >> $GITHUB_ENV
+
+
+    - name: Install openmpi
+      if: ${{ matrix.MPI == 'openmpi' }}
+      run: |
+        brew install openmpi
+
+    - name: Install mpich
+      if: ${{ matrix.MPI == 'mpich' }}
+      run: |
+        brew install mpich
+
+    - uses: actions/checkout@v2
+    - uses: mamba-org/setup-micromamba@v1
+      with:
+        environment-name: test
+        cache-environment: false
+        cache-downloads: true
+
+    - name: Install python dependencies
+      run: |
+        micromamba install -c conda-forge --file conda-requirements.txt python=${{ matrix.python-version }} corner coveralls pytest toml
+        pip install git+https://github.com/JohannesBuchner/coverage-lcov@feature-coverage7
+        #sed --in-place -e 's,"report_include",,g' -e 's,"report_omit",,g' /usr/share/miniconda/envs/*/lib/python*/site-packages/coverage_lcov/converter.py
+        micromamba list
+        micromamba info
+
+    - name: install mpi4py
+      if: ${{ matrix.MPI != 'no' }}
+      run: |
+        pip install --user mpi4py
+        python -c 'import mpi4py'
+
+    - name: Install MultiNest
+      run: |
+        git clone https://github.com/JohannesBuchner/MultiNest
+        cd MultiNest/build && rm -rf * && cmake .. && make && cd ../..
+        ls -l MultiNest/
+        ls -l MultiNest/lib
+        echo "LD_LIBRARY_PATH=$HOME/work/PyMultiNest/PyMultiNest/MultiNest/lib:$LD_LIBRARY_PATH" >> $GITHUB_ENV
+        echo "DYLD_LIBRARY_PATH=$HOME/work/PyMultiNest/PyMultiNest/MultiNest/lib:$DYLD_LIBRARY_PATH" >> $GITHUB_ENV
+
+    - name: Install PyMultiNest
+      run: |
+        python -m pip install .
+
+    - name: Test imports
+      run: |
+         python -c 'import pymultinest'
+         rm -rf chains/
+
+    - name: No-MPI tests
+      if: ${{ matrix.MPI == 'no' }}
+      run: |
+        # do not test pycuba, it is broken
+        rm tests/pycuba_test.py
+        coverage run -m pytest
+        coverage report
+        coverage-lcov
+        python pymultinest_demo_minimal.py
+        python pymultinest_demo.py
+
+    - name: MPI tests
+      if: ${{ matrix.MPI == 'openmpi' }}
+      run: |
+        mpiexec -np 4 --oversubscribe python pymultinest_demo_minimal.py
+        mpiexec -np 4 --oversubscribe python pymultinest_demo.py
+    - name: MPI tests
+      if: ${{ matrix.MPI == 'mpich' }}
+      run: |
+        mpiexec -np 4 python pymultinest_demo_minimal.py
+        mpiexec -np 4 python pymultinest_demo.py
+
+    - name: Long filename test
+      run: |
+        python tests/pymultinest_long_name_test.py;
+    - name: Marginal scripts test
+      run: |
+        python multinest_marginals.py chains/3-
+        python multinest_marginals_corner.py chains/3-
+
+    - name: Coveralls Finished
+      uses: coverallsapp/github-action@master
+      if: ${{ matrix.MPI == 'no' }}
+      with:
+        path-to-lcov: lcov.info
+        github-token: ${{ secrets.github_token }}
+        flag-name: MPI-${{ matrix.MPI }}
