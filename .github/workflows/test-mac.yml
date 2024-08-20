@@ -26,15 +26,13 @@ jobs:
     steps:
     - name: ls gfortran
       run: |
+        brew update && brew install openblas lapack cmake git gcc
         echo "$(which gcc)"
-        echo "$(which gfortran-11)"
         echo "$(ls -l $(dirname $(which gcc)))"
         
-        
-        
-    - name: Install build dependencies
+    - name: Set flags
       run: |
-        brew update && brew install openblas lapack cmake git gcc
+        
         echo "$(which gfortran-11)"
         echo "$(which gfortran)"
         echo "FC=$(which gfortran-11)" >> $GITHUB_ENV
