@@ -5,7 +5,6 @@ on:
   pull_request:
   schedule:
     - cron: '42 4 5,20 * *'
-  workflow_dispatch:
 
 
 jobs:
@@ -24,20 +23,10 @@ jobs:
         shell: bash -leo pipefail {0} {0}
 
     steps:
-    - name: ls gfortran
+    - name: Install build dependencies
       run: |
         brew update && brew install openblas lapack cmake git gcc
-        echo "$(which gcc)"
-        echo "$(ls -l $(dirname $(which gfortran-12)))"
-        echo "$(ls -l $(dirname $(which gfortran-13)))"
-        echo "$(ls -l $(dirname $(which gfortran-14)))"
-        
-    - name: Set flags
-      run: |
-        
-        echo "$(which gfortran-11)"
-        echo "$(which gfortran)"
-        echo "FC=$(which gfortran-11)" >> $GITHUB_ENV
+        echo "FC=$(which gfortran-14)" >> $GITHUB_ENV
         echo "CC=$(which gcc)" >> $GITHUB_ENV
         echo "CXX=$(which g++)" >> $GITHUB_ENV
 
