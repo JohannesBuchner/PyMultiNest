@@ -28,7 +28,9 @@ jobs:
       run: |
         brew update && brew install openblas lapack cmake git gcc
         echo "$(which gcc)"
-        echo "$(ls -l $(dirname $(which gcc)))"
+        echo "$(ls -l $(dirname $(which gfortran-12)))"
+        echo "$(ls -l $(dirname $(which gfortran-13)))"
+        echo "$(ls -l $(dirname $(which gfortran-14)))"
         
     - name: Set flags
       run: |
