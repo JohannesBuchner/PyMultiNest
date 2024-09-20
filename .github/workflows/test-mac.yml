@@ -26,7 +26,7 @@ jobs:
     - name: Install build dependencies
       run: |
         brew update && brew install openblas lapack cmake git gcc
-        echo "FC=$(which gfortran-11)" >> $GITHUB_ENV
+        echo "FC=$(which gfortran-14)" >> $GITHUB_ENV
         echo "CC=$(which gcc)" >> $GITHUB_ENV
         echo "CXX=$(which g++)" >> $GITHUB_ENV
 
