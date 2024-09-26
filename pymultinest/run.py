@@ -74,8 +74,8 @@ def run(LogLikelihood,
 	n_dims, 
 	n_params = None, 
 	n_clustering_params = None, wrapped_params = None, 
-	importance_nested_sampling = True,
-	multimodal = True, const_efficiency_mode = False, n_live_points = 400,
+	importance_nested_sampling = False,
+	multimodal = False, const_efficiency_mode = False, n_live_points = 400,
 	evidence_tolerance = 0.5, sampling_efficiency = 0.8, 
 	n_iter_before_update = 100, null_log_evidence = -1e90,
 	max_modes = 100, mode_tolerance = -1e90,
@@ -112,6 +112,7 @@ def run(LogLikelihood,
 	@param importance_nested_sampling:
 		If True, Multinest will use Importance Nested Sampling (INS). Read http://arxiv.org/abs/1306.2144
 		for more details on INS. Please read the MultiNest README file before using the INS in MultiNest v3.0.
+		If True, then multimodal will be set to False.
 	
 	@param n_params: 
 		Total no. of parameters, should be equal to ndims in most cases 
